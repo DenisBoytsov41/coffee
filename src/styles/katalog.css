@@ -1,0 +1,75 @@
+.karttov{
+    width: 350px;
+    height: 500px;
+    background: #faffff;
+    margin-bottom: 30px;
+    margin-right: 30px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+.tovhead{
+    padding-top: 15px;
+}
+.tovcont{
+    padding-top: 90px;
+}
+.tovfut{
+    padding-top: 10px;
+    padding-left: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.tovbutt{
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+.tovprice{
+    width: 120px;
+    height: 50px;
+    text-align: start;
+    display: flex;
+    align-items: center;
+    font-size: 22px;
+}
+.tovname{
+font-size: 25px;
+}
+.tovopis{
+    height: 70px;
+    text-align: start;
+    padding-left: 30px;
+}
+.tovcountinp{
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    justify-content: end;
+    padding-right: 30px;
+}
+.tovcount{
+
+}
+button{
+    border: 3px solid transparent;
+    background: rgba(0, 0, 0, 0);
+}
+.imgtov{
+    background: rgba(0, 0, 0, 0)
+}
+.imgtov:hover{
+    filter: alpha(opacity=80);
+    opacity: 0.8;
+    z-index: 0;
+}
+.katalog{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 1150px;
+}

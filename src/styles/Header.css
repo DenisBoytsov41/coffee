@@ -1,0 +1,80 @@
+.HeaderRezerv{
+    height: 120px;
+}
+.HeaderBack{
+    position: fixed;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.15);
+    background: white;
+    width: 100vi;
+    height: 120px;
+    right: 0px;
+    z-index: 1;
+}
+.mainHeader{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 1360px;
+    width: 100vi;
+    padding: 14px 0;
+    z-index: 1;
+}
+.contHeader{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 50px;
+    height: 33px;
+}
+.leftHeader{
+    display: flex;
+    flex-direction: row;
+    flex-grow:1;
+    gap: 35px;
+    align-items: center;
+}
+.rightHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    flex-grow:1;
+    gap: 15px;
+}
+.linkHeader{
+    color: black;
+    text-decoration: none;
+}
+.line {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.19);
+    width: 200vi;
+    position: relative;
+    right: 50vi;
+    margin-bottom: 5px;
+}
+.baskHeader{
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    gap: 5px;
+}
+.baskinfoHeader{
+    display: flex;
+    flex-direction: column;
+}
+.formVhod{
+    position: relative;
+    right: 250px;
+    top: 10px;
+}
+.absformVhod{
+    position: absolute;
+    background: white;
+    width: 300px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 20px;
+}

@@ -1,0 +1,46 @@
+.mainFuter{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 1360px;
+    width: 100vi;
+    padding-top: 50px;
+    padding-bottom: 15px;
+}
+.contFuter{
+    display: flex;
+    padding: 0 50px;
+}
+.contdopFuter{
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    flex-direction: column;
+}
+.leftFuter{
+    display: flex;
+    flex-direction: row;
+    flex-grow:1;
+    gap: 35px;
+}
+.rightFuter{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    flex-grow:1;
+    gap: 15px;
+}
+.podpis{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.linkFuter{
+    color: rgba(0, 0, 0, 0.42);
+    text-decoration: none;
+}
+.contactsFuter{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
