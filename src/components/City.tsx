@@ -1,13 +1,16 @@
 import React from "react";
 
-class City extends React.Component {
-    render() {
-        return(
+function City(){
+    return(
+        <div className="CityText">
             <div>
-                Города
+                Свыше 3800
             </div>
-        );
-    }
+            <div>
+                пунктов выдачи
+            </div>
+        </div>
+    );
 }
 
 export default City;

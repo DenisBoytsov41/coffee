@@ -1,14 +1,14 @@
 .imgback{
     position: absolute;
     left: 0;
-    width: 100vi;
-    height: 650px;
+    width: 100%;
+    height: 500px;
     object-fit: cover;
     object-position: bottom;
     z-index: -1;
 }
 .deviz{
-    height: 650px;
+    height: 500px;
     display: flex;
     justify-content: center;
     padding-bottom: 50px;

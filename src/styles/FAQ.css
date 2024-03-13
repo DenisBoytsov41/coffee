@@ -1,0 +1,35 @@
+.ContentFAQ{
+    max-width: 1250px;
+    width: 80vi;
+    padding: 14px 50px;
+}
+.Zagol1FAQ{
+    font-size: 26px;
+}
+.ZagolFAQ{
+    font-size: 22px;
+}
+.textFAQ{
+    font-size: 18px;
+}
+details{
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+details:hover{
+    cursor: pointer;
+}
+details > summary {
+    list-style: none;
+}
+.textopenFAQ{
+    padding-left: 30px;
+}
+.FAQ{
+    display: flex;
+    flex-direction: row;
+}
+.FAQ1{
+    flex-grow: 2;
+    flex-basis: 0;
+}

@@ -4,54 +4,51 @@ import '../styles/Futer.css';
 import tg from "../images/TG.png";
 import vk from "../images/VK.png";
 
-class Futer extends React.Component {
-    render() {
-        return (
-            <div className="mainFuter">
-                <div className="contFuter">
-                    <div className="leftFuter">
-                        <div className="contdopFuter">
-                            <label>ПОМОЩЬ</label>
-                            <br/>
-                            <Link to="/faq" className='linkFuter'>Вопрос-ответ</Link>
-                            <Link to="/shipment" className='linkFuter'>Доставка и оплата</Link>
-                            <Link to="/contacts" className='linkFuter'>Контакты</Link>
-                        </div>
-                        <div className="contdopFuter">
-                            <label>КОМПАНИЯ</label>
-                            <br/>
-                            <Link to="/about" className='linkFuter'>О компании</Link>
-                            <Link to="/opt" className='linkFuter'>Перейти на оптовый сайт</Link>
-                        </div>
-                        <div className="contdopFuter">
-                            <label>КАТАЛОГ</label>
-                            <br/>
-                            <Link to="/buy" className='linkFuter'>Кофе</Link>
-                            <Link to="/buy" className='linkFuter'>Аксессуары</Link>
-                        </div>
+function Futer(){
+    return (
+        <div className="mainFuter">
+            <div className="contFuter">
+                <div className="leftFuter">
+                    <div className="contdopFuter">
+                        <label>ПОМОЩЬ</label>
+                        <br/>
+                        <Link to="/faq" className='linkFuter'>Вопрос-ответ</Link>
+                        <Link to="/shipment" className='linkFuter'>Доставка и оплата</Link>
                     </div>
-                    <div className="rightFuter">
-                        <label>8 (800) 333-49-80</label>
-                        <div className="contactsFuter">
-                            <div>
-                                <a href="https://web.telegram.org/" target="_blank">
-                                    <img src={tg} alt="tg" className='imgtov'/>
-                                </a>
-                            </div>
-                            <div>
-                                <a href="https://vk.com/" target="_blank">
-                                    <img src={vk} alt="vk" className='imgtov'/>
-                                </a>
-                            </div>
-                        </div>
+                    <div className="contdopFuter">
+                        <label>КОМПАНИЯ</label>
+                        <br/>
+                        <Link to="/about" className='linkFuter'>О компании</Link>
+                        <Link to="/opt" className='linkFuter'>Перейти на оптовый сайт</Link>
+                    </div>
+                    <div className="contdopFuter">
+                        <label>КАТАЛОГ</label>
+                        <br/>
+                        <Link to="/buy" className='linkFuter'>Кофе</Link>
+                        <Link to="/buy" className='linkFuter'>Аксессуары</Link>
                     </div>
                 </div>
-                <div className="podpis">
-                <label>© 2024 «GodineCoffee»</label>
+                <div className="rightFuter">
+                    <label>8 (800) 333-49-80</label>
+                    <div className="contactsFuter">
+                        <div>
+                            <a href="https://web.telegram.org/" target="_blank">
+                                <img src={tg} alt="tg" className='imgtov'/>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="https://vk.com/" target="_blank">
+                                <img src={vk} alt="vk" className='imgtov'/>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        );
-    }
+            <div className="podpis">
+                <label>© 2024 «GodineCoffee»</label>
+            </div>
+        </div>
+    );
 }
 
 export default Futer;

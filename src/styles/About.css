@@ -1,0 +1,21 @@
+.AboutZag{
+    font-size: 40px;
+}
+.AboutAbz{
+    font-size: 25px;
+}
+.imgabout{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    object-position: bottom;
+    z-index: -1;
+}
+.ContentAbout{
+    max-width: 1250px;
+    width: 80vi;
+    padding: 14px 50px;
+    margin-top: 410px;
+}

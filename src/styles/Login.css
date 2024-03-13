@@ -1,0 +1,55 @@
+.noabsformVhod{
+    width: 370px;
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 20px;
+    margin-top: 120px;
+    margin-bottom: 150px;
+}
+.inpVhlog{
+    outline: none;
+    border: none;
+    background: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.49);
+    height: 30px;
+    width: 100%;
+}
+.lableVhlog{
+    font-weight: 500;
+    font-size: 20px;
+}
+.Error{
+    color: red;
+    font-size: 12px;
+}
+.noabsformReg{
+    width: 400px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 20px;
+    margin-top: 80px;
+    margin-bottom: 150px;
+}
+.ButtonReg{
+    background: black;
+    color: white;
+    border-radius: 30px;
+    height: 50px;
+    width: 200px;
+    border: none;
+}
+.ButtonReg:hover{
+    background: rgba(0, 0, 0, 0.82);
+    border: none;
+    cursor: pointer;
+}
+.warrior{
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.53);
+}

@@ -9,16 +9,17 @@ import Liked from "./components/navigation/Liked";
 import Basket from "./components/navigation/basket";
 import Opt from "./components/navigation/Opt";
 import Reg from "./components/navigation/Reg";
-import ContactsS from "./components/navigation/ContactsS";
 import About from "./components/navigation/About";
+import Reset from "./components/navigation/Reset";
+import Login from "./components/navigation/Login";
 
 const router = createBrowserRouter([
   {
-    path: "/opt",
+    path: "opt",
     element: <Opt/>,
   },
   {
-    path: "/reg",
+    path: "reg",
     element: <Reg/>,
   },
   {
@@ -46,12 +47,16 @@ const router = createBrowserRouter([
     element: <Basket/>,
   },
   {
-    path: "contacts",
-    element: <ContactsS/>,
-  },
-  {
     path: "about",
     element: <About/>,
+  },
+  {
+    path: "reset",
+    element: <Reset/>,
+  },
+  {
+    path: "login",
+    element: <Login/>,
   },
 ]);
 

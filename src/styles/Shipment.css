@@ -1,0 +1,47 @@
+.ContentSh{
+    max-width: 1300px;
+    width: 80vi;
+    padding-left: 50px;
+}
+.imgbackSh{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    object-position: bottom;
+    z-index: -1;
+}
+.imgText{
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 50px;
+    padding-left: 80px;
+    color: white;
+    flex-direction: column;
+    font-size: 40px;
+}
+.ZagolSh{
+    font-size: 27px;
+}
+.textSh{
+    font-size: 18px;
+}
+.Dostavka{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.Dost1{
+    flex-grow: 2;
+    flex-basis: 0;
+}
+.Dost2{
+    flex-grow: 1;
+    flex-basis: 0;
+}
+.imgcdek{
+    width: 270px;
+    height: 100px;
+}
