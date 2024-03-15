@@ -1,5 +1,8 @@
 .noabsformVhod{
     width: 370px;
+    @media (max-width: 380px) {
+        width: 100vi;
+    }
     height: 360px;
     display: flex;
     flex-direction: column;

@@ -1,5 +1,9 @@
 .karttov{
     width: 350px;
+    @media (max-width: 420px) {
+        width: 100vi;
+        margin-right: 0px;
+    }
     height: 500px;
     background: #faffff;
     margin-bottom: 30px;
@@ -17,8 +21,8 @@
     padding-top: 90px;
 }
 .tovfut{
-    padding-top: 10px;
-    padding-left: 30px;
+    margin-top: 10px;
+    margin-left: 30px;
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -49,7 +53,7 @@ font-size: 25px;
     flex-direction: row;
     gap: 2px;
     justify-content: end;
-    padding-right: 30px;
+    margin-right: 30px;
 }
 button{
     border: 3px solid transparent;
