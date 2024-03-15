@@ -3,7 +3,7 @@ import Hader from "../Hader";
 import Futer from "../Futer";
 import {Link} from "react-router-dom";
 import "../../styles/basket.css"
-import Katalog from "../Katalog";
+import IMask from "imask";
 
 function Basket(){
 
@@ -43,7 +43,56 @@ function Basket(){
         else {
             setPustoLogo(<div></div>)
             setPustoBtn(<div></div>)
-            setContent(<div></div>)
+            setContent(
+                <div className="basketContent">
+                    <div className="Oformlenie">
+                        <div className="paddingCont">
+                            <br/>
+                            <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
+                            <br/>
+                            <br/>
+                            <div className="baskText grayText">Покупатель</div>
+                            <br/>
+                            <div className="inpGor">
+                                <div className="TelBask">
+                                    <input type="text" placeholder="Имя и Фамилия" className="inpBasklog whiteText"/>
+                                    <input type="text" placeholder="E-mail" className="inpBasklog whiteText"/>
+                                </div>
+                                <div className="TelBask">
+                                    <input type="text" placeholder="Телефон" id="tel" className="inpBasklog whiteText"/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div className="AddrDost">
+                            ИНТЕГРАЦИЯ CDEK
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div className="AddrDost">
+                            ИНТЕГРАЦИЯ ЮКАССА
+                        </div>
+                    </div>
+                    <div className="Bask">
+                        <div className="paddingCont">
+                            <br/>
+                            <div className="baskZagol">КОРЗИНА</div>
+                        </div>
+                    </div>
+                </div>
+            )
+            if (document.getElementById('tel')){
+                const element = document.getElementById('tel');
+                const maskOptions = {
+                    mask: '+7(000)000-00-00',
+                    lazy: false
+                }
+                // @ts-ignore
+                const mask = new IMask(element, maskOptions);
+            }
         }
     });
 
