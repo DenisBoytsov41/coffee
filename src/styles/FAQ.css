@@ -28,6 +28,9 @@ details > summary {
 .FAQ{
     display: flex;
     flex-direction: row;
+    @media (max-width: 775px) {
+        flex-direction: column;
+    }
 }
 .FAQ1{
     flex-grow: 2;

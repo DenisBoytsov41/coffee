@@ -45,21 +45,23 @@ function Basket(){
             setPustoBtn(<div></div>)
             setContent(
                 <div className="basketContent">
-                    <div className="Oformlenie">
-                        <div className="paddingCont">
-                            <br/>
-                            <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
-                            <br/>
-                            <br/>
-                            <div className="baskText grayText">Покупатель</div>
-                            <br/>
-                            <div className="inpGor">
-                                <div className="TelBask">
-                                    <input type="text" placeholder="Имя и Фамилия" className="inpBasklog whiteText"/>
-                                    <input type="text" placeholder="E-mail" className="inpBasklog whiteText"/>
-                                </div>
-                                <div className="TelBask">
-                                    <input type="text" placeholder="Телефон" id="tel" className="inpBasklog whiteText"/>
+                    <div className="OformlenieCont">
+                        <div className="Oformlenie">
+                            <div className="paddingCont">
+                                <br/>
+                                <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
+                                <br/>
+                                <br/>
+                                <div className="baskText grayText">Покупатель</div>
+                                <br/>
+                                <div className="inpGor">
+                                    <div className="TelBask">
+                                        <input type="text" placeholder="Имя и Фамилия" className="inpBasklog whiteText"/>
+                                        <input type="text" placeholder="E-mail" className="inpBasklog whiteText"/>
+                                    </div>
+                                    <div className="TelBask">
+                                        <input type="text" placeholder="Телефон" id="tel" className="inpBasklog whiteText"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>

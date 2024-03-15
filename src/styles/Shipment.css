@@ -24,6 +24,8 @@
 }
 .ZagolSh{
     font-size: 27px;
+    display: flex;
+    flex-direction: column;
 }
 .textSh{
     font-size: 18px;
@@ -31,6 +33,9 @@
 .Dostavka{
     display: flex;
     flex-direction: row;
+    @media (max-width: 775px) {
+        flex-direction: column;
+    }
     gap: 20px;
 }
 .Dost1{

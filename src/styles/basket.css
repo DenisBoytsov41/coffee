@@ -16,12 +16,21 @@
     flex-direction: row;
     gap: 10px;
     width: 100%;
-    height: 100vi;
+    height: 100%;
+    @media (max-width: 775px) {
+        flex-direction: column-reverse;
+    }
+}
+.OformlenieCont{
+    width: 115%;
+    @media (max-width: 775px) {
+        width: 100%;
+    }
 }
 .Oformlenie{
     background: #252525;
     height: 300px;
-    width: 115%;
+    width: 100%;
 }
 .Bask{
     height: 100%;

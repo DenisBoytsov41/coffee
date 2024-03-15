@@ -6,20 +6,34 @@
     width: 100vi;
     padding-top: 50px;
     padding-bottom: 15px;
+    @media (max-width: 775px) {
+        margin-top: 50px;
+        background: #f6f6f6;
+    }
 }
 .contFuter{
     display: flex;
     padding: 0 50px;
+    @media (max-width: 775px) {
+        flex-direction: column;
+        gap: 50px;
+    }
 }
 .contdopFuter{
     display: flex;
     align-items: start;
     justify-content: start;
     flex-direction: column;
+    @media (max-width: 775px) {
+        align-items: center;
+    }
 }
 .leftFuter{
     display: flex;
     flex-direction: row;
+    @media (max-width: 775px) {
+        flex-direction: column;
+    }
     flex-grow:1;
     gap: 35px;
 }
@@ -27,6 +41,10 @@
     display: flex;
     flex-direction: column;
     align-items: end;
+    @media (max-width: 775px) {
+        align-items: center;
+        padding-bottom: 50px;
+    }
     flex-grow:1;
     gap: 15px;
 }

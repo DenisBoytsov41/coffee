@@ -7,6 +7,7 @@ import '../styles/Header.css';
 import logo from '../images/logo.png';
 import like from '../images/Like.png';
 import bask from '../images/Basket.png';
+import HamburgerMenu from "./HamburgerMenu";
 
 function Hader(){
 
@@ -42,7 +43,7 @@ function Hader(){
         <div className="HeaderRezerv">
             <div className="HeaderBack"></div>
             <div className="mainHeader">
-                <div className="contHeader">
+                <div className="contHeader hideMobile">
                     <div className="leftHeader">
                         <City/>
                         <Contacts/>
@@ -53,15 +54,15 @@ function Hader(){
                         <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
                     </div>
                 </div>
-                <div className="line"></div>
+                <div className="line hideMobile"></div>
                 <div className="contHeader">
                     <div className="leftHeader">
                         <Link to={"/"} className='linkHeader'>
                             <img src={logo} alt="logo"/>
                         </Link>
-                        <Link to={"/buy"} className='linkHeader'>Купить</Link>
-                        <Link to={"/faq"} className='linkHeader'>Частые вопросы</Link>
-                        <Link to={"/shipment"} className='linkHeader'>Условия работы</Link>
+                        <Link to={"/buy"} className='linkHeader  hideMobile'>Купить</Link>
+                        <Link to={"/faq"} className='linkHeader  hideMobile'>Частые вопросы</Link>
+                        <Link to={"/shipment"} className='linkHeader  hideMobile'>Условия работы</Link>
                     </div>
                     <div className="rightHeader">
                         <Link to={"/liked"} className='linkHeader'>
@@ -78,6 +79,9 @@ function Hader(){
                                 </div>
                             </div>
                         </Link>
+                    </div>
+                    <div className="rightHeaderMobile">
+                        <HamburgerMenu/>
                     </div>
                 </div>
             </div>

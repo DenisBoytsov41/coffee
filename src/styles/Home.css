@@ -18,9 +18,15 @@
 }
 .devizbol{
     font-size: 65px;
+    @media (max-width: 775px) {
+        font-size: 35px;
+    }
 }
 .devizmal{
     font-size: 22px;
+    @media (max-width: 775px) {
+        font-size: 18px;
+    }
 }
 .linkHome{
     color: black;
