@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import '../styles/katalog.css';
 import ti from "../images/tovimage.png";
-import tb from "../images/tovbuy.png";
+import tbd from "../images/tovbuy.png";
+import tba from "../images/inkorz.png";
 import tld from "../images/tovlike.png";
 import tla from "../images/tovlikeakt.png";
 
@@ -16,7 +17,17 @@ function KartTovar(props: Props) {
 
     const [counttov, setCounttov] = useState(() => {
         const initialState = function () {
-            return 1
+            let count = 1;
+            if(window.localStorage.getItem("basket")){
+                // @ts-ignore
+                let arr = window.localStorage.getItem("basket").split(",")
+                for (let i = 0; i < arr.length; i++){
+                    if(arr[i].split(":")[0] === String(props.id)){
+                        count = Number(arr[i].split(":")[1]);
+                    }
+                }
+            }
+            return count;
         }
         return initialState()
     })
@@ -28,11 +39,24 @@ function KartTovar(props: Props) {
         return initialState()
     })
 
+    const [BuyImage, setBuyImage] = useState(() => {
+        const initialState = function () {
+            return tbd;
+        }
+        return initialState()
+    })
+
     useEffect(() => {
         if(window.localStorage.getItem("liked")){
             // @ts-ignore
             if(window.localStorage.getItem("liked").includes(String(props.id))){
                 setLikeImage(tla);
+            }
+        }
+        if(window.localStorage.getItem("basket")){
+            // @ts-ignore
+            if(window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))){
+                setBuyImage(tba);
             }
         }
     });
@@ -56,11 +80,27 @@ function KartTovar(props: Props) {
             <div className='tovcountinp'>
                 <button onClick={() => {
                     if(counttov > 1){
+                        if(window.localStorage.getItem("basket")) {
+                            // @ts-ignore
+                            if(window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
+                                // @ts-ignore
+                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),props.id + ":" + (counttov - 1)))
+                            }
+                        }
                         setCounttov(counttov - 1)
                     }
                 }}>-</button>
                 <div className="tovcount">{counttov}</div>
-                <button onClick={() => setCounttov(counttov + 1)}>+</button>
+                <button onClick={() => {
+                    if(window.localStorage.getItem("basket")) {
+                        // @ts-ignore
+                        if(window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
+                            // @ts-ignore
+                            window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),props.id + ":" + (counttov + 1)))
+                        }
+                    }
+                    setCounttov(counttov + 1)
+                }}>+</button>
             </div>
             <div className="tovfut">
                 <div className='tovprice'>
@@ -91,8 +131,29 @@ function KartTovar(props: Props) {
                     }}>
                         <img src={LikeImage} alt="tl" className='imgtov'/>
                     </button>
-                    <button onClick={() => console.log("купить товар номер :" + props.id)}>
-                        <img src={tb} alt="tb" className='imgtov'/>
+                    <button onClick={() => {
+                        if(!window.localStorage.getItem("basket")) {
+                            window.localStorage.setItem("basket", String(props.id + ":" + counttov))
+                            setBuyImage(tba);
+                        }
+                        else {
+                            // @ts-ignore
+                            if(!window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
+                                window.localStorage.setItem("basket", window.localStorage.getItem("basket") + "," + String(props.id + ":" + counttov))
+                                setBuyImage(tba);
+                            }
+                            else {
+                                // @ts-ignore
+                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace("," + String(props.id + ":" + counttov),""))
+                                // @ts-ignore
+                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov) + ",",""))
+                                // @ts-ignore
+                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),""))
+                                setBuyImage(tbd);
+                            }
+                        }
+                    }}>
+                        <img src={BuyImage} alt="tb" className='imgtov'/>
                     </button>
                 </div>
             </div>

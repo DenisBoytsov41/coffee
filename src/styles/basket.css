@@ -1,0 +1,13 @@
+.ButtonPusto{
+    background: black;
+    color: white;
+    border-radius: 20px;
+    height: 40px;
+    width: 140px;
+    border: none;
+}
+.ButtonPusto:hover{
+    background: rgba(0, 0, 0, 0.82);
+    border: none;
+    cursor: pointer;
+}

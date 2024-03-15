@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import City from "./City";
 import Contacts from "./Contacts";
@@ -9,6 +9,35 @@ import like from '../images/Like.png';
 import bask from '../images/Basket.png';
 
 function Hader(){
+
+    const Update = () => {
+        let count = 0;
+        let a = window.localStorage.getItem('basket')
+        if(a !== null && a !== ""){
+            // @ts-ignore
+            let arr = a.split(",")
+            for (let i = 0; i < arr.length; i++){
+                count = count + Number(arr[i].split(":")[1]);
+            }
+        }
+        return count;
+    }
+
+    const [counttov, setCounttov] = useState(() => {
+        const initialState = function () {
+            return 1;
+        }
+        return initialState()
+    })
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCounttov(Update);
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return(
         <div className="HeaderRezerv">
             <div className="HeaderBack"></div>
@@ -45,7 +74,7 @@ function Hader(){
                                 <img src={bask} alt="bask" className="imgtov"/>
                                 <div className='baskinfoHeader'>
                                     <label>0 ₽</label>
-                                    <label>0 тов.</label>
+                                    <label>{counttov} тов.</label>
                                 </div>
                             </div>
                         </Link>
