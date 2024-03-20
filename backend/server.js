@@ -27,3 +27,14 @@ app.get('/api/tovar',(req,res) => {
         res.json(result);
     })
 })
+
+app.use(express.json());
+
+app.post('/api/loginAdmin', (req, res) => {
+    console.log(req.body);
+    let query = 'select count(*) <> 0 as res from users where id = 0 and mail = "' + req.body.mail + '" and password = "' + req.body.pass + '"';
+
+    connsql.query(query,(err,result,field) => {
+        res.json(result[0]);
+    })
+});

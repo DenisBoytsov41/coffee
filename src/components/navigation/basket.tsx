@@ -7,44 +7,28 @@ import IMask from "imask";
 
 function Basket(){
 
-    const [PustoLogo, setPustoLogo] = useState(() => {
+    const [PustoLogo] = useState(() => {
         const initialState = function () {
-            return <div></div>;
+            if(!window.localStorage.getItem("basket")) {
+                return <div className="LikedKat">ВАША КОРЗИНА ПУСТА <br/><br/></div>
+            }
+            else {
+                return <div></div>;
+            }
         }
         return initialState()
     })
 
-    const [Content, setContent] = useState(() => {
+    const [Content] = useState(() => {
         const initialState = function () {
-            return <div></div>;
-        }
-        return initialState()
-    })
-
-    const [PustoBtn, setPustoBtn] = useState(() => {
-        const initialState = function () {
-            return <div></div>;
-        }
-        return initialState()
-    })
-
-    useEffect(() => {
-        return () => {
-            document.title = "Оформление заказа";
-        };
-    }, []);
-
-    useEffect(() => {
-        if(!window.localStorage.getItem("basket")){
-            setPustoLogo(<div className="LikedKat">ВАША КОРЗИНА ПУСТА <br/><br/></div>)
-            setContent(<div>Чтобы увидеть сохраненные в корзине товары,<Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br/><br/><br/></div>)
-            setPustoBtn(<div><Link to={"/buy"} className='linkHeader'><button className="ButtonPusto">Перейти в каталог</button></Link></div>)
-        }
-        else {
-            setPustoLogo(<div></div>)
-            setPustoBtn(<div></div>)
-            setContent(
-                <div className="basketContent">
+            if(!window.localStorage.getItem("basket")) {
+                return <div>
+                    Чтобы увидеть сохраненные в корзине товары,
+                    <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br/><br/><br/>
+                </div>
+            }
+            else {
+                return <div className="basketContent">
                     <div className="OformlenieCont">
                         <div className="Oformlenie">
                             <div className="paddingCont">
@@ -84,17 +68,40 @@ function Basket(){
                             <div className="baskZagol">КОРЗИНА</div>
                         </div>
                     </div>
-                </div>
-            )
-            if (document.getElementById('tel')){
-                const element = document.getElementById('tel');
-                const maskOptions = {
-                    mask: '+7(000)000-00-00',
-                    lazy: false
-                }
-                // @ts-ignore
-                const mask = new IMask(element, maskOptions);
+                </div>;
             }
+        }
+        return initialState()
+    })
+
+    const [PustoBtn] = useState(() => {
+        const initialState = function () {
+            if(!window.localStorage.getItem("basket")) {
+                return <div><Link to={"/buy"} className='linkHeader'>
+                    <button className="ButtonPusto">Перейти в каталог</button>
+                </Link></div>
+            } else {
+                return <div></div>;
+            }
+        }
+        return initialState()
+    })
+
+    useEffect(() => {
+        return () => {
+            document.title = "Оформление заказа";
+        };
+    }, []);
+
+    useEffect(() => {
+        if (document.getElementById('tel')){
+            const element = document.getElementById('tel');
+            const maskOptions = {
+                mask: '+7(000)000-00-00',
+                lazy: false
+            }
+            // @ts-ignore
+            const mask = new IMask(element, maskOptions);
         }
     });
 

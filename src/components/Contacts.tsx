@@ -26,11 +26,11 @@ function Contacts(){
     return(
         <div ref={elementRef}>
             <button onClick={handleButtonClick} className="btnCont">
-                <div className='linkHeader'>
+                <div className='linkHeader Comissioner'>
                     Контакты
                 </div>
             </button>
-            <div className="formCont" hidden={!isElementVisible}>
+            <div className="formCont Comissioner" hidden={!isElementVisible}>
             <div className="absformCont">
                     <a href="https://web.telegram.org/" target="_blank" className="contText">
                         Написать в Telegram

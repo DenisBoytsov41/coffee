@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Home from "./components/navigation/Home";
@@ -12,6 +12,7 @@ import Reg from "./components/navigation/Reg";
 import About from "./components/navigation/About";
 import Reset from "./components/navigation/Reset";
 import Login from "./components/navigation/Login";
+import Admin from "./components/navigation/Admin";
 
 const router = createBrowserRouter([
   {
@@ -58,15 +59,17 @@ const router = createBrowserRouter([
     path: "login",
     element: <Login/>,
   },
+  {
+    path: "admin",
+    element: <Admin/>,
+  },
 ]);
 
-class App extends React.Component {
-  render() {
-    return(
-        <div className="App">
-          <RouterProvider router={router} />
-        </div>
-    );
-  }
+function App(){
+  return(
+      <div className="App Comissioner">
+        <RouterProvider router={router} />
+      </div>
+  );
 }
 export default App;

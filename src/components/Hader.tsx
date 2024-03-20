@@ -11,7 +11,7 @@ import HamburgerMenu from "./HamburgerMenu";
 
 function Hader(){
 
-    const Update = () => {
+    const UpdateCount = () => {
         let count = 0;
         let a = window.localStorage.getItem('basket')
         if(a !== null && a !== ""){
@@ -24,16 +24,33 @@ function Hader(){
         return count;
     }
 
+    const UpdateBaskCount = () => {
+        let count = 0;
+        let a = window.localStorage.getItem('backCount')
+        if(a !== null && a !== ""){
+            count = Number(a);
+        }
+        return count;
+    }
+
     const [counttov, setCounttov] = useState(() => {
         const initialState = function () {
-            return 1;
+            return 0;
+        }
+        return initialState()
+    })
+
+    const [backCount, setBackCount] = useState(() => {
+        const initialState = function () {
+            return 0;
         }
         return initialState()
     })
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setCounttov(Update);
+            setCounttov(UpdateCount);
+            setBackCount(UpdateBaskCount);
         }, 100);
 
         return () => clearInterval(interval);
@@ -74,7 +91,7 @@ function Hader(){
                             <div className='baskHeader'>
                                 <img src={bask} alt="bask" className="imgtov"/>
                                 <div className='baskinfoHeader'>
-                                    <label>0 ₽</label>
+                                    <label>{backCount} ₽</label>
                                     <label>{counttov} тов.</label>
                                 </div>
                             </div>

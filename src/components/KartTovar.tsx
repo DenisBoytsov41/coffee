@@ -61,6 +61,24 @@ function KartTovar(props: Props) {
         }
     });
 
+    const UpdateBackCount = (type:string) =>{
+        if(!window.localStorage.getItem("backCount")) {
+            if(type === "pl"){
+                window.localStorage.setItem("backCount", String(props.price * counttov))
+            }
+        }
+        else {
+            if(type === "pl"){
+                let a = Number(window.localStorage.getItem("backCount"))
+                window.localStorage.setItem("backCount", String((props.price * counttov) + a))
+            }
+        }
+        if(type === "min"){
+            let a = Number(window.localStorage.getItem("backCount"))
+            window.localStorage.setItem("backCount", String(a - (props.price * counttov)))
+        }
+    }
+
     return(
         <div className='karttov'>
             <div className="tovhead">
@@ -85,6 +103,8 @@ function KartTovar(props: Props) {
                             if(window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
                                 // @ts-ignore
                                 window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),props.id + ":" + (counttov - 1)))
+                                let a = Number(window.localStorage.getItem("backCount"))
+                                window.localStorage.setItem("backCount", String(a - props.price))
                             }
                         }
                         setCounttov(counttov - 1)
@@ -97,6 +117,8 @@ function KartTovar(props: Props) {
                         if(window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
                             // @ts-ignore
                             window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),props.id + ":" + (counttov + 1)))
+                            let a = Number(window.localStorage.getItem("backCount"))
+                            window.localStorage.setItem("backCount", String(a + props.price))
                         }
                     }
                     setCounttov(counttov + 1)
@@ -135,12 +157,14 @@ function KartTovar(props: Props) {
                         if(!window.localStorage.getItem("basket")) {
                             window.localStorage.setItem("basket", String(props.id + ":" + counttov))
                             setBuyImage(tba);
+                            UpdateBackCount("pl");
                         }
                         else {
                             // @ts-ignore
                             if(!window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
                                 window.localStorage.setItem("basket", window.localStorage.getItem("basket") + "," + String(props.id + ":" + counttov))
                                 setBuyImage(tba);
+                                UpdateBackCount("pl");
                             }
                             else {
                                 // @ts-ignore
@@ -150,6 +174,7 @@ function KartTovar(props: Props) {
                                 // @ts-ignore
                                 window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),""))
                                 setBuyImage(tbd);
+                                UpdateBackCount("min");
                             }
                         }
                     }}>

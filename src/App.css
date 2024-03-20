@@ -20,3 +20,20 @@
     padding: 0 0;
   }
 }
+
+@font-face {
+font-family: "Comissioner";
+src: url("../fonts/Commissioner-VariableFont_wght.ttf") format("truetype");
+}
+
+.Comissioner{
+  font-family: "Comissioner";
+  font-style: normal;
+  font-weight: 470;
+}
+
+.ComissionerZitat{
+  font-family: "Comissioner";
+  font-style: oblique;
+  font-weight: 350;
+}

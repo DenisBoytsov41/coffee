@@ -45,13 +45,13 @@ function Vhod(){
         <div ref={elementRef}>
             <button onClick={handleButtonClick} className="btnVh">
                 <img src={profile} alt="profile" className="imgVH"/>
-                <div className='linkHeader'>
+                <div className='linkHeader Comissioner'>
                     Вход
                 </div>
             </button>
             <div className="formVhod" hidden={!isElementVisible}>
                 <form onSubmit={handleSubmit(submit)}>
-                    <div className="absformVhod">
+                    <div className="absformVhod Comissioner">
                         <label className="lableVh">ВХОД НА САЙТ</label>
                         <input type="text" placeholder="E-mail" className="inpVh" {...register('mail', {required: true})}/>
                         <input type="password" placeholder="Пароль" className="inpVh" {...register('pass', {required: true})}/>
