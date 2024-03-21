@@ -1,44 +1,61 @@
-import React from "react";
-import {SubmitHandler, useForm} from "react-hook-form";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-
-interface MyForm {
-    pass: string,
-    login: string,
-}
+import AdminItem from "./AdminItem";
 
 function AdminProfile(){
 
-    const sendDataToServer = async (data:{ login: string, pass: string }) => {
+    const sendDataToServerAddItem = async (data:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/loginAdmin', data);
+            const res = await axios.post('http://localhost:3001/api/addItem', data);
             console.log(res.data);
         } catch (error) {
             console.error(error);
         }
     };
 
-    const {
-        register,
-        formState: { errors},
-        handleSubmit
-    } = useForm<MyForm>({mode: "onBlur"});
-
-    const submit: SubmitHandler<MyForm> = data => {
-        console.log(data);
-        sendDataToServer(data);
+    const Exit = () =>{
         window.localStorage.removeItem("AdminLogin")
         window.location.reload();
     }
 
-    return (
+    const Add = () =>{
+        let a = window.localStorage.getItem("AdminLogin")
+        if(a){
+            let arr = a.split(" ")
+            sendDataToServerAddItem({ mail: arr[0] , pass: arr[1] })
+            window.location.reload();
+        }
+    }
+
+    const [data, setData] = useState(null);
+
+    useEffect(()=>{
+        fetch('http://localhost:3001/api/tovar')
+            .then(res => res.json())
+            .then(res => setData(res))
+    }, [])
+
+    return(
         <div>
-            <form onSubmit={handleSubmit(submit)}>
-                привет
-                <button>ВЫЙТИ</button>
-            </form>
+            {LoadKatalog(0, data).map((el, index) => (
+                <div key={index}>{el}</div>
+            ))}
+            <button onClick={Add}>ДОБАВИТЬ</button>
+            <button onClick={Exit}>ВЫЙТИ</button>
         </div>
     );
 }
 
 export default AdminProfile;
+
+function LoadKatalog(count: number, data: any) {
+    const elementsArray = [];
+    let datcount = !data ? 0 : data.length;
+    if(count === 0 || count > datcount){
+        count = datcount;
+    }
+    for (let i = 0; i < count; i++) {
+        elementsArray.push(<AdminItem name={!data ? "Loading..." : data[i].name} opisanie={!data ? "Loading..." : data[i].opisanie} price={!data ? "Loading..." : data[i].price} id={!data ? "Loading..." : data[i].id} optprice={!data ? "Loading..." : data[i].optprice}/>);
+    }
+    return elementsArray;
+}

@@ -32,16 +32,18 @@ export default Katalog;
 function LoadKatalog(type:string, count:number, data:any){
     const elementsArray = [];
     if(type === 'opt'){
-        if(count===0){
-            count = !data ? 0 : data.length;
+        let datcount = !data ? 0 : data.length;
+        if(count === 0 || count > datcount){
+            count = datcount;
         }
         for (let i = 0; i < count; i++) {
             elementsArray.push(<KartTovarOpt name={!data ? "Loading..." : data[i].name} opis={!data ? "Loading..." : data[i].opisanie} price={!data ? "Loading..." : data[i].optprice} id={!data ? "Loading..." : data[i].id}/>);
         }
     }
     if(type === 'liked') {
-        if(count===0){
-            count = !data ? 0 : data.length;
+        let datcount = !data ? 0 : data.length;
+        if(count === 0 || count > datcount){
+            count = datcount;
         }
         for (let i = 0; i < count; i++) {
             if(window.localStorage.getItem("liked")){
@@ -53,8 +55,9 @@ function LoadKatalog(type:string, count:number, data:any){
         }
     }
     if(type === '') {
-        if(count===0){
-            count = !data ? 0 : data.length;
+        let datcount = !data ? 0 : data.length;
+        if(count === 0 || count > datcount){
+            count = datcount;
         }
         for (let i = 0; i < count; i++) {
             elementsArray.push(<KartTovar name={!data ? "Loading..." : data[i].name} opis={!data ? "Loading..." : data[i].opisanie} price={!data ? "Loading..." : data[i].price} id={!data ? "Loading..." : data[i].id}/>);

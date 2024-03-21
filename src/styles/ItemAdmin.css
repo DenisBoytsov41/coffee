@@ -1,0 +1,12 @@
+.inpItem{
+    height: 30px;
+}
+.PoleItem{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.Items{
+    display: flex;
+    flex-direction: row;
+}
