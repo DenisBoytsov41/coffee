@@ -33,7 +33,7 @@
 .Dostavka{
     display: flex;
     flex-direction: row;
-    @media (max-width: 775px) {
+    @media (max-width: 785px) {
         flex-direction: column;
     }
     gap: 20px;

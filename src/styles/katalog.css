@@ -67,6 +67,13 @@ button{
     opacity: 0.8;
     z-index: 0;
 }
+.ItemKatalog{
+    @media (max-width: 785px) {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}
 .katalog{
     display: flex;
     flex-wrap: wrap;

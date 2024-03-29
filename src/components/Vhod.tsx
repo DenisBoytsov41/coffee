@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import profile from "../images/Profile.png";
 import '../styles/KastomCheckBox.css';
 import {SubmitHandler, useForm} from "react-hook-form";
+import axios from "axios";
 
 interface MyForm {
     mail: string;
@@ -14,6 +15,7 @@ function Vhod(){
 
     const [isElementVisible, setElementVisible] = useState(false);
     const elementRef = useRef<HTMLDivElement>(null);
+    const [isErrVisible, setErrVisible] = useState(true);
 
     const handleClickOutside = (event: MouseEvent) => {
         if (elementRef.current && !elementRef.current.contains(event.target as Node | null)) {
@@ -37,8 +39,23 @@ function Vhod(){
         handleSubmit
     } = useForm<MyForm>({});
 
+    const sendDataToServer = async (data:{ mail: string, pass: string }) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/checkUser', data);
+            if(res.data.res){
+                window.localStorage.setItem("Login", data.mail + " " + data.pass)
+                window.location.replace("/");
+            }
+            else {
+                setErrVisible(false)
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const submit: SubmitHandler<MyForm> = data => {
-        console.log('Отправка формы');
+        sendDataToServer(data);
     }
 
     return(
@@ -56,6 +73,7 @@ function Vhod(){
                         <input type="text" placeholder="E-mail" className="inpVh" {...register('mail', {required: true})}/>
                         <input type="password" placeholder="Пароль" className="inpVh" {...register('pass', {required: true})}/>
                         {(errors?.pass || errors?.mail) && <div className="Error">Не все поля заполнены</div>}
+                        <div className="Error" hidden={isErrVisible}>Пользователь не найден</div>
                         <div>
                             <button className="ButtonVh">ВОЙТИ</button>
                         </div>

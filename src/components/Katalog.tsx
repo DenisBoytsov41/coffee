@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import KartTovar from "./KartTovar";
 import '../styles/katalog.css';
 import KartTovarOpt from "./KartTovOpt";
+import KartKorz from "./KartKorz";
 
 interface Props {
     type: string;
@@ -21,7 +22,7 @@ function Katalog(props: Props) {
     return(
         <div className='katalog'>
             {LoadKatalog(props.type,props.katcount, data).map((el, index) => (
-                <div key={index}>{el}</div>
+                <div className="ItemKatalog" key={index}>{el}</div>
             ))}
         </div>
     );
@@ -50,6 +51,20 @@ function LoadKatalog(type:string, count:number, data:any){
                 // @ts-ignore
                 if(window.localStorage.getItem("liked").includes(String(data[i].id))){
                     elementsArray.push(<KartTovar name={!data ? "Loading..." : data[i].name} opis={!data ? "Loading..." : data[i].opisanie} price={!data ? "Loading..." : data[i].price} id={!data ? "Loading..." : data[i].id}/>);
+                }
+            }
+        }
+    }
+    if(type === 'korzina') {
+        let datcount = !data ? 0 : data.length;
+        if(count === 0 || count > datcount){
+            count = datcount;
+        }
+        for (let i = 0; i < count; i++) {
+            if(window.localStorage.getItem("basket")){
+                // @ts-ignore
+                if(window.localStorage.getItem("basket").includes(String(data[i].id)+":")){
+                    elementsArray.push(<KartKorz name={!data ? "Loading..." : data[i].name} price={!data ? "Loading..." : data[i].price} id={!data ? "Loading..." : data[i].id}/>);
                 }
             }
         }

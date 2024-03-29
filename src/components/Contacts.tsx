@@ -40,7 +40,7 @@ function Contacts(){
                     </a>
                     <div className="line1"></div>
                     <div className="contText">
-                        8 (800) 333-49-80
+                        +7(915)923-81-62
                     </div>
                 </div>
             </div>

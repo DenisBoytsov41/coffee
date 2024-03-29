@@ -4,8 +4,35 @@ import Futer from "../Futer";
 import {Link} from "react-router-dom";
 import "../../styles/basket.css"
 import IMask from "imask";
+import Katalog from "../Katalog";
+import axios from "axios";
 
 function Basket(){
+
+    const sendDataToServerUpdateBasket = async (data:{ mail: string, pass: string , value: string}) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/UpdateBasket', data);
+            if(res.data.res !== ""){
+                console.log(res.data.res)
+
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const UpdateDBBasket = () => {
+        let a = window.localStorage.getItem('Login')
+        if(a){
+            let b = window.localStorage.getItem('basket')
+            if(b) {
+                sendDataToServerUpdateBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1], value: b })
+            }
+            if(!b || b === ""){
+                sendDataToServerUpdateBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1], value: "" })
+            }
+        }
+    }
 
     const [PustoLogo] = useState(() => {
         const initialState = function () {
@@ -66,6 +93,22 @@ function Basket(){
                         <div className="paddingCont">
                             <br/>
                             <div className="baskZagol">КОРЗИНА</div>
+                            <br/>
+                            <br/>
+                            <Katalog type={'korzina'} katcount={0}/>
+                            <br/>
+                            <br/>
+                            <div className="KorzVsego">
+                                <div className="KorzVsegoText">
+                                    всего {window.localStorage.getItem("backCount")} ₽
+                                </div>
+                                <button className="KorzVsegobutton" onClick={() => {
+                                    window.localStorage.setItem("basket","")
+                                    window.localStorage.setItem("backCount","0")
+                                    UpdateDBBasket()
+                                    window.location.reload()
+                                }}>Удалить все товары</button>
+                            </div>
                         </div>
                     </div>
                 </div>;

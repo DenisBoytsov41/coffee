@@ -1,0 +1,87 @@
+.korzkarttov1{
+    display: flex;
+    justify-content: start;
+    text-align: start;
+    flex-direction: row;
+    gap: 15px;
+}
+.korzkarttov{
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    padding-top: 15px;
+    flex-direction: column;
+}
+.korztovprice{
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+.korztovprice_one{
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    width: 100px;
+}
+.ItemDelete:hover{
+    color: rgb(117, 117, 117);
+}
+.korztovcont{
+    padding-top: 0;
+}
+.korztovname{
+    font-size: 15px;
+    width: 120px;
+    color: #969595;
+}
+.korzpaddingKorz{
+    width: 40px;
+    @media (max-width: 1090px) {
+        width: 35lvw;
+    }
+    @media (max-width: 900px) {
+        width: 25lvw;
+    }
+    @media (max-width: 785px) {
+        width: 100%;
+    }
+}
+.korztovcountinp{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-right: 0;
+}
+.korzcountkorz{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+.korztovhead{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    padding-top: 0;
+}
+.korztovfut{
+    margin-top: 0;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+}
+.korzimgtovar{
+    width: 100px;
+    height: 100px;
+}

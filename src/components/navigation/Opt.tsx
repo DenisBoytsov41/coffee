@@ -11,7 +11,7 @@ function Opt(){
         };
     }, []);
 
-    const tel = "8 (800) 333-49-80";
+    const tel = "+7(915)923-81-62";
     const Email = "shop@tastycoffee.ru";
     return(
         <div>

@@ -17,13 +17,28 @@
     gap: 10px;
     width: 100%;
     height: 100%;
-    @media (max-width: 775px) {
+    @media (max-width: 1090px) {
         flex-direction: column-reverse;
     }
 }
+.KorzVsego{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 40px;
+}
+.KorzVsegoText{
+    font-size: 25px;
+}
+.KorzVsegobutton{
+    font-size: 15px;
+}
+.KorzVsegobutton:hover{
+    color: rgb(117, 117, 117);
+}
 .OformlenieCont{
     width: 115%;
-    @media (max-width: 775px) {
+    @media (max-width: 1090px) {
         width: 100%;
     }
 }

@@ -4,6 +4,8 @@ import profile from "../images/Profile.png";
 import close from "../images/CloseMenu.png";
 import open from "../images/OpenMenu.png";
 import '../styles/KastomCheckBox.css';
+import axios from "axios";
+import Vhod from "./Vhod";
 
 interface MyForm {
     mail: string;
@@ -33,7 +35,44 @@ function HamburgerMenu(){
         setElementVisible(!isElementVisible);
     };
 
-    return(
+    const sendDataToServerCheckUser = async (data:{ mail: string, pass: string }) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/checkUser', data);
+            if(res.data.res){
+                setLoginProfile(
+                    <div className="rightHeader">
+                        <img src={profile} alt="profile" className="imgVH"/>
+                        <Link to={"/profile"} className='linkHeader'>Профиль</Link>
+                        <button className='linkHeader Comissioner btnCont' onClick={() => {
+                            window.localStorage.removeItem('Login')
+                            window.location.reload()
+                        }}>Выйти</button>
+                    </div>
+                )
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const [loginProfile, setLoginProfile] = useState(() => {
+        const initialState = function () {
+            let a = window.localStorage.getItem('Login')
+            if(a){
+                sendDataToServerCheckUser({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
+            }
+            return (
+                <div className="UprLeft">
+                    <img src={profile} alt="profile" className="imgVH"/>
+                    <Link to={"/login"} className='linkHeader'>Войти</Link>
+                    <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
+                </div>
+            )
+        }
+        return initialState()
+    })
+
+    return (
         <div ref={elementRef}>
             <button onClick={handleButtonClick} className="btnHamburger">
                 <div className='linkHeader'>
@@ -50,11 +89,7 @@ function HamburgerMenu(){
                                 </div>
                             </button>
                         </div>
-                        <div className="UprLeft">
-                            <img src={profile} alt="profile" className="imgVH"/>
-                            <Link to={"/login"} className='linkHeader'>Войти</Link>
-                            <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
-                        </div>
+                        {loginProfile}
                     </div>
                     <div className="HamburgerCont">
                         <Link to={"/buy"} className='linkHeader linkHumburger'>Купить</Link>

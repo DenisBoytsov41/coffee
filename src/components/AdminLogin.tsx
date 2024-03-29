@@ -22,7 +22,7 @@ function AdminLogin(){
     return (
         <div>
             <form onSubmit={handleSubmit(submit)}>
-                <input type="text" placeholder="Логин"
+                <input type="text" placeholder="mail"
                        className="inpVhlog" {...register('mail', {required: true})}/>
                 {errors?.mail && <div className="Error">Поле обязательно к заполнению!</div>}
                 <input type="password" placeholder="Пароль"

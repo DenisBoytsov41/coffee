@@ -13,4 +13,10 @@
 }
 .ResText{
     font-size: 15px;
+    text-align: center;
+}
+.warrior_black{
+    text-align: center;
+    font-size: 12px;
+    color: black;
 }

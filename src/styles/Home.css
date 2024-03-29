@@ -18,13 +18,13 @@
 }
 .devizbol{
     font-size: 65px;
-    @media (max-width: 775px) {
+    @media (max-width: 785px) {
         font-size: 35px;
     }
 }
 .devizmal{
     font-size: 22px;
-    @media (max-width: 775px) {
+    @media (max-width: 785px) {
         font-size: 18px;
     }
 }

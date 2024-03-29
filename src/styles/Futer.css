@@ -6,7 +6,7 @@
     width: 100vi;
     padding-top: 50px;
     padding-bottom: 15px;
-    @media (max-width: 775px) {
+    @media (max-width: 785px) {
         margin-top: 50px;
         background: #f6f6f6;
     }
@@ -14,7 +14,7 @@
 .contFuter{
     display: flex;
     padding: 0 50px;
-    @media (max-width: 775px) {
+    @media (max-width: 785px) {
         flex-direction: column;
         gap: 50px;
     }
@@ -24,14 +24,14 @@
     align-items: start;
     justify-content: start;
     flex-direction: column;
-    @media (max-width: 775px) {
+    @media (max-width: 785px) {
         align-items: center;
     }
 }
 .leftFuter{
     display: flex;
     flex-direction: row;
-    @media (max-width: 775px) {
+    @media (max-width: 785px) {
         flex-direction: column;
     }
     flex-grow:1;
@@ -41,7 +41,7 @@
     display: flex;
     flex-direction: column;
     align-items: end;
-    @media (max-width: 775px) {
+    @media (max-width: 785px) {
         align-items: center;
         padding-bottom: 50px;
     }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Home from "./components/navigation/Home";
@@ -13,6 +13,7 @@ import About from "./components/navigation/About";
 import Reset from "./components/navigation/Reset";
 import Login from "./components/navigation/Login";
 import Admin from "./components/navigation/Admin";
+import Profile from "./components/navigation/Profile";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
   {
     path: "admin",
     element: <Admin/>,
+  },
+  {
+    path: "profile",
+    element: <Profile/>,
   },
 ]);
 

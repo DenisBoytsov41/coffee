@@ -9,14 +9,14 @@
   align-items: center;
   justify-content: center;
   padding: 0 50px;
-  @media (max-width: 775px) {
+  @media (max-width: 785px) {
     padding: 0 0;
   }
   flex-direction: column;
 }
 .Content{
   padding: 0 50px;
-  @media (max-width: 775px) {
+  @media (max-width: 785px) {
     padding: 0 0;
   }
 }

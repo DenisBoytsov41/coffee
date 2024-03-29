@@ -29,7 +29,7 @@ function Futer(){
                     </div>
                 </div>
                 <div className="rightFuter">
-                    <label>8 (800) 333-49-80</label>
+                    <label>+7 (915) 923-81-62</label>
                     <div className="contactsFuter">
                         <div>
                             <a href="https://web.telegram.org/" target="_blank">

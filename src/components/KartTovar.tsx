@@ -5,6 +5,7 @@ import tbd from "../images/tovbuy.png";
 import tba from "../images/inkorz.png";
 import tld from "../images/tovlike.png";
 import tla from "../images/tovlikeakt.png";
+import axios from "axios";
 
 interface Props {
     name: string;
@@ -79,6 +80,31 @@ function KartTovar(props: Props) {
         }
     }
 
+    const sendDataToServerUpdateBasket = async (data:{ mail: string, pass: string , value: string}) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/UpdateBasket', data);
+            if(res.data.res !== ""){
+                console.log(res.data.res)
+
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const UpdateDBBasket = () => {
+        let a = window.localStorage.getItem('Login')
+        if(a){
+            let b = window.localStorage.getItem('basket')
+            if(b) {
+                sendDataToServerUpdateBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1], value: b })
+            }
+            if(!b || b === ""){
+                sendDataToServerUpdateBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1], value: "" })
+            }
+        }
+    }
+
     return(
         <div className='karttov'>
             <div className="tovhead">
@@ -108,6 +134,7 @@ function KartTovar(props: Props) {
                             }
                         }
                         setCounttov(counttov - 1)
+                        UpdateDBBasket()
                     }
                 }}>-</button>
                 <div className="tovcount">{counttov}</div>
@@ -122,6 +149,7 @@ function KartTovar(props: Props) {
                         }
                     }
                     setCounttov(counttov + 1)
+                    UpdateDBBasket()
                 }}>+</button>
             </div>
             <div className="tovfut">
@@ -158,6 +186,7 @@ function KartTovar(props: Props) {
                             window.localStorage.setItem("basket", String(props.id + ":" + counttov))
                             setBuyImage(tba);
                             UpdateBackCount("pl");
+                            UpdateDBBasket()
                         }
                         else {
                             // @ts-ignore
@@ -165,6 +194,7 @@ function KartTovar(props: Props) {
                                 window.localStorage.setItem("basket", window.localStorage.getItem("basket") + "," + String(props.id + ":" + counttov))
                                 setBuyImage(tba);
                                 UpdateBackCount("pl");
+                                UpdateDBBasket()
                             }
                             else {
                                 // @ts-ignore
@@ -175,6 +205,7 @@ function KartTovar(props: Props) {
                                 window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),""))
                                 setBuyImage(tbd);
                                 UpdateBackCount("min");
+                                UpdateDBBasket()
                             }
                         }
                     }}>

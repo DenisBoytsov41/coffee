@@ -1,10 +1,12 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Hader from "../Hader";
 import Futer from "../Futer";
 import {Link} from "react-router-dom";
 import '../../styles/Login.css';
 import '../../styles/KastomCheckBox.css';
 import {SubmitHandler, useForm} from "react-hook-form";
+import axios from "axios";
+import AdminProfile from "../AdminProfile";
 
 interface MyForm {
     mail: string;
@@ -13,7 +15,13 @@ interface MyForm {
 
 function Login(){
 
+    const [isErrVisible, setErrVisible] = useState(true);
+
     useEffect(() => {
+        let a = window.localStorage.getItem("Login")
+        if(a){
+            sendDataToServer({ mail: a.split(' ')[0], pass: a.split(' ')[1] });
+        }
         return () => {
             document.title = "Вход в аккаунт";
         };
@@ -25,8 +33,23 @@ function Login(){
         handleSubmit
     } = useForm<MyForm>({mode: "onBlur"});
 
+    const sendDataToServer = async (data:{ mail: string, pass: string }) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/checkUser', data);
+            if(res.data.res){
+                window.localStorage.setItem("Login", data.mail + " " + data.pass)
+                window.location.replace("/");
+            }
+            else {
+                setErrVisible(false)
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const submit: SubmitHandler<MyForm> = data => {
-        console.log('Отправка формы');
+        sendDataToServer(data);
     }
 
     return(
@@ -42,6 +65,7 @@ function Login(){
                         <input type="password" placeholder="Введите Пароль"
                                className="inpVhlog" {...register('pass', {required: true})}/>
                         {errors?.pass && <div className="Error">Поле обязательно к заполнению!</div>}
+                        <div className="Error" hidden={isErrVisible}>Пользователь не найден</div>
                         <div>
                             <button className="ButtonVh">ВОЙТИ</button>
                         </div>

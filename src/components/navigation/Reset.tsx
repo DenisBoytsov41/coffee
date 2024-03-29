@@ -17,10 +17,11 @@ function Reset() {
             <div className="contApp">
                 <div className="noabsformVhod">
                     <label className="lableVhlog">ВОССТАНОВЛЕНИЕ ПАРОЛЯ</label>
-                    <input type="text" placeholder="Введите E-mail" className="inpVhlog"/>
-                    <div className="ResText">
-                        Введите адрес электронной почты, и мы отправим на него ссылку для восстановления пароля.
-                    </div>
+
+                        <input type="text" placeholder="Введите E-mail" className="inpVhlog"/>
+                        <div className="ResText">
+                            Введите адрес электронной почты, и мы отправим на него ваш пароль.
+                        </div>
                     <div>
                         <button className="ButtonRes">ПРОДОЛЖИТЬ</button>
                     </div>

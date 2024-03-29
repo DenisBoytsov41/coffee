@@ -1,8 +1,9 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Hader from "../Hader";
 import Futer from "../Futer";
 import {SubmitHandler, useForm} from "react-hook-form";
 import IMask from "imask";
+import axios from "axios";
 
 interface MyForm {
     name: string,
@@ -37,12 +38,29 @@ function Reg(){
     } = useForm<MyForm>({mode: "onBlur"});
 
     const submit: SubmitHandler<MyForm> = data => {
-        console.log(data);
+        sendDataToServer(data)
     }
 
     const confPass = (value:string) => {
         const sameValue = watch('pass');
         return value === sameValue || 'Пароли не совпадают';
+    };
+
+    const [isErrVisible, setErrVisible] = useState(true);
+
+    const sendDataToServer = async (data:{ name: string, mail: string, pass: string, passp: string, tel: string }) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/RegUser', data);
+            if(res.data.res){
+                window.localStorage.setItem("Login", data.mail + " " + data.pass)
+                window.location.replace("/");
+            }
+            else {
+                setErrVisible(false)
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return(
@@ -70,6 +88,7 @@ function Reg(){
                                 message: 'Почта неправильного вида'
                             }
                         })}/>
+                        <div className="Error" hidden={isErrVisible}>Пользователь с таким E-mail уже зарегистрирован</div>
                         {errors?.mail && <div className="Error">{errors?.mail?.message || 'Поле обязательно к заполнению!'}</div>}
                         <input type="text" placeholder="* Телефон" id="tel"
                                className="inpVhlog" {...register('tel')}/>
@@ -79,11 +98,11 @@ function Reg(){
                             required: true,
                             minLength: {
                                 value: 5,
-                                message: 'Min length is 5 characters'
+                                message: 'Минимальное количество символов 5'
                             },
                             maxLength: {
-                                value: 10,
-                                message: 'Max length is 10 characters'
+                                value: 16,
+                                message: 'Максимальное количество символов 16'
                             }
                         })}/>
                         {errors?.pass && <div className="Error">{errors?.pass?.message || 'Поле обязательно к заполнению!'}</div>}

@@ -8,13 +8,25 @@ import logo from '../images/logo.png';
 import like from '../images/Like.png';
 import bask from '../images/Basket.png';
 import HamburgerMenu from "./HamburgerMenu";
+import axios from "axios";
+import profile from "../images/Profile.png";
 
 function Hader(){
+
+    const sendDataToServer = async (data:{ basket:string }) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/CountBasket', data);
+            window.localStorage.setItem('backCount', res.data)
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const UpdateCount = () => {
         let count = 0;
         let a = window.localStorage.getItem('basket')
-        if(a !== null && a !== ""){
+        if(a !== "" && a !== null ){
+            console.log(1)
             // @ts-ignore
             let arr = a.split(",")
             for (let i = 0; i < arr.length; i++){
@@ -47,10 +59,68 @@ function Hader(){
         return initialState()
     })
 
+    const sendDataToServerCheckUser = async (data:{ mail: string, pass: string }) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/checkUser', data);
+            if(res.data.res){
+                setLoginProfile(
+                    <div className="rightHeader">
+                        <img src={profile} alt="profile" className="imgVH"/>
+                        <Link to={"/profile"} className='linkHeader'>Профиль</Link>
+                        <button className='linkHeader Comissioner btnCont' onClick={() => {
+                            window.localStorage.removeItem('Login')
+                            window.location.reload()
+                        }}>Выйти</button>
+                    </div>
+                )
+                if(window.localStorage.getItem('basket') && window.localStorage.getItem('basket') !== ""){
+                    // @ts-ignore
+                    sendDataToServer({ basket:window.localStorage.getItem('basket') })
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const sendDataToServerGetBasket = async (data:{ mail: string, pass: string }) => {
+        try {
+            const res = await axios.post('http://localhost:3001/api/GetBasket', data);
+            if(res.data.res !== "" && res.data.res !== null && res.data.res !== undefined ){
+                window.localStorage.setItem('basket', res.data.res)
+                let a = window.localStorage.getItem('Login')
+                if(a){
+                    sendDataToServerCheckUser({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const [loginProfile, setLoginProfile] = useState(() => {
+        const initialState = function () {
+            let a = window.localStorage.getItem('Login')
+            if(a){
+                sendDataToServerCheckUser({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
+                sendDataToServerGetBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
+            }
+            return (
+                <div className="rightHeader">
+                    <Vhod/>
+                    <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
+                </div>
+            )
+        }
+        return initialState()
+    })
+
     useEffect(() => {
+
         const interval = setInterval(() => {
             setCounttov(UpdateCount);
             setBackCount(UpdateBaskCount);
+
         }, 100);
 
         return () => clearInterval(interval);
@@ -66,10 +136,7 @@ function Hader(){
                         <Contacts/>
                         <Link to={"/opt"} className='linkHeader'>Оптовые цены</Link>
                     </div>
-                    <div className="rightHeader">
-                        <Vhod/>
-                        <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
-                    </div>
+                    {loginProfile}
                 </div>
                 <div className="line hideMobile"></div>
                 <div className="contHeader">
