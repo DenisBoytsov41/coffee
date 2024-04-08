@@ -26,7 +26,6 @@ function Hader(){
         let count = 0;
         let a = window.localStorage.getItem('basket')
         if(a !== "" && a !== null ){
-            console.log(1)
             // @ts-ignore
             let arr = a.split(",")
             for (let i = 0; i < arr.length; i++){

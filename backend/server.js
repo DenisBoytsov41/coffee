@@ -3,11 +3,12 @@ const cors = require('cors')
 const md5 = require('md5')
 const app = express();
 const port = 3001;
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const connsql = mysql.createConnection({
-    host:"localhost",
-    user:"root",
-    password:"",
+    host:"79.174.88.169",
+    port: "15901",
+    user:"admin",
+    password:"KKiriLL2114!",
     database:"CoffeeGodine"
 });
 

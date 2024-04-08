@@ -12,7 +12,7 @@ function Opt(){
     }, []);
 
     const tel = "+7(915)923-81-62";
-    const Email = "shop@tastycoffee.ru";
+    const Email = "info@godinecoffee.ru";
     return(
         <div>
             <Hader/>

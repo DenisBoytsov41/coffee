@@ -5,7 +5,8 @@ import Katalog from "../Katalog";
 import {Link} from "react-router-dom";
 import "../../App.css"
 import "../../styles/Home.css"
-import back from "../../images/back.png";
+// @ts-ignore
+import back from "../../videos/back.mp4";
 import ap from "../../images/AllPrice.png";
 
 function Home(){
@@ -20,9 +21,12 @@ function Home(){
         <div>
             <Hader/>
             <div className="Content">
-                <img src={back} alt="back" className="imgback"/>
+                <video autoPlay muted loop className="imgback">
+                    <source src={back} type='video/mp4'/>
+                    Ваш браузер не поддерживает воспроизведение видео.
+                </video>
                 <div className="deviz">
-                    <div className="devizbol">ВКУСНЫЙ КОФЕ ИЗ</div>
+                <div className="devizbol">ВКУСНЫЙ КОФЕ ИЗ</div>
                     <div className="devizbol">ЭФИОПИИ.</div>
                     <div className="devizmal">МЫ ЛЮБИМ ТО, ЧТО ДЕЛАЕМ И ЦЕНИМ ПРОДУКТ, КОТОРЫЙ ПРОДАЁМ.</div>
                 </div>

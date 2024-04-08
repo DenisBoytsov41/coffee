@@ -30,14 +30,15 @@ function Futer(){
                 </div>
                 <div className="rightFuter">
                     <label>+7 (915) 923-81-62</label>
+                    <label>info@godinecoffee.ru</label>
                     <div className="contactsFuter">
                         <div>
-                            <a href="https://web.telegram.org/" target="_blank">
+                            <a href="https://web.telegram.org/" target="_blank" hidden={true}>
                                 <img src={tg} alt="tg" className='imgtov'/>
                             </a>
                         </div>
                         <div>
-                            <a href="https://vk.com/" target="_blank">
+                            <a href="https://vk.com/" target="_blank" hidden={true}>
                                 <img src={vk} alt="vk" className='imgtov'/>
                             </a>
                         </div>

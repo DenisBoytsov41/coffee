@@ -31,13 +31,10 @@ function Contacts(){
                 </div>
             </button>
             <div className="formCont Comissioner" hidden={!isElementVisible}>
-            <div className="absformCont">
-                    <a href="https://web.telegram.org/" target="_blank" className="contText">
-                        Написать в Telegram
-                    </a>
-                    <a href="https://vk.com/" target="_blank" className="contText">
-                        Написать в VK
-                    </a>
+                <div className="absformCont">
+                    <div className="contText">
+                        info@godinecoffee.ru
+                    </div>
                     <div className="line1"></div>
                     <div className="contText">
                         +7(915)923-81-62
