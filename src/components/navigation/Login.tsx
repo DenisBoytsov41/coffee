@@ -7,6 +7,7 @@ import '../../styles/KastomCheckBox.css';
 import {SubmitHandler, useForm} from "react-hook-form";
 import axios from "axios";
 import AdminProfile from "../AdminProfile";
+import ServHost from "../../serverHost.json"
 
 interface MyForm {
     mail: string;
@@ -35,7 +36,7 @@ function Login(){
 
     const sendDataToServer = async (data:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/checkUser', data);
+            const res = await axios.post(ServHost.host + '/checkUser', data);
             if(res.data.res){
                 window.localStorage.setItem("Login", data.mail + " " + data.pass)
                 window.location.replace("/");

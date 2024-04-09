@@ -7,6 +7,7 @@ import axios from "axios";
 import profile from "../../images/Profile.png";
 import {Link} from "react-router-dom";
 import Vhod from "../Vhod";
+import ServHost from "../../serverHost.json"
 
 interface MyForm {
     name: string,
@@ -71,7 +72,7 @@ function Profile() {
             if(data1.pass !== "" && data1.passp !== ""){
                 window.localStorage.setItem("Login",String(data1.mail) + " " + String(data1.passp))
             }
-            const res = await axios.post('http://localhost:3001/api/UpdateInfoUser', data1);
+            const res = await axios.post(ServHost.host + '/UpdateInfoUser', data1);
         } catch (error) {
             console.error(error);
         }
@@ -79,7 +80,7 @@ function Profile() {
 
     const sendDataToServerCheckUser = async (data1:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/checkUser', data1);
+            const res = await axios.post(ServHost.host + '/checkUser', data1);
             if(!res.data.res){
                 window.location.replace("/login")
             }
@@ -90,7 +91,7 @@ function Profile() {
 
     const sendDataToServerGetInfoUser = async (data1:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/GetInfoUser', data1);
+            const res = await axios.post(ServHost.host + '/GetInfoUser', data1);
             setData([res.data.name,res.data.mail,res.data.tel])
         } catch (error) {
             console.error(error);

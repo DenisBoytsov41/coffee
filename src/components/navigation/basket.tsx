@@ -6,12 +6,13 @@ import "../../styles/basket.css"
 import IMask from "imask";
 import Katalog from "../Katalog";
 import axios from "axios";
+import ServHost from "../../serverHost.json"
 
 function Basket(){
 
     const sendDataToServerUpdateBasket = async (data:{ mail: string, pass: string , value: string}) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/UpdateBasket', data);
+            const res = await axios.post(ServHost.host + '/UpdateBasket', data);
             if(res.data.res !== ""){
                 console.log(res.data.res)
 

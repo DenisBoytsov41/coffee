@@ -3,6 +3,7 @@ import KartTovar from "./KartTovar";
 import '../styles/katalog.css';
 import KartTovarOpt from "./KartTovOpt";
 import KartKorz from "./KartKorz";
+import ServHost from "../serverHost.json"
 
 interface Props {
     type: string;
@@ -14,7 +15,7 @@ function Katalog(props: Props) {
     const [data, setData] = useState(null);
 
     useEffect(()=>{
-        fetch('http://localhost:3001/api/tovar')
+        fetch(ServHost.host + '/tovar')
             .then(res => res.json())
             .then(res => setData(res))
     }, [])

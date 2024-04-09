@@ -6,6 +6,7 @@ import open from "../images/OpenMenu.png";
 import '../styles/KastomCheckBox.css';
 import axios from "axios";
 import Vhod from "./Vhod";
+import ServHost from "../serverHost.json"
 
 interface MyForm {
     mail: string;
@@ -37,7 +38,7 @@ function HamburgerMenu(){
 
     const sendDataToServerCheckUser = async (data:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/checkUser', data);
+            const res = await axios.post(ServHost.host + '/checkUser', data);
             if(res.data.res){
                 setLoginProfile(
                     <div className="rightHeader">

@@ -10,12 +10,13 @@ import bask from '../images/Basket.png';
 import HamburgerMenu from "./HamburgerMenu";
 import axios from "axios";
 import profile from "../images/Profile.png";
+import ServHost from "../serverHost.json"
 
 function Hader(){
 
     const sendDataToServer = async (data:{ basket:string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/CountBasket', data);
+            const res = await axios.post(ServHost.host + '/CountBasket', data);
             window.localStorage.setItem('backCount', res.data)
         } catch (error) {
             console.error(error);

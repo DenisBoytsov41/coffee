@@ -2,12 +2,13 @@ import React, {useEffect, useState} from "react";
 import AdminLogin from "../AdminLogin";
 import AdminProfile from "../AdminProfile";
 import axios from "axios";
+import ServHost from "../../serverHost.json"
 
 function Admin(){
 
     const sendDataToServer = async (data:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/loginAdmin', data);
+            const res = await axios.post(ServHost.host + '/loginAdmin', data);
             console.log(res.data.res);
             if(res.data.res){
                 setContent(<AdminProfile/>)

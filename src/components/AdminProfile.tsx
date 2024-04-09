@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import AdminItem from "./AdminItem";
+import ServHost from "../serverHost.json"
 
 function AdminProfile(){
 
     const sendDataToServerAddItem = async (data:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/addItem', data);
+            const res = await axios.post(ServHost.host + '/addItem', data);
             console.log(res.data);
         } catch (error) {
             console.error(error);
@@ -30,7 +31,7 @@ function AdminProfile(){
     const [data, setData] = useState(null);
 
     useEffect(()=>{
-        fetch('http://localhost:3001/api/tovar')
+        fetch(ServHost.host + '/tovar')
             .then(res => res.json())
             .then(res => setData(res))
     }, [])

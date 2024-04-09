@@ -4,6 +4,7 @@ import Futer from "../Futer";
 import {SubmitHandler, useForm} from "react-hook-form";
 import IMask from "imask";
 import axios from "axios";
+import ServHost from "../../serverHost.json"
 
 interface MyForm {
     name: string,
@@ -50,7 +51,7 @@ function Reg(){
 
     const sendDataToServer = async (data:{ name: string, mail: string, pass: string, passp: string, tel: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/RegUser', data);
+            const res = await axios.post(ServHost.host + '/RegUser', data);
             if(res.data.res){
                 window.localStorage.setItem("Login", data.mail + " " + data.pass)
                 window.location.replace("/");

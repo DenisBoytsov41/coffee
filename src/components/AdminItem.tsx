@@ -2,6 +2,7 @@ import React, {ChangeEvent, useState} from "react";
 import {SubmitHandler, useForm} from "react-hook-form";
 import "../styles/ItemAdmin.css"
 import axios from "axios";
+import ServHost from "../serverHost.json"
 
 interface Props {
     id: number,
@@ -15,7 +16,7 @@ function AdminItem(props: Props){
 
     const sendDataToServerDelete = async (data:{ mail: string, pass: string , id: number}) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/deleteItem', data);
+            const res = await axios.post(ServHost.host + '/deleteItem', data);
             console.log(res.data);
         } catch (error) {
             console.error(error);
@@ -24,7 +25,7 @@ function AdminItem(props: Props){
 
     const sendDataToServerUpdate = async (data:{ mail: string, pass: string , id: number, pole:string, value:string}) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/UpdateItem', data);
+            const res = await axios.post(ServHost.host + '/UpdateItem', data);
             console.log(res.data);
         } catch (error) {
             console.error(error);

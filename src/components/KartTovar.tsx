@@ -6,6 +6,7 @@ import tba from "../images/inkorz.png";
 import tld from "../images/tovlike.png";
 import tla from "../images/tovlikeakt.png";
 import axios from "axios";
+import ServHost from "../serverHost.json"
 
 interface Props {
     name: string;
@@ -82,7 +83,7 @@ function KartTovar(props: Props) {
 
     const sendDataToServerUpdateBasket = async (data:{ mail: string, pass: string , value: string}) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/UpdateBasket', data);
+            const res = await axios.post(ServHost.host + '/UpdateBasket', data);
             if(res.data.res !== ""){
                 console.log(res.data.res)
 

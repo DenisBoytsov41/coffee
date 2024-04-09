@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import '../styles/kartKorz.css';
 import ti from "../images/tovimage.png";
 import axios from "axios";
+import ServHost from "../serverHost.json"
 
 interface Props {
     name: string;
@@ -56,7 +57,7 @@ function KartTovar(props: Props) {
 
     const sendDataToServerUpdateBasket = async (data:{ mail: string, pass: string , value: string}) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/UpdateBasket', data);
+            const res = await axios.post(ServHost.host + '/UpdateBasket', data);
             if(res.data.res !== ""){
                 console.log(res.data.res)
 
