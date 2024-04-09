@@ -35,8 +35,7 @@
     "webfontloader": "^1.6.28"
   },
   "scripts": {
-    "startF": "react-scripts start",
-    "startB": "node backend/server.js",
+    "start": "react-scripts start",
     "test": "react-scripts test",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
