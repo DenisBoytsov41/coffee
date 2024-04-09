@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import '../styles/katalog.css';
-import ti from "../images/tovimage.png";
-import tb from "../images/tovbuy.png";
-import tl from "../images/tovlike.png";
+import ti from "../images/tovimage.jpg";
+import tb from "../images/tovbuy.jpg";
+import tl from "../images/tovlike.jpg";
 
 interface Props {
     name: string;

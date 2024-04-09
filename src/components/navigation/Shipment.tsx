@@ -3,7 +3,7 @@ import Hader from "../Hader";
 import Futer from "../Futer";
 import "../../styles/Shipment.css"
 import backSh from "../../images/dostavka.jpg";
-import cdek from "../../images/CDEK.png";
+import cdek from "../../images/CDEK.jpg";
 
 function Shipment(){
 

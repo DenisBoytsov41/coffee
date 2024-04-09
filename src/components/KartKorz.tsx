@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import '../styles/kartKorz.css';
-import ti from "../images/tovimage.png";
+import ti from "../images/tovimage.jpg";
 import axios from "axios";
 import ServHost from "../serverHost.json"
 

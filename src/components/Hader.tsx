@@ -4,12 +4,12 @@ import City from "./City";
 import Contacts from "./Contacts";
 import Vhod from "./Vhod";
 import '../styles/Header.css';
-import logo from '../images/logo.png';
-import like from '../images/Like.png';
-import bask from '../images/Basket.png';
+import logo from '../images/logo.jpg';
+import like from '../images/Like.jpg';
+import bask from '../images/Basket.jpg';
 import HamburgerMenu from "./HamburgerMenu";
 import axios from "axios";
-import profile from "../images/Profile.png";
+import profile from "../images/Profile.jpg";
 import ServHost from "../serverHost.json"
 
 function Hader(){

@@ -7,7 +7,7 @@ import "../../App.css"
 import "../../styles/Home.css"
 // @ts-ignore
 import back from "../../videos/back.mp4";
-import ap from "../../images/AllPrice.png";
+import ap from "../../images/AllPrice.jpg";
 
 function Home(){
 

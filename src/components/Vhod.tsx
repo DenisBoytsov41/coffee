@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
-import profile from "../images/Profile.png";
+import profile from "../images/Profile.jpg";
 import '../styles/KastomCheckBox.css';
 import {SubmitHandler, useForm} from "react-hook-form";
 import axios from "axios";

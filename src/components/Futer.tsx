@@ -1,8 +1,8 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import '../styles/Futer.css';
-import tg from "../images/TG.png";
-import vk from "../images/VK.png";
+import tg from "../images/TG.jpg";
+import vk from "../images/VK.jpg";
 
 function Futer(){
     return (

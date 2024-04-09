@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import '../styles/katalog.css';
-import ti from "../images/tovimage.png";
-import tbd from "../images/tovbuy.png";
-import tba from "../images/inkorz.png";
-import tld from "../images/tovlike.png";
-import tla from "../images/tovlikeakt.png";
+import ti from "../images/tovimage.jpg";
+import tbd from "../images/tovbuy.jpg";
+import tba from "../images/inkorz.jpg";
+import tld from "../images/tovlike.jpg";
+import tla from "../images/tovlikeakt.jpg";
 import axios from "axios";
 import ServHost from "../serverHost.json"
 

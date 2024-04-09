@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
-import profile from "../images/Profile.png";
-import close from "../images/CloseMenu.png";
-import open from "../images/OpenMenu.png";
+import profile from "../images/Profile.jpg";
+import close from "../images/CloseMenu.jpg";
+import open from "../images/OpenMenu.jpg";
 import '../styles/KastomCheckBox.css';
 import axios from "axios";
 import Vhod from "./Vhod";

@@ -4,7 +4,7 @@ import Futer from "../Futer";
 import '../../styles/Reset.css';
 import {SubmitHandler, useForm} from "react-hook-form";
 import axios from "axios";
-import profile from "../../images/Profile.png";
+import profile from "../../images/Profile.jpg";
 import {Link} from "react-router-dom";
 import Vhod from "../Vhod";
 import ServHost from "../../serverHost.json"

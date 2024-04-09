@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import tg from "../images/TG.png";
+import tg from "../images/TG.jpg";
 
 function Contacts(){
 
