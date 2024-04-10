@@ -61,7 +61,7 @@ function Hader(){
 
     const sendDataToServerCheckUser = async (data:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/checkUser', data);
+            const res = await axios.post(ServHost.host + '/checkUser', data);
             if(res.data.res){
                 setLoginProfile(
                     <div className="rightHeader">
@@ -85,7 +85,7 @@ function Hader(){
 
     const sendDataToServerGetBasket = async (data:{ mail: string, pass: string }) => {
         try {
-            const res = await axios.post('http://localhost:3001/api/GetBasket', data);
+            const res = await axios.post(ServHost.host + '/GetBasket', data);
             if(res.data.res !== "" && res.data.res !== null && res.data.res !== undefined ){
                 window.localStorage.setItem('basket', res.data.res)
                 let a = window.localStorage.getItem('Login')
