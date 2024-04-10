@@ -1,3 +1,3 @@
 {
-  "host": "http://89.111.170.205:3001/api"
+  "host": "http://localhost:3001/api"
 }
