@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import "../../App.css"
 import "../../styles/Home.css"
 // @ts-ignore
-// import back from "../../videos/back.mp4";
+// import back from "../../videos/back.webm";
 import back from "../../images/back.jpg";
 import ap from "../../images/AllPrice.jpg";
 
@@ -23,7 +23,7 @@ function Home(){
             <Hader/>
             <div className="Content">
                 {/*<video autoPlay muted loop className="imgback">*/}
-                {/*    <source src={back} type='video/mp4'/>*/}
+                {/*    <source src={back} type='video/webm'/>*/}
                 {/*    Ваш браузер не поддерживает воспроизведение видео.*/}
                 {/*</video>*/}
                 <img src={back} alt="ap" className='imgback'/>
