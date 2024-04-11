@@ -47,7 +47,83 @@ function Basket(){
         return initialState()
     })
 
-    const [Content] = useState(() => {
+    useEffect(() => {
+
+        let a = "";
+
+        const interval = setInterval(() => {
+            if(a !== window.localStorage.getItem('backCount')){
+                // @ts-ignore
+                a = window.localStorage.getItem('backCount')
+                // @ts-ignore
+                setContent(LoadContentIFBask(window.localStorage.getItem('backCount')))
+            }
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const LoadContentIFBask = (BC:string) => {
+        return <div className="basketContent">
+            <div className="OformlenieCont">
+                <div className="Oformlenie">
+                    <div className="paddingCont">
+                        <br/>
+                        <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
+                        <br/>
+                        <br/>
+                        <div className="baskText grayText">Покупатель</div>
+                        <br/>
+                        <div className="inpGor">
+                            <div className="TelBask">
+                                <input type="text" placeholder="Имя и Фамилия" className="inpBasklog whiteText"/>
+                                <input type="text" placeholder="E-mail" className="inpBasklog whiteText"/>
+                            </div>
+                            <div className="TelBask">
+                                <input type="text" placeholder="Телефон" id="tel" className="inpBasklog whiteText"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <div className="AddrDost">
+                    ИНТЕГРАЦИЯ CDEK
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <div className="AddrDost">
+                    ИНТЕГРАЦИЯ ЮКАССА
+                </div>
+            </div>
+            <div className="Bask">
+                <div className="paddingCont">
+                    <br/>
+                    <div className="baskZagol">КОРЗИНА</div>
+                    <br/>
+                    <br/>
+                    <Katalog type={'korzina'} katcount={0}/>
+                    <br/>
+                    <br/>
+                    <div className="KorzVsego">
+                        <div className="KorzVsegoText">
+                            всего {BC}₽
+                        </div>
+                        <button className="KorzVsegobutton" onClick={() => {
+                            window.localStorage.setItem("basket","")
+                            window.localStorage.setItem("backCount","0")
+                            UpdateDBBasket()
+                            window.location.reload()
+                        }}>Удалить все товары</button>
+                    </div>
+                </div>
+            </div>
+        </div>;
+    }
+
+    const [Content, setContent] = useState(() => {
         const initialState = function () {
             if(!window.localStorage.getItem("basket")) {
                 return <div>
@@ -56,63 +132,8 @@ function Basket(){
                 </div>
             }
             else {
-                return <div className="basketContent">
-                    <div className="OformlenieCont">
-                        <div className="Oformlenie">
-                            <div className="paddingCont">
-                                <br/>
-                                <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
-                                <br/>
-                                <br/>
-                                <div className="baskText grayText">Покупатель</div>
-                                <br/>
-                                <div className="inpGor">
-                                    <div className="TelBask">
-                                        <input type="text" placeholder="Имя и Фамилия" className="inpBasklog whiteText"/>
-                                        <input type="text" placeholder="E-mail" className="inpBasklog whiteText"/>
-                                    </div>
-                                    <div className="TelBask">
-                                        <input type="text" placeholder="Телефон" id="tel" className="inpBasklog whiteText"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <div className="AddrDost">
-                            ИНТЕГРАЦИЯ CDEK
-                        </div>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <div className="AddrDost">
-                            ИНТЕГРАЦИЯ ЮКАССА
-                        </div>
-                    </div>
-                    <div className="Bask">
-                        <div className="paddingCont">
-                            <br/>
-                            <div className="baskZagol">КОРЗИНА</div>
-                            <br/>
-                            <br/>
-                            <Katalog type={'korzina'} katcount={0}/>
-                            <br/>
-                            <br/>
-                            <div className="KorzVsego">
-                                <div className="KorzVsegoText">
-                                    всего {window.localStorage.getItem("backCount")} ₽
-                                </div>
-                                <button className="KorzVsegobutton" onClick={() => {
-                                    window.localStorage.setItem("basket","")
-                                    window.localStorage.setItem("backCount","0")
-                                    UpdateDBBasket()
-                                    window.location.reload()
-                                }}>Удалить все товары</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>;
+                // @ts-ignore
+                return LoadContentIFBask(window.localStorage.getItem('backCount'));
             }
         }
         return initialState()

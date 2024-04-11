@@ -85,3 +85,23 @@
     width: 100px;
     height: 100px;
 }
+@media screen and (max-width: 510px) {
+    .korzimgtovar{
+        width: 0;
+        height: 100px;
+    }
+    .korztovhead{
+        display: flex;
+        justify-content: center;
+        text-align: start;
+        align-items: center;
+        padding-top: 0;
+    }
+    .korzkarttov1{
+        display: flex;
+        justify-content: start;
+        text-align: start;
+        flex-direction: row;
+        gap: 6px;
+    }
+}

@@ -17,9 +17,6 @@
     gap: 10px;
     width: 100%;
     height: 100%;
-    @media (max-width: 1090px) {
-        flex-direction: column-reverse;
-    }
 }
 .KorzVsego{
     display: flex;
@@ -44,7 +41,7 @@
 }
 .Oformlenie{
     background: #252525;
-    height: 300px;
+    height: fit-content;
     width: 100%;
 }
 .Bask{
@@ -78,6 +75,8 @@
     border: none;
     background: transparent;
     border-bottom: 1px solid rgb(255, 255, 255);
+    -webkit-appearance: none;
+    border-radius: 0;
     height: 30px;
     width: 100%;
 }
@@ -93,4 +92,24 @@
     height: 100px;
     border: 1px solid rgb(187, 187, 187);
     color: black;
+}
+
+@media screen and (max-width: 1090px) {
+    .basketContent{
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 10px;
+        width: 100%;
+        height: 100%;
+    }
+    .inpGor{
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+    .Oformlenie{
+        background: #252525;
+        height: fit-content;
+        width: 100%;
+    }
 }
