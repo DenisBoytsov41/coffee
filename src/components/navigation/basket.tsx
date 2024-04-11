@@ -55,8 +55,18 @@ function Basket(){
             if(a !== window.localStorage.getItem('backCount')){
                 // @ts-ignore
                 a = window.localStorage.getItem('backCount')
-                // @ts-ignore
-                setContent(LoadContentIFBask(window.localStorage.getItem('backCount')))
+                if(!window.localStorage.getItem("basket")) {
+                    setContent(
+                        <div className="centerText">
+                            Чтобы увидеть сохраненные в корзине товары,
+                            <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br/><br/><br/>
+                        </div>
+                    )
+                }
+                else {
+                    // @ts-ignore
+                    setContent(LoadContentIFBask(window.localStorage.getItem('backCount')))
+                }
             }
         }, 100);
 
@@ -145,7 +155,8 @@ function Basket(){
                 return <div><Link to={"/buy"} className='linkHeader'>
                     <button className="ButtonPusto">Перейти в каталог</button>
                 </Link></div>
-            } else {
+            }
+            else {
                 return <div></div>;
             }
         }

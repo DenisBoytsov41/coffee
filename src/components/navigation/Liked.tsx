@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import Hader from "../Hader";
 import Futer from "../Futer";
+import "../../styles/basket.css"
 import Katalog from "../Katalog";
 
 function Liked(){
@@ -35,7 +36,7 @@ function Liked(){
                 </div>
                 <br/>
                 <br/>
-                <div>{Pusto}</div>
+                <div className="centerText">{Pusto}</div>
                 <Katalog type={"liked"} katcount={0}/>
             </div>
             <Futer/>
