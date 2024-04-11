@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import AdminItem from "./AdminItem";
 import ServHost from "../serverHost.json"
+import "../styles/ItemAdmin.css"
 
 function AdminProfile(){
 
@@ -38,11 +39,36 @@ function AdminProfile(){
 
     return(
         <div>
+            <br/>
+            <br/>
+            <br/>
+            <div className="Error">При внесении изменений не забывайте их СОХРАНЯТЬ</div>
+            <br/>
+            <div className="Error">По нажатию на СОХРАНИТЬ происходить изменение только того товара, рядом с которым
+                была нажата кнопка, после чего страница обновится
+            </div>
+            <br/>
+            <div className="Error">!!! ВНОСИТЕ ИЗМЕНЕНИЯ КАЖДОГО ТОВАРА ОТДЕЛЬНО !!!</div>
+            <br/>
+            <div className="Error">!!! Поля NAME и OPISANIE имеют ОГРАНИЧЕНИЯ максимум 100 и 120 символов соответственно !!!</div>
+            <br/>
+            <br/>
+            <br/>
             {LoadKatalog(0, data).map((el, index) => (
                 <div key={index}>{el}</div>
             ))}
-            <button onClick={Add}>ДОБАВИТЬ</button>
-            <button onClick={Exit}>ВЫЙТИ</button>
+            <br/>
+            <br/>
+            <div className="gapButton">
+                <button onClick={Add} className="ButtonAdm">ДОБАВИТЬ</button>
+                <button onClick={Exit} className="ButtonAdm">ВЫЙТИ</button>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
         </div>
     );
 }

@@ -116,102 +116,102 @@ function KartTovar(props: Props) {
                     натуральный
                 </div>
             </div>
-            <div className="tovcont">
-                <img src={ti} alt="ti"/>
-                <div className="tovopis">
-                    {props.opis}
+            <div className="bottomCont">
+                <div className="tovcont">
+                    <img src={ti} alt="ti"/>
+                    <div className="tovopis">
+                        {props.opis}
+                    </div>
                 </div>
-            </div>
-            <div className='tovcountinp'>
-                <button onClick={() => {
-                    if(counttov > 1){
-                        if(window.localStorage.getItem("basket")) {
-                            // @ts-ignore
-                            if(window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
-                                // @ts-ignore
-                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),props.id + ":" + (counttov - 1)))
-                                let a = Number(window.localStorage.getItem("backCount"))
-                                window.localStorage.setItem("backCount", String(a - props.price))
-                            }
-                        }
-                        setCounttov(counttov - 1)
-                        UpdateDBBasket()
-                    }
-                }}>-</button>
-                <div className="tovcount">{counttov}</div>
-                <button onClick={() => {
-                    if(window.localStorage.getItem("basket")) {
-                        // @ts-ignore
-                        if(window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
-                            // @ts-ignore
-                            window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),props.id + ":" + (counttov + 1)))
-                            let a = Number(window.localStorage.getItem("backCount"))
-                            window.localStorage.setItem("backCount", String(a + props.price))
-                        }
-                    }
-                    setCounttov(counttov + 1)
-                    UpdateDBBasket()
-                }}>+</button>
-            </div>
-            <div className="tovfut">
-                <div className='tovprice'>
-                    {props.price}₽
-                </div>
-                <div className="tovbutt">
+                <div className='tovcountinp'>
                     <button onClick={() => {
-                        if(!window.localStorage.getItem("liked")) {
-                            window.localStorage.setItem("liked", String(props.id))
-                            setLikeImage(tla);
-                        }
-                        else {
-                            // @ts-ignore
-                            if(!window.localStorage.getItem("liked").includes(String(props.id))) {
-                                window.localStorage.setItem("liked", window.localStorage.getItem("liked") + "," + String(props.id))
-                                setLikeImage(tla);
+                        if (counttov > 1) {
+                            if (window.localStorage.getItem("basket")) {
+                                // @ts-ignore
+                                if (window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
+                                    // @ts-ignore
+                                    window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov), props.id + ":" + (counttov - 1)))
+                                    let a = Number(window.localStorage.getItem("backCount"))
+                                    window.localStorage.setItem("backCount", String(a - props.price))
+                                }
                             }
-                            else {
-                                // @ts-ignore
-                                window.localStorage.setItem("liked", window.localStorage.getItem("liked").replace("," + String(props.id),""))
-                                // @ts-ignore
-                                window.localStorage.setItem("liked", window.localStorage.getItem("liked").replace(String(props.id) + ",",""))
-                                // @ts-ignore
-                                window.localStorage.setItem("liked", window.localStorage.getItem("liked").replace(String(props.id),""))
-                                setLikeImage(tld);
-                            }
-                        }
-                    }}>
-                        <img src={LikeImage} alt="tl" className='imgtov'/>
-                    </button>
-                    <button onClick={() => {
-                        if(!window.localStorage.getItem("basket")) {
-                            window.localStorage.setItem("basket", String(props.id + ":" + counttov))
-                            setBuyImage(tba);
-                            UpdateBackCount("pl");
+                            setCounttov(counttov - 1)
                             UpdateDBBasket()
                         }
-                        else {
+                    }}>-
+                    </button>
+                    <div className="tovcount">{counttov}</div>
+                    <button onClick={() => {
+                        if (window.localStorage.getItem("basket")) {
                             // @ts-ignore
-                            if(!window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
-                                window.localStorage.setItem("basket", window.localStorage.getItem("basket") + "," + String(props.id + ":" + counttov))
+                            if (window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
+                                // @ts-ignore
+                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov), props.id + ":" + (counttov + 1)))
+                                let a = Number(window.localStorage.getItem("backCount"))
+                                window.localStorage.setItem("backCount", String(a + props.price))
+                            }
+                        }
+                        setCounttov(counttov + 1)
+                        UpdateDBBasket()
+                    }}>+
+                    </button>
+                </div>
+                <div className="tovfut">
+                    <div className='tovprice'>
+                        {props.price}₽
+                    </div>
+                    <div className="tovbutt">
+                        <button onClick={() => {
+                            if (!window.localStorage.getItem("liked")) {
+                                window.localStorage.setItem("liked", String(props.id))
+                                setLikeImage(tla);
+                            } else {
+                                // @ts-ignore
+                                if (!window.localStorage.getItem("liked").includes(String(props.id))) {
+                                    window.localStorage.setItem("liked", window.localStorage.getItem("liked") + "," + String(props.id))
+                                    setLikeImage(tla);
+                                } else {
+                                    // @ts-ignore
+                                    window.localStorage.setItem("liked", window.localStorage.getItem("liked").replace("," + String(props.id), ""))
+                                    // @ts-ignore
+                                    window.localStorage.setItem("liked", window.localStorage.getItem("liked").replace(String(props.id) + ",", ""))
+                                    // @ts-ignore
+                                    window.localStorage.setItem("liked", window.localStorage.getItem("liked").replace(String(props.id), ""))
+                                    setLikeImage(tld);
+                                }
+                            }
+                        }}>
+                            <img src={LikeImage} alt="tl" className='imgtov'/>
+                        </button>
+                        <button onClick={() => {
+                            if (!window.localStorage.getItem("basket")) {
+                                window.localStorage.setItem("basket", String(props.id + ":" + counttov))
                                 setBuyImage(tba);
                                 UpdateBackCount("pl");
                                 UpdateDBBasket()
+                            } else {
+                                // @ts-ignore
+                                if (!window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
+                                    window.localStorage.setItem("basket", window.localStorage.getItem("basket") + "," + String(props.id + ":" + counttov))
+                                    setBuyImage(tba);
+                                    UpdateBackCount("pl");
+                                    UpdateDBBasket()
+                                } else {
+                                    // @ts-ignore
+                                    window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace("," + String(props.id + ":" + counttov), ""))
+                                    // @ts-ignore
+                                    window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov) + ",", ""))
+                                    // @ts-ignore
+                                    window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov), ""))
+                                    setBuyImage(tbd);
+                                    UpdateBackCount("min");
+                                    UpdateDBBasket()
+                                }
                             }
-                            else {
-                                // @ts-ignore
-                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace("," + String(props.id + ":" + counttov),""))
-                                // @ts-ignore
-                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov) + ",",""))
-                                // @ts-ignore
-                                window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov),""))
-                                setBuyImage(tbd);
-                                UpdateBackCount("min");
-                                UpdateDBBasket()
-                            }
-                        }
-                    }}>
-                        <img src={BuyImage} alt="tb" className='imgtov'/>
-                    </button>
+                        }}>
+                            <img src={BuyImage} alt="tb" className='imgtov'/>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -10,3 +10,25 @@
     display: flex;
     flex-direction: row;
 }
+.ButtonAdm{
+    background-color: white;
+    height: 36px;
+    color: black;
+    border: 2px solid black;
+}
+.ButtonAdm:hover{
+    background-color: black;
+    color: white;
+}
+.ButtonAdm:active {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: black;
+    border: 2px solid black;
+}
+.gapButton{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    gap: 10px;
+    padding-left: 10px;
+}

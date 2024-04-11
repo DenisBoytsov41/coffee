@@ -55,6 +55,7 @@ function AdminItem(props: Props){
                 if(event.nativeEvent.submitter === saveBtn.current){
                     let arr = a.split(" ")
                     sendDataToServerUpdate({ mail: arr[0] , pass: arr[1] , id: props.id, name: data.name, opisanie: data.opisanie, price: data.price, optprice: data.optprice });
+                    window.location.reload();
                 }
             }
         }
@@ -97,8 +98,10 @@ function AdminItem(props: Props){
                         <input type="number" placeholder="optprice" value={data[4]} className="inpItem" {...register('optprice')}
                                onChange={(e) => handleChange( 4, e)}/>
                     </div>
-                    <button ref={deleteBtn} type="submit" >УДАЛИТЬ</button>
-                    <button  ref={saveBtn} type="submit" >СОХРАНИТЬ</button>
+                    <div className="gapButton">
+                        <button ref={deleteBtn} type="submit" className="ButtonAdm">УДАЛИТЬ</button>
+                        <button ref={saveBtn} type="submit" className="ButtonAdm">СОХРАНИТЬ</button>
+                    </div>
                 </div>
             </form>
         </div>

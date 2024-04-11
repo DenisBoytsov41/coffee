@@ -22,15 +22,17 @@ function KartTovarOpt(props: Props) {
                     натуральный
                 </div>
             </div>
-            <div className="tovcont">
-                <img src={ti} alt="ti"/>
-                <div className="tovopis">
-                    {props.opis}
+            <div className="bottomCont">
+                <div className="tovcont">
+                    <img src={ti} alt="ti"/>
+                    <div className="tovopis">
+                        {props.opis}
+                    </div>
                 </div>
-            </div>
-
-            <div className="optprice">
-                {props.price}₽
+                <br/>
+                <div className="optprice">
+                    {props.price}₽
+                </div>
             </div>
         </div>
     );

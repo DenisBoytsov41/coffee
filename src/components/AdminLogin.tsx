@@ -1,5 +1,6 @@
 import React from "react";
 import {SubmitHandler, useForm} from "react-hook-form";
+import "../styles/ItemAdmin.css"
 
 interface MyForm {
     pass: string,
@@ -22,13 +23,20 @@ function AdminLogin(){
     return (
         <div>
             <form onSubmit={handleSubmit(submit)}>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
                 <input type="text" placeholder="mail"
                        className="inpVhlog" {...register('mail', {required: true})}/>
                 {errors?.mail && <div className="Error">Поле обязательно к заполнению!</div>}
+                <br/>
                 <input type="password" placeholder="Пароль"
                        className="inpVhlog" {...register('pass', {required: true})}/>
                 {errors?.pass && <div className="Error">Поле обязательно к заполнению!</div>}
-                <button>ВОЙТИ</button>
+                <br/>
+                <br/>
+                <button className="ButtonAdm" >ВОЙТИ</button>
             </form>
         </div>
     );
