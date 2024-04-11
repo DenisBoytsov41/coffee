@@ -18,12 +18,6 @@ function Admin(){
         }
     };
 
-    useEffect(() => {
-        return () => {
-            document.title = "Административная панель";
-        };
-    });
-
     const [content, setContent] = useState(() => {
         const initialState = function () {
             let a = window.localStorage.getItem("AdminLogin")

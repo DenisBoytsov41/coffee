@@ -5,12 +5,6 @@ import '../../styles/Reset.css';
 
 function Reset() {
 
-    useEffect(() => {
-        return () => {
-            document.title = "Восстановление пароля";
-        };
-    }, []);
-
     return(
         <div>
             <Hader/>

@@ -14,12 +14,6 @@ function Liked(){
     })
 
     useEffect(() => {
-        return () => {
-            document.title = "Избранное";
-        };
-    }, []);
-
-    useEffect(() => {
         if(!window.localStorage.getItem("liked")){
             setPusto("Здесь появятся товары, которые вы добавите в избранное");
         }

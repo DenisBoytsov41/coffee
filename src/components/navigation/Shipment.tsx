@@ -7,12 +7,6 @@ import cdek from "../../images/CDEK.jpg";
 
 function Shipment(){
 
-    useEffect(() => {
-        return () => {
-            document.title = "Условия работы";
-        };
-    }, []);
-
     return(
         <div>
             <Hader/>

@@ -5,12 +5,6 @@ import Katalog from "../Katalog";
 
 function Buy(){
 
-    useEffect(() => {
-        return () => {
-            document.title = "Купить кофе от Godinecoffee";
-        };
-    }, []);
-
     return(
         <div>
             <Hader/>

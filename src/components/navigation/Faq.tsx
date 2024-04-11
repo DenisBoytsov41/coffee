@@ -5,12 +5,6 @@ import "../../styles/FAQ.css"
 
 function Faq(){
 
-    useEffect(() => {
-        return () => {
-            document.title = "Частые вопросы";
-        };
-    }, []);
-
     const tel = "+7(915)923-81-62";
     const Email = "info@godinecoffee.ru";
     return(

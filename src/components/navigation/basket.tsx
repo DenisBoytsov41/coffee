@@ -164,12 +164,6 @@ function Basket(){
     })
 
     useEffect(() => {
-        return () => {
-            document.title = "Оформление заказа";
-        };
-    }, []);
-
-    useEffect(() => {
         if (document.getElementById('tel')){
             const element = document.getElementById('tel');
             const maskOptions = {

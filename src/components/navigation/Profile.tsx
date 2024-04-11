@@ -21,12 +21,6 @@ interface MyForm {
 
 function Profile() {
 
-    useEffect(() => {
-        return () => {
-            document.title = "Профиль";
-        };
-    }, []);
-
     const {
         register,
         watch,

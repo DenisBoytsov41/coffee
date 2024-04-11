@@ -23,9 +23,6 @@ function Login(){
         if(a){
             sendDataToServer({ mail: a.split(' ')[0], pass: a.split(' ')[1] });
         }
-        return () => {
-            document.title = "Вход в аккаунт";
-        };
     }, []);
 
     const {

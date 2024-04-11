@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useRef, useState} from "react";
 import {SubmitHandler, useForm} from "react-hook-form";
 import "../styles/ItemAdmin.css"
 import axios from "axios";
@@ -23,7 +23,7 @@ function AdminItem(props: Props){
         }
     };
 
-    const sendDataToServerUpdate = async (data:{ mail: string, pass: string , id: number, pole:string, value:string}) => {
+    const sendDataToServerUpdate = async (data:{ mail: string, pass: string , id: number, name: string, opisanie: string, price: number, optprice: number}) => {
         try {
             const res = await axios.post(ServHost.host + '/UpdateItem', data);
             console.log(res.data);
@@ -41,24 +41,32 @@ function AdminItem(props: Props){
         handleSubmit
     } = useForm<Props>({mode: "onBlur"});
 
-    const submit: SubmitHandler<Props> = data => {
+    const submit: SubmitHandler<Props> = (data, event) => {
         let a = window.localStorage.getItem("AdminLogin")
         if(a){
-            let arr = a.split(" ")
-            sendDataToServerDelete({ mail: arr[0] , pass: arr[1] , id: props.id})
-            window.location.reload();
+            // @ts-ignore
+            if(event.nativeEvent.submitter === deleteBtn.current){
+                let arr = a.split(" ")
+                sendDataToServerDelete({ mail: arr[0] , pass: arr[1] , id: props.id})
+                window.location.reload();
+            }
+            else {
+                // @ts-ignore
+                if(event.nativeEvent.submitter === saveBtn.current){
+                    let arr = a.split(" ")
+                    sendDataToServerUpdate({ mail: arr[0] , pass: arr[1] , id: props.id, name: data.name, opisanie: data.opisanie, price: data.price, optprice: data.optprice });
+                }
+            }
         }
     }
 
-    const handleChange = (pole:string, index:number, e: ChangeEvent<HTMLInputElement>) => {
+    const deleteBtn = useRef(null);
+    const saveBtn = useRef(null);
+
+    const handleChange = (index:number, e: ChangeEvent<HTMLInputElement>) => {
         const newValues = [...data];
         newValues[index] = e.target.value;
         setData(newValues);
-        let a = window.localStorage.getItem("AdminLogin")
-        if(a){
-            let arr = a.split(" ")
-            sendDataToServerUpdate({ mail: arr[0] , pass: arr[1] , id: props.id, pole: pole, value:e.target.value})
-        }
     };
 
     return (
@@ -72,24 +80,25 @@ function AdminItem(props: Props){
                     <div className="PoleItem">
                         <label>name</label>
                         <input type="text" placeholder="name" value={data[1]} className="inpItem" {...register('name')}
-                               onChange={(e) => handleChange("name", 1, e)}/>
+                               onChange={(e) => handleChange( 1, e)}/>
                     </div>
                     <div className="PoleItem">
                         <label>opisanie</label>
                         <input type="text" placeholder="opisanie" value={data[2]} className="inpItem" {...register('opisanie')}
-                               onChange={(e) => handleChange("opisanie", 2, e)}/>
+                               onChange={(e) => handleChange( 2, e)}/>
                     </div>
                     <div className="PoleItem">
                         <label>price</label>
                         <input type="number" placeholder="price" value={data[3]} className="inpItem" {...register('price')}
-                               onChange={(e) => handleChange("price", 3, e)}/>
+                               onChange={(e) => handleChange( 3, e)}/>
                     </div>
                     <div className="PoleItem">
                         <label>optprice</label>
                         <input type="number" placeholder="optprice" value={data[4]} className="inpItem" {...register('optprice')}
-                               onChange={(e) => handleChange("optprice", 4, e)}/>
+                               onChange={(e) => handleChange( 4, e)}/>
                     </div>
-                    <button>УДАЛИТЬ</button>
+                    <button ref={deleteBtn} type="submit" >УДАЛИТЬ</button>
+                    <button  ref={saveBtn} type="submit" >СОХРАНИТЬ</button>
                 </div>
             </form>
         </div>

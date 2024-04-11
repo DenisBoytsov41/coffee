@@ -18,7 +18,6 @@ function Reg(){
 
     useEffect(() => {
         return () => {
-            document.title = "Регистрация нового аккаунта";
             if (document.getElementById('tel')){
                 const element = document.getElementById('tel');
                 const maskOptions = {

@@ -5,12 +5,6 @@ import Katalog from "../Katalog";
 
 function Opt(){
 
-    useEffect(() => {
-        return () => {
-            document.title = "Оптовые цены";
-        };
-    }, []);
-
     const tel = "+7(915)923-81-62";
     const Email = "info@godinecoffee.ru";
     return(

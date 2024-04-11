@@ -5,12 +5,6 @@ import "../../styles/About.css"
 
 function About(){
 
-    useEffect(() => {
-        return () => {
-            document.title = "О компании";
-        };
-    }, []);
-
     return (
         <div>
             <Hader/>
