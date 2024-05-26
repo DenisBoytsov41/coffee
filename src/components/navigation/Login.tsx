@@ -40,7 +40,26 @@ function Login() {
         formState: { errors },
         handleSubmit
     } = useForm<MyForm>({ mode: "onBlur" });
+    
+    useEffect(() => {
+        let logged = window.localStorage.getItem("isLoggedIn");
+        let refresh = window.localStorage.getItem("refreshToken");
+        const timer = setTimeout(() => {
+            if(!logged)
+            {
+                UpdateDBBasket();
+                UpdateDBLiked();
+            }
+            else if(logged && refresh){
+                window.location.replace("/");
+            }
+        }, 1000);
 
+        return () => clearTimeout(timer);
+    }, [isLoggedIn]);
+    
+    
+    
    
 
     const sendDataToServer = async (data: MyForm) => {
@@ -51,7 +70,6 @@ function Login() {
                 console.log(response.data.message);
                 setLoginMessage(response.data.message);
                 login(response.data.refreshToken, response.data.accessToken);
-                window.location.replace("/");
             } else {
                 console.error(response.data.message);
                 setLoginError(response.data.message);
@@ -64,6 +82,81 @@ function Login() {
                 setLoginError('Ошибка при входе. Пожалуйста, попробуйте еще раз или обратитесь за помощью.');
             }
           }
+    };
+    const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
+        try {
+            if (!refreshToken) {
+                console.error('Refresh token is missing');
+                return;
+            }
+            // Проверяем токен на сервере
+            const resCheckToken = await axios.get(ServHost.host + '/checkToken', {
+                params: { refreshToken }
+            });
+            if (resCheckToken.status === 200 && resCheckToken.data) {
+                const login = resCheckToken.data.login;
+                // Отправляем данные для обновления корзины
+                const res = await axios.post(ServHost.host + '/MergeBasket', { login, items: basket || "" });
+                if (res.data.res !== "") {
+                    console.log(res.data.res);
+                    let logged = window.localStorage.getItem("isLoggedIn");
+                    if (logged)
+                    {
+                        window.location.replace("/");
+                    }
+                }
+            } else {
+                console.error('Invalid or expired refresh token');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const UpdateDBBasket = async () => {
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        const basket = window.localStorage.getItem('basket');
+        if (refreshToken) {
+            await sendDataToServerUpdateBasket(refreshToken, basket || "");
+        }
+    };
+    const sendDataToServerUpdateLiked= async (refreshToken: string | null, liked: string | null) => {
+        try {
+            if (!refreshToken) {
+                console.error('Refresh token is missing');
+                return;
+            }
+            // Проверяем токен на сервере
+            const resCheckToken = await axios.get(ServHost.host + '/checkToken', {
+                params: { refreshToken }
+            });
+            if (resCheckToken.status === 200 && resCheckToken.data) {
+                const login = resCheckToken.data.login;
+                // Отправляем данные для обновления корзины
+                const res = await axios.post(ServHost.host + '/MergeLiked', { login, items: liked || "" });
+                if (res.data.res !== "") {
+                    console.log(res.data.res);
+                    let logged = window.localStorage.getItem("isLoggedIn");
+                    if (logged)
+                    {
+                        window.location.replace("/");
+                    }
+                }
+            } else {
+                console.error('Invalid or expired refresh token');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const UpdateDBLiked = async (likedParam?: string) => {
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        const liked = likedParam ?? window.localStorage.getItem('liked');
+        console.log(liked);
+        if (refreshToken) {
+            await sendDataToServerUpdateLiked(refreshToken, liked || "");
+        }
     };
     
 

@@ -9,6 +9,7 @@ import axios from "axios";
 import ServHost from "../../serverHost.json";
 
 function Basket() {
+    const [loading, setLoading] = useState(false);
 
     const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
@@ -33,7 +34,7 @@ function Basket() {
         }
     };
 
-    const UpdateDBBasket = async () => {
+    const updateDBBasket = async () => {
         const refreshToken = window.localStorage.getItem('refreshToken');
         const basket = window.localStorage.getItem('basket');
         if (refreshToken) {
@@ -41,15 +42,20 @@ function Basket() {
         }
     };
 
+    const handleDeleteAll = async () => {
+        setLoading(true);
+        window.localStorage.setItem("basket", "");
+        window.localStorage.setItem("backCount", "0");
+        await updateDBBasket();
+        window.location.reload();
+    };
+
     const [PustoLogo] = useState(() => {
-        const initialState = function () {
-            if (!window.localStorage.getItem("basket")) {
-                return <div className="LikedKat">ВАША КОРЗИНА ПУСТА <br /><br /></div>
-            } else {
-                return <div></div>;
-            }
+        if (!window.localStorage.getItem("basket")) {
+            return <div className="LikedKat">ВАША КОРЗИНА ПУСТА <br /><br /></div>
+        } else {
+            return <div></div>;
         }
-        return initialState();
     });
 
     useEffect(() => {
@@ -66,7 +72,7 @@ function Basket() {
                         </div>
                     );
                 } else {
-                    setContent(LoadContentIFBask(a));
+                    setContent(loadContentIFBask(a));
                 }
             }
         }, 100);
@@ -74,7 +80,7 @@ function Basket() {
         return () => clearInterval(interval);
     }, []);
 
-    const LoadContentIFBask = (BC: string) => {
+    const loadContentIFBask = (BC: string) => {
         return (
             <div className="basketContent">
                 <div className="OformlenieCont">
@@ -123,12 +129,9 @@ function Basket() {
                             <div className="KorzVsegoText">
                                 всего {BC}₽
                             </div>
-                            <button className="KorzVsegobutton" onClick={async () => {
-                                window.localStorage.setItem("basket", "");
-                                window.localStorage.setItem("backCount", "0");
-                                await UpdateDBBasket();
-                                window.location.reload();
-                            }}>Удалить все товары</button>
+                            <button className="KorzVsegobutton" onClick={handleDeleteAll} disabled={loading}>
+                                {loading ? 'Удаление...' : 'Удалить все товары'}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -137,36 +140,30 @@ function Basket() {
     };
 
     const [Content, setContent] = useState(() => {
-        const initialState = function () {
-            if (!window.localStorage.getItem("basket")) {
-                return (
-                    <div>
-                        Чтобы увидеть сохраненные в корзине товары,
-                        <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br /><br /><br />
-                    </div>
-                );
-            } else {
-                return LoadContentIFBask(window.localStorage.getItem('backCount') || "0");
-            }
+        if (!window.localStorage.getItem("basket")) {
+            return (
+                <div>
+                    Чтобы увидеть сохраненные в корзине товары,
+                    <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br /><br /><br />
+                </div>
+            );
+        } else {
+            return loadContentIFBask(window.localStorage.getItem('backCount') || "0");
         }
-        return initialState();
     });
 
     const [PustoBtn] = useState(() => {
-        const initialState = function () {
-            if (!window.localStorage.getItem("basket")) {
-                return (
-                    <div>
-                        <Link to={"/buy"} className='linkHeader'>
-                            <button className="ButtonPusto">Перейти в каталог</button>
-                        </Link>
-                    </div>
-                );
-            } else {
-                return <div></div>;
-            }
+        if (!window.localStorage.getItem("basket")) {
+            return (
+                <div>
+                    <Link to={"/buy"} className='linkHeader'>
+                        <button className="ButtonPusto">Перейти в каталог</button>
+                    </Link>
+                </div>
+            );
+        } else {
+            return <div></div>;
         }
-        return initialState();
     });
 
     useEffect(() => {

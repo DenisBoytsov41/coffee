@@ -11,22 +11,28 @@ import HamburgerMenu from "./HamburgerMenu";
 import axios from "axios";
 import profile from "../images/Profile.jpg";
 import ServHost from "../serverHost.json";
+import { useAuth } from '../components/navigation/AuthContext';
 
 interface BasketData {
     basket: string;
 }
 
 function Header() {
-    const sendDataToServer = async (data: BasketData) => {
+    const { logout } = useAuth(); 
+    const sendDataToServer = async (data: BasketData | null = null) => {
         try {
+            if (data === null) {
+                data = { basket: window.localStorage.getItem('basket') || "" };
+            }
             const res = await axios.post(ServHost.host + '/countBasket', data);
             const { basket, count } = res.data;
             window.localStorage.setItem('basket', basket);
             window.localStorage.setItem('backCount', count);
         } catch (error) {
-            console.error(error);
+            //console.error(error);
         }
     };
+    
 
     const UpdateCount = () => {
         let count = 0;
@@ -44,12 +50,28 @@ function Header() {
             window.localStorage.setItem('basket', validItems.join(","));
         } else if (a === "0") {
             window.localStorage.setItem('basket', "");
+            window.localStorage.setItem('backCount', "0");
         }
         return count;
+    };
+    const logoutUser = async () => {
+        try {
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            if (!refreshToken) {
+                console.error('Отсутствует refreshToken в локальном хранилище');
+                return;
+            }
+    
+            const response = await axios.post(ServHost.host + '/logout', { refreshToken });
+            console.log(response.data.message);
+        } catch (error) {
+            console.error('Ошибка при выходе из системы:', error);
+        }
     };
 
     const UpdateBaskCount = () => {
         let count = 0;
+        UpdateCount();
         let a = window.localStorage.getItem('backCount');
         if (a !== null && a !== "") {
             count = Number(a);
@@ -70,17 +92,9 @@ function Header() {
                     <div className="rightHeader">
                         <img src={profile} alt="profile" className="imgVH" />
                         <Link to={"/profile"} className='linkHeader'>Профиль</Link>
-                        <button className='linkHeader Comissioner btnCont' onClick={() => {
-                            window.localStorage.removeItem('refreshToken');
-                            window.localStorage.removeItem('basket');
-                            window.location.reload();
-                        }}>Выйти</button>
+                        <button className='linkHeader Comissioner btnCont' onClick={handleLogout}>Выйти</button>
                     </div>
                 );
-                const basket = window.localStorage.getItem('basket');
-                if (basket && basket !== "") {
-                    sendDataToServer({ basket });
-                }
             } else {
                 setLoginProfile(
                     <div className="rightHeader">
@@ -113,10 +127,50 @@ function Header() {
                     if (resGetBasket.data.res !== "" && resGetBasket.data.res !== null && resGetBasket.data.res !== undefined) {
                         window.localStorage.setItem('basket', resGetBasket.data.res);
                     }
+                    const basket = window.localStorage.getItem('basket');
+                    if (basket && basket !== "") {
+                        sendDataToServer({ basket });
+                    }
                 }
             }
+            else sendDataToServer();
         } catch (error) {
             console.error(error);
+        }
+    };
+    const sendDataToServerGetLiked = async () => {
+        try {
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            if (refreshToken) {
+                const resCheckToken = await axios.get(ServHost.host + '/checkToken', {
+                    params: { refreshToken }
+                });
+                if (resCheckToken.status === 200 && resCheckToken.data) {
+                    const login = resCheckToken.data.login; // Извлекаем логин из ответа
+                    const resGetBasket = await axios.post(ServHost.host + '/GetLiked', { login });
+                    if (resGetBasket.data.res !== "" && resGetBasket.data.res !== null && resGetBasket.data.res !== undefined) {
+                        const liked = window.localStorage.getItem('liked');
+                        window.localStorage.setItem('liked', resGetBasket.data.res);
+                        if (resGetBasket.data.res!=liked)
+                        {
+                            window.location.reload();
+                        }
+                    }
+                }
+            }
+            else sendDataToServer();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            logoutUser();
+            logout();
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to logout:', error);
         }
     };
 
@@ -132,7 +186,12 @@ function Header() {
         if (refreshToken) {
             sendDataToServerCheckToken(refreshToken);
             sendDataToServerGetBasket();
+            const basket = window.localStorage.getItem('basket');
+            if (basket && basket !== "") {
+                sendDataToServer({ basket });
+            }
         }
+        else sendDataToServer();
     }, []);
 
     useEffect(() => {
@@ -147,24 +206,28 @@ function Header() {
     const handleBasketChange = () => {
         const basket = window.localStorage.getItem('basket');
         const basketCount = window.localStorage.getItem('backCount');
-
+        const liked = window.localStorage.getItem('liked');
         // Проверяем наличие basket
         if (!basket) {
-            // Если basket отсутствует, проверяем basketCount
-            if (basketCount && basketCount !== "0") {
-                // Обнуляем basketCount
-                window.localStorage.setItem('backCount', "0");
-            }
-        } else {
-            // Если basket есть, вызываем UpdateBaskCount
-            UpdateBaskCount();
+            window.localStorage.setItem('backCount', "0");
+            window.localStorage.setItem('basket', "");
         }
-
-        // Если basket есть и не пустой, отправляем данные на сервер
-        if (basket && basket !== "") {
-            sendDataToServer({ basket });
+        else if(!basketCount){
+            window.localStorage.setItem('backCount', "0");
+            window.localStorage.setItem('basket', "");
+        } 
+        else {
+            setCounttov(UpdateCount());
+            setBackCount(UpdateBaskCount());
+            sendDataToServerGetLiked();    
+        }
+        // Проверяем наличие backCount
+        if (!basketCount || basketCount === "") {
+            // Если backCount отсутствует или пуст, пересчитываем его
+            setBackCount(UpdateBaskCount());
         }
     };
+    
 
     useEffect(() => {
         // Вызываем handleBasketChange при монтировании компонента
@@ -178,7 +241,7 @@ function Header() {
             window.removeEventListener('storage', handleBasketChange);
         };
     }, []);
-
+    
     return (
         <div className="HeaderRezerv">
             <div className="HeaderBack"></div>

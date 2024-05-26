@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import '../styles/kartKorz.css';
 import ti from "../images/tovimage.jpg";
 import axios from "axios";
-import ServHost from "../serverHost.json"
+import ServHost from "../serverHost.json";
 
 interface Props {
     name: string;
@@ -52,7 +52,6 @@ function KartTovar(props: Props) {
             let a = Number(window.localStorage.getItem("backCount"))
             window.localStorage.setItem("backCount", String(a - (props.price * counttov)))
         }
-        window.location.reload();
     }
 
     const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
@@ -72,6 +71,7 @@ function KartTovar(props: Props) {
                 const res = await axios.post(ServHost.host + '/UpdateBasket', { login, items: basket || "" });
                 if (res.data.res !== "") {
                     console.log(res.data.res);
+                    //window.location.reload();
                 }
             } else {
                 console.error('Invalid or expired refresh token');
@@ -81,13 +81,14 @@ function KartTovar(props: Props) {
         }
     };
 
-    const UpdateDBBasket = () => {
+    const UpdateDBBasket = async (basketParam?: string) => {
         const refreshToken = window.localStorage.getItem('refreshToken');
-        const basket = window.localStorage.getItem('basket');
+        const basket = basketParam ?? window.localStorage.getItem('basket');
         if (refreshToken) {
-            sendDataToServerUpdateBasket(refreshToken, basket || "");
+            await sendDataToServerUpdateBasket(refreshToken, basket || "");
         }
     };
+    
 
     return(
         <div className='korzkarttov'>
@@ -103,39 +104,54 @@ function KartTovar(props: Props) {
                 <div className="korzpaddingKorz"></div>
                 <div className="korzcountkorz">
                     <div className='korztovcountinp'>
-                        <button onClick={() => {
-                            if (counttov > 1) {
-                                if (window.localStorage.getItem("basket")) {
-                                    // @ts-ignore
-                                    if (window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
-                                        // @ts-ignore
-                                        window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov), props.id + ":" + (counttov - 1)))
-                                        let a = Number(window.localStorage.getItem("backCount"))
-                                        window.localStorage.setItem("backCount", String(a - props.price))
-                                    }
-                                }
-                                setCounttov(counttov - 1)
-                                setVsego(vsego - props.price)
-                                UpdateDBBasket()
+                    <button onClick={async () => {
+                        if (counttov > 1) {
+                            // Получаем значения из локального хранилища в переменные
+                            let basket = window.localStorage.getItem("basket") || "";
+                            let backCount = Number(window.localStorage.getItem("backCount") || 0);
+
+                            // Проверяем и обновляем переменную basket
+                            const itemString = String(props.id + ":" + counttov);
+                            if (basket.includes(itemString)) {
+                                basket = basket.replace(itemString, `${props.id}:${counttov - 1}`);
+                                backCount -= props.price;
                             }
-                        }}>-
-                        </button>
+                            // Обновляем базу данных
+                            await UpdateDBBasket(basket);
+                            // Сохраняем обновленные значения обратно в локальное хранилище
+                            window.localStorage.setItem("basket", basket);
+                            window.localStorage.setItem("backCount", String(backCount));
+
+                            // Обновляем состояние компонента
+                            setCounttov(counttov - 1);
+                            setVsego(vsego - props.price);
+                        }
+                    }}>-</button>
+
                         <div className="korztovcount">{counttov}</div>
-                        <button onClick={() => {
-                            if (window.localStorage.getItem("basket")) {
-                                // @ts-ignore
-                                if (window.localStorage.getItem("basket").includes(String(props.id + ":" + counttov))) {
-                                    // @ts-ignore
-                                    window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov), props.id + ":" + (counttov + 1)))
-                                    let a = Number(window.localStorage.getItem("backCount"))
-                                    window.localStorage.setItem("backCount", String(a + props.price))
+                        <button onClick={async () => {
+                            if (counttov < 1000) {
+                                // Получаем значение из локального хранилища в переменные
+                                let basket = window.localStorage.getItem("basket") || "";
+                                let backCount = Number(window.localStorage.getItem("backCount") || 0);
+
+                                // Проверяем и обновляем переменную basket
+                                const itemString = String(props.id + ":" + counttov);
+                                if (basket.includes(itemString)) {
+                                    basket = basket.replace(itemString, `${props.id}:${counttov + 1}`);
+                                    backCount += props.price;
                                 }
+                                await UpdateDBBasket(basket);
+                                // Сохраняем обновленные значения обратно в локальное хранилище
+                                window.localStorage.setItem("basket", basket);
+                                window.localStorage.setItem("backCount", String(backCount));
+
+                                // Обновляем состояние компонента
+                                setCounttov(counttov + 1);
+                                setVsego(vsego + props.price);
                             }
-                            setCounttov(counttov + 1)
-                            setVsego(vsego + props.price)
-                            UpdateDBBasket()
-                        }}>+
-                        </button>
+                        }}>+</button>
+
                     </div>
                     <div className='korztovprice_one'>
                         1 шт = {props.price}₽
@@ -145,18 +161,27 @@ function KartTovar(props: Props) {
                     <div className='korztovprice'>
                         {vsego}₽
                     </div>
-                    <button className="ItemDelete" onClick={() => {
-                        // @ts-ignore
-                        window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace("," + String(props.id + ":" + counttov), ""))
-                        // @ts-ignore
-                        window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov) + ",", ""))
-                        // @ts-ignore
-                        window.localStorage.setItem("basket", window.localStorage.getItem("basket").replace(String(props.id + ":" + counttov), ""))
+                    <button className="ItemDelete" onClick={async () => {
+                        // Получаем значение из локального хранилища в переменную
+                        let basket = window.localStorage.getItem("basket") || "";
+
+                        // Обновляем переменную, удаляя элементы
+                        basket = basket.replace("," + String(props.id + ":" + counttov), "");
+                        basket = basket.replace(String(props.id + ":" + counttov) + ",", "");
+                        basket = basket.replace(String(props.id + ":" + counttov), "");
+
+                        // Обновляем данные корзины в базе данных
+                        await UpdateDBBasket(basket);
+
+                        // Сохраняем новое значение обратно в локальное хранилище
+                        window.localStorage.setItem("basket", basket);
+
+                        // Обновляем количество элементов на сервере
                         UpdateBackCount("min");
-                        UpdateDBBasket()
                     }}>
                         Удалить
                     </button>
+
                 </div>
             </div>
             <div className="line1"></div>
