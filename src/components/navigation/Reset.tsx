@@ -59,7 +59,7 @@ function Reset() {
                     </div>
                 </form>
             </div>
-            <Futer/>
+            <Futer className="footer"/>
         </div>
     );
 }

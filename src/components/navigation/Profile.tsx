@@ -1,124 +1,126 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Hader from "../Hader";
 import Futer from "../Futer";
 import '../../styles/Reset.css';
-import {SubmitHandler, useForm} from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
-import profile from "../../images/Profile.jpg";
-import {Link} from "react-router-dom";
-import Vhod from "../Vhod";
-import ServHost from "../../serverHost.json"
+import ServHost from "../../serverHost.json";
 
 interface MyForm {
-    name: string,
-    mail: string,
-    pass: string,
-    passp: string,
-    tel: string,
-    maillog: string,
-    passlog: string
+    firstname: string,
+    lastname: string,
+    email: string,
+    phone: string,
+    gender: string,
+    oldPassword: string,
+    newPassword: string
 }
 
 function Profile() {
-
     const {
         register,
-        watch,
-        formState: { errors},
-        handleSubmit
-    } = useForm<MyForm>({mode: "onBlur"});
+        formState: { errors },
+        handleSubmit,
+        setValue
+    } = useForm<MyForm>({ mode: "onBlur" });
 
-    const [data,setData] = useState(() => {
-        const initialState = function () {
-            return ["", "", ""]
-        }
-        return initialState()
-    })
+    const [login, setLogin] = useState<string>('');
 
-    const handleChange = ( index:number, e: ChangeEvent<HTMLInputElement>) => {
-        const newValues = [...data];
-        newValues[index] = e.target.value;
-        setData(newValues);
-    }
-
-    const submit: SubmitHandler<MyForm> = data1 => {
-        sendDataToServerUpdateInfoUser(data1)
-    }
-
-    const sendDataToServerUpdateInfoUser = async (data1:{name: string, mail: string, pass: string, passp: string, tel: string, maillog: string, passlog: string}) => {
+    const sendDataToServerUpdateInfoUser = async (data: MyForm) => {
         try {
-            let a = window.localStorage.getItem("Login")
-            if(a){
-                data1.maillog = a.split(" ")[0]
-                data1.passlog = a.split(" ")[1]
+            const refreshToken = window.localStorage.getItem("refreshToken");
+
+            if (!refreshToken) {
+                window.location.replace("/login");
+                return;
             }
-            if(data1.name === ""){
-                data1.name = data[0]
+
+            const response = await axios.post(`${ServHost.host}/updateInfoUser`, {
+                ...data,
+                refreshToken
+            });
+
+            if (response.status === 200) {
+                console.log('User info updated successfully');
+            } else {
+                console.error('Failed to update user info');
             }
-            if(data1.mail === ""){
-                data1.mail = data[1]
-            }
-            if(data1.tel === ""){
-                data1.tel = data[2]
-            }
-            console.log(data1)
-            window.localStorage.setItem("Login",String(data1.mail) + " " + String(data1.passlog))
-            if(data1.pass !== "" && data1.passp !== ""){
-                window.localStorage.setItem("Login",String(data1.mail) + " " + String(data1.passp))
-            }
-            const res = await axios.post(ServHost.host + '/UpdateInfoUser', data1);
         } catch (error) {
-            console.error(error);
+            console.error('Error updating user info:', error);
         }
     };
 
-    const sendDataToServerCheckUser = async (data1:{ mail: string, pass: string }) => {
+    const sendDataToServerCheckToken = async (refreshToken: string) => {
         try {
-            const res = await axios.post(ServHost.host + '/checkUser', data1);
-            if(!res.data.res){
-                window.location.replace("/login")
+            const response = await axios.get(`${ServHost.host}/checkToken`, { 
+                params: { refreshToken } 
+            });
+
+            if (response.status === 200) {
+                const userData = response.data;
+                //console.log(userData);
+                setLogin(userData.login);
+                setValue('firstname', userData.firstName);
+                setValue('lastname', userData.lastName);
+                setValue('email', userData.email);
+                setValue('phone', userData.phone);
+                setValue('gender', userData.gender);
+            } else {
+                window.location.replace("/login");
             }
         } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const sendDataToServerGetInfoUser = async (data1:{ mail: string, pass: string }) => {
-        try {
-            const res = await axios.post(ServHost.host + '/GetInfoUser', data1);
-            setData([res.data.name,res.data.mail,res.data.tel])
-        } catch (error) {
-            console.error(error);
+            console.error('Error checking token:', error);
+            window.location.replace("/login");
         }
     };
 
     useEffect(() => {
-        let a = window.localStorage.getItem('Login')
-        if(a){
-            sendDataToServerCheckUser({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
-            sendDataToServerGetInfoUser({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
-        }
-        else {
-            window.location.replace("/login")
+        const refreshToken = window.localStorage.getItem('refreshToken');
+
+        if (refreshToken) {
+            sendDataToServerCheckToken(refreshToken);
+        } else {
+            window.location.replace("/login");
         }
     }, []);
 
-    return(
+    const submit: SubmitHandler<MyForm> = (data) => {
+        sendDataToServerUpdateInfoUser(data);
+    };
+
+    return (
         <div>
-            <Hader/>
+            <Hader />
             <div className="contApp">
                 <form onSubmit={handleSubmit(submit)}>
                     <div className="noabsformVhod">
                         <label className="lableVhlog">Пользовательские Данные</label>
-                        <input type="text" placeholder="Имя" value={data[0]} className="inpVhlog" {...register('name')}
-                               onChange={(e) => handleChange( 0, e)}/>
-                        <input type="text" placeholder="E-mail" value={data[1]} className="inpVhlog" {...register('mail')}
-                               onChange={(e) => handleChange( 1, e)}/>
-                        <input type="text" placeholder="Телефон" value={data[2]} className="inpVhlog" {...register('tel')}
-                               onChange={(e) => handleChange( 2, e)}/>
+                        <input type="text" placeholder="Имя" className="inpVhlog" {...register('firstname', { required: true })} />
+                        {errors.firstname && <span className="Error">Имя обязательно к заполнению</span>}
+                        
+                        <input type="text" placeholder="Фамилия" className="inpVhlog" {...register('lastname', { required: true })} />
+                        {errors.lastname && <span className="Error">Фамилия обязательна к заполнению</span>}
+                        
+                        <input type="email" placeholder="E-mail" className="inpVhlog" {...register('email', { required: true })} />
+                        {errors.email && <span className="Error">Email обязателен к заполнению</span>}
+                        
+                        <input type="tel" placeholder="Телефон" className="inpVhlog" {...register('phone', { required: true })} />
+                        {errors.phone && <span className="Error">Телефон обязателен к заполнению</span>}
+                        
+                        <div>
+                            <label>Пол:</label>
+                            <select {...register('gender', { required: true })}>
+                                <option value="">Выберите пол</option>
+                                <option value="Мужской">Мужской</option>
+                                <option value="Женский">Женский</option>
+                            </select>
+                        </div>
+                        {errors.gender && <span className="Error">Пол обязателен к заполнению</span>}
+
                         <label className="lableVhlog">Смена пароля</label>
-                        <input type="text" placeholder="Старый Пароль" className="inpVhlog" {...register('pass')}/>
-                        <input type="text" placeholder="Новый Пароль" className="inpVhlog" {...register('passp')}/>
+                        <input type="password" placeholder="Старый Пароль" className="inpVhlog" {...register('oldPassword')} />
+                        <input type="password" placeholder="Новый Пароль" className="inpVhlog" {...register('newPassword')} />
+
                         <div className="warrior_black">Если хотите поменять только Пользовательские данные не затрагивая пароль, оставьте поля с паролями пустыми</div>
                         <div>
                             <button className="ButtonRes">СОХРАНИТЬ</button>
@@ -126,7 +128,7 @@ function Profile() {
                     </div>
                 </form>
             </div>
-            <Futer/>
+            <Futer className="footer" />
         </div>
     );
 }

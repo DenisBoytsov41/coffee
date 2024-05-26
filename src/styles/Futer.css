@@ -5,6 +5,8 @@
     max-width: 1360px;
     width: 100vi;
     padding-top: 50px;
+    margin-top: auto;
+    width: 100%;
     padding-bottom: 15px;
     @media (max-width: 785px) {
         margin-top: 50px;
@@ -13,6 +15,8 @@
 }
 .contFuter{
     display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     padding: 0 50px;
     @media (max-width: 785px) {
         flex-direction: column;
@@ -28,6 +32,7 @@
         align-items: center;
     }
 }
+
 .leftFuter{
     display: flex;
     flex-direction: row;
@@ -41,6 +46,7 @@
     display: flex;
     flex-direction: column;
     align-items: end;
+    justify-content: space-between;
     @media (max-width: 785px) {
         align-items: center;
         padding-bottom: 50px;
@@ -48,6 +54,12 @@
     flex-grow:1;
     gap: 15px;
 }
+
+.rightFuter > * {
+    align-self: flex-end;
+}
+
+
 .podpis{
     display: flex;
     align-items: center;
@@ -55,6 +67,8 @@
 }
 .linkFuter{
     color: rgba(0, 0, 0, 0.42);
+    display: block;
+    margin: 5px 0;
     text-decoration: none;
 }
 .linkFuter:hover{

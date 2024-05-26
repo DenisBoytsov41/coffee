@@ -1,127 +1,248 @@
-import React, {useEffect, useState} from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import ServHost from '../../serverHost.json';
 import Hader from "../Hader";
 import Futer from "../Futer";
-import {SubmitHandler, useForm} from "react-hook-form";
 import IMask from "imask";
-import axios from "axios";
-import ServHost from "../../serverHost.json"
 
-interface MyForm {
-    name: string,
-    mail: string,
-    pass: string,
-    passp: string,
-    tel: string,
+interface FormData {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+  gender: string;
 }
 
-function Reg(){
+function Reg() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [registrationMessage, setRegistrationMessage] = useState('');
+  const [registrationError, setRegistrationError] = useState('');
+  const [isErrVisible, setErrVisible] = useState(true);
 
-    useEffect(() => {
-        return () => {
-            if (document.getElementById('tel')){
-                const element = document.getElementById('tel');
-                const maskOptions = {
-                    mask: '+7(000)000-00-00',
-                    lazy: false
-                }
-                // @ts-ignore
-                const mask = new IMask(element, maskOptions);
-            }
-        };
-    }, []);
+  const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    gender: ''
+  });
 
-    const {
-        register,
-        watch,
-        formState: { errors},
-        handleSubmit
-    } = useForm<MyForm>({mode: "onBlur"});
-
-    const submit: SubmitHandler<MyForm> = data => {
-        sendDataToServer(data)
+  useEffect(() => {
+    const element = document.getElementById('phone');
+    if (element) {
+      const maskOptions = {
+        mask: '+7 000 000 00 00',
+        lazy: false
+      };
+      const mask = IMask(element, maskOptions);
+      mask.on('accept', () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          phone: mask.value
+        }));
+      });
     }
+  }, []);
 
-    const confPass = (value:string) => {
-        const sameValue = watch('pass');
-        return value === sameValue || 'Пароли не совпадают';
-    };
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
-    const [isErrVisible, setErrVisible] = useState(true);
+  const handleToggleConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
-    const sendDataToServer = async (data:{ name: string, mail: string, pass: string, passp: string, tel: string }) => {
-        try {
-            const res = await axios.post(ServHost.host + '/RegUser', data);
-            if(res.data.res){
-                window.localStorage.setItem("Login", data.mail + " " + data.pass)
-                window.location.replace("/");
-            }
-            else {
-                setErrVisible(false)
-            }
-        } catch (error) {
-            console.error(error);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === 'phone' ? value.replace(/\D/g, '') : value
+    });
+  };
+  
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      setRegistrationError('Пароли не совпадают');
+      setTimeout(() => setRegistrationError(''), 5000);
+      return;
+    }
+    try {
+      const response = await axios.post(`${ServHost.host}/RegUser`, {
+        firstName: `${formData.firstName}`,
+        lastName: `${formData.lastName}`,
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        phone: formData.phone,
+        gender: formData.gender
+      });
+      if (response.data.message) {
+        setRegistrationMessage(response.data.message);
+        setRegistrationError('');
+        setTimeout(() => setRegistrationMessage(''), 5000);
+        window.localStorage.setItem("Login", formData.username + " " + formData.password);
+        window.location.replace("/");
+      } else {
+        // Проверяем, есть ли поле error в ответе
+        if (response.data.error) {
+          // Обработка ошибки от сервера
+          setRegistrationError(response.data.error.join(' ')); // Объединяем сообщения об ошибке в строку
+          setErrVisible(false);
         }
-    };
+      }
+    } catch (error: any) {
+        console.error('Ошибка при отправке запроса: ', error);
+        if (error.response && error.response.data && error.response.data.error) {
+          setRegistrationError((error.response.data.error as string[]).join(' '));
+        } else {
+          setRegistrationError('Ошибка при регистрации. Пожалуйста, попробуйте еще раз или обратитесь за помощью.');
+        }
+      }
+  };
+  
+  
 
-    return(
-        <div>
-            <Hader/>
-            <div className="contApp">
-                <form onSubmit={handleSubmit(submit)}>
-                    <div className="noabsformReg">
-                        <label className="lableVhlog">РЕГИСТРАЦИЯ</label>
-                        <div>Основные данные</div>
-                        <input type="text" placeholder="* Имя и Фамилия"
-                               className="inpVhlog" {...register('name', {
-                            required: true,
-                            minLength: {
-                                value: 5,
-                                message: 'Минимальное количество символов 5'
-                            }
-                        })}/>
-                        {errors?.name && <div className="Error">{errors?.name?.message || 'Поле обязательно к заполнению!'}</div>}
-                        <input type="text" placeholder="* E-mail"
-                               className="inpVhlog" {...register('mail', {
-                            required: true,
-                            pattern: {
-                                value: /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu,
-                                message: 'Почта неправильного вида'
-                            }
-                        })}/>
-                        <div className="Error" hidden={isErrVisible}>Пользователь с таким E-mail уже зарегистрирован</div>
-                        {errors?.mail && <div className="Error">{errors?.mail?.message || 'Поле обязательно к заполнению!'}</div>}
-                        <input type="text" placeholder="* Телефон" id="tel"
-                               className="inpVhlog" {...register('tel')}/>
-                        <div>Ваш пароль</div>
-                        <input type="password" placeholder="* Пароль"
-                               className="inpVhlog" {...register('pass', {
-                            required: true,
-                            minLength: {
-                                value: 5,
-                                message: 'Минимальное количество символов 5'
-                            },
-                            maxLength: {
-                                value: 16,
-                                message: 'Максимальное количество символов 16'
-                            }
-                        })}/>
-                        {errors?.pass && <div className="Error">{errors?.pass?.message || 'Поле обязательно к заполнению!'}</div>}
-                        <input type="password" placeholder="* Подтвердите Пароль"
-                               className="inpVhlog" {...register('passp', {
-                            required: true,
-                            validate: confPass
-                        })}/>
-                        {errors?.passp && <div className="Error">{errors?.passp?.message || 'Поле обязательно к заполнению!'}</div>}
-                        <div>
-                            <button className="ButtonReg">Зарегистрироваться</button>
-                        </div>
-                        <div className="warrior"> При создании нового аккаунта, вы даёте согласие на обработку персональных данных</div>
-                    </div>
-                </form>
+  return (
+    <div>
+      <Hader />
+      <div className="contApp">
+        <form id="registrationForm" onSubmit={handleSubmit}>
+          <div className="noabsformReg">
+            <label className="lableVhlog">РЕГИСТРАЦИЯ</label>
+            {registrationError && <div className="Error">{registrationError}</div>}
+            {registrationMessage && <div className="Message">{registrationMessage}</div>}
+            <div>Основные данные</div>
+            <input
+              type="text"
+              placeholder="* Имя"
+              className="inpVhlog"
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+              minLength={2}
+              maxLength={15}
+            />
+            <input
+              type="text"
+              placeholder="* Фамилия"
+              className="inpVhlog"
+              id="lastName"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+              minLength={2}
+              maxLength={15}
+            />
+            <input
+              type="tel"
+              placeholder="* Телефон"
+              className="inpVhlog"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="email"
+              placeholder="* E-mail"
+              className="inpVhlog"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              placeholder="* Логин"
+              className="inpVhlog"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              minLength={6}
+            />
+            <div>Ваш пароль</div>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="* Пароль"
+              className="inpVhlog"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              minLength={8}
+              maxLength={16}
+            />
+            <button type="button" onClick={handleTogglePassword}>
+              {showPassword ? 'Скрыть' : 'Показать'}
+            </button>
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder="* Подтвердите Пароль"
+              className="inpVhlog"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              minLength={8}
+              maxLength={16}
+            />
+            <button type="button" onClick={handleToggleConfirmPassword}>
+              {showConfirmPassword ? 'Скрыть' : 'Показать'}
+            </button>
+            <div>
+              <label>Пол:</label>
+              <div>
+                <input
+                  type="radio"
+                  id="maleGender"
+                  name="gender"
+                  value="Мужской"
+                  checked={formData.gender === "Мужской"}
+                  onChange={handleChange}
+                />
+                <label htmlFor="maleGender">Мужской</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="femaleGender"
+                  name="gender"
+                  value="Женский"
+                  checked={formData.gender === "Женский"}
+                  onChange={handleChange}
+                />
+                <label htmlFor="femaleGender">Женский</label>
+              </div>
             </div>
-            <Futer/>
-        </div>
-    );
+            <div>
+              <button className="ButtonReg" type="submit">Зарегистрироваться</button>
+            </div>
+            <div className="warrior">При создании нового аккаунта, вы даёте согласие на обработку персональных данных</div>
+          </div>
+        </form>
+      </div>
+      <Futer className="footer"/>
+    </div>
+  );
 }
 
 export default Reg;

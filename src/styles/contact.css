@@ -1,0 +1,19 @@
+.formCont {
+    display: flex; /* Добавить flexbox */
+    flex-direction: column; /* Разместить элементы в столбце */
+    gap: 10px; /* Добавить промежуток между элементами */
+}
+
+.absformCont {
+    background: white;
+    width: 175px;
+    height: 60px;
+    display: flex; /* Добавить flexbox */
+    flex-direction: column; /* Разместить элементы в столбце */
+    align-items: start; /* Выровнять элементы слева */
+    gap: 8px;
+    margin-top: 15px;
+    padding-top: 7px;
+    margin-left: 60px;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.35);
+}

@@ -13,7 +13,7 @@ function Buy(){
             <div className="contApp">
                 <Katalog type={''} katcount={0}/>
             </div>
-            <Futer/>
+            <Futer className="footer"/>
         </div>
     );
 }

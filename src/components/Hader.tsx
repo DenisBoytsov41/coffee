@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import City from "./City";
 import Contacts from "./Contacts";
 import Vhod from "./Vhod";
@@ -10,14 +10,19 @@ import bask from '../images/Basket.jpg';
 import HamburgerMenu from "./HamburgerMenu";
 import axios from "axios";
 import profile from "../images/Profile.jpg";
-import ServHost from "../serverHost.json"
+import ServHost from "../serverHost.json";
 
-function Hader(){
+interface BasketData {
+    basket: string;
+}
 
-    const sendDataToServer = async (data:{ basket:string }) => {
+function Header() {
+    const sendDataToServer = async (data: BasketData) => {
         try {
-            const res = await axios.post(ServHost.host + '/CountBasket', data);
-            window.localStorage.setItem('backCount', res.data)
+            const res = await axios.post(ServHost.host + '/countBasket', data);
+            const { basket, count } = res.data;
+            window.localStorage.setItem('basket', basket);
+            window.localStorage.setItem('backCount', count);
         } catch (error) {
             console.error(error);
         }
@@ -25,115 +30,163 @@ function Hader(){
 
     const UpdateCount = () => {
         let count = 0;
-        let a = window.localStorage.getItem('basket')
-        if(a !== "" && a !== null ){
-            // @ts-ignore
-            let arr = a.split(",")
-            for (let i = 0; i < arr.length; i++){
-                count = count + Number(arr[i].split(":")[1]);
+        let a = window.localStorage.getItem('basket');
+        if (a && a !== "0" && a !== "" && a !== null) {
+            let arr = a.split(",");
+            let validItems = [];
+            for (let i = 0; i < arr.length; i++) {
+                let parts = arr[i].split(":");
+                if (parts.length === 2 && parseInt(parts[0]) > 0 && parseInt(parts[1]) > 0) {
+                    validItems.push(arr[i]);
+                    count += parseInt(parts[1]);
+                }
             }
+            window.localStorage.setItem('basket', validItems.join(","));
+        } else if (a === "0") {
+            window.localStorage.setItem('basket', "");
         }
         return count;
-    }
+    };
 
     const UpdateBaskCount = () => {
         let count = 0;
-        let a = window.localStorage.getItem('backCount')
-        if(a !== null && a !== ""){
+        let a = window.localStorage.getItem('backCount');
+        if (a !== null && a !== "") {
             count = Number(a);
         }
         return count;
-    }
+    };
 
-    const [counttov, setCounttov] = useState(() => {
-        const initialState = function () {
-            return 0;
-        }
-        return initialState()
-    })
+    const [counttov, setCounttov] = useState(0);
+    const [backCount, setBackCount] = useState(0);
 
-    const [backCount, setBackCount] = useState(() => {
-        const initialState = function () {
-            return 0;
-        }
-        return initialState()
-    })
-
-    const sendDataToServerCheckUser = async (data:{ mail: string, pass: string }) => {
+    const sendDataToServerCheckToken = async (refreshToken: string) => {
         try {
-            const res = await axios.post(ServHost.host + '/checkUser', data);
-            if(res.data.res){
+            const res = await axios.get(ServHost.host + '/checkToken', {
+                params: { refreshToken }
+            });
+            if (res.status === 200 && res.data) {
                 setLoginProfile(
                     <div className="rightHeader">
-                        <img src={profile} alt="profile" className="imgVH"/>
+                        <img src={profile} alt="profile" className="imgVH" />
                         <Link to={"/profile"} className='linkHeader'>Профиль</Link>
                         <button className='linkHeader Comissioner btnCont' onClick={() => {
-                            window.localStorage.removeItem('Login')
-                            window.location.reload()
+                            window.localStorage.removeItem('refreshToken');
+                            window.localStorage.removeItem('basket');
+                            window.location.reload();
                         }}>Выйти</button>
                     </div>
-                )
-                if(window.localStorage.getItem('basket') && window.localStorage.getItem('basket') !== ""){
-                    // @ts-ignore
-                    sendDataToServer({ basket:window.localStorage.getItem('basket') })
+                );
+                const basket = window.localStorage.getItem('basket');
+                if (basket && basket !== "") {
+                    sendDataToServer({ basket });
                 }
+            } else {
+                setLoginProfile(
+                    <div className="rightHeader">
+                        <Vhod />
+                        <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
+                    </div>
+                );
             }
         } catch (error) {
             console.error(error);
-        }
-    };
-
-    const sendDataToServerGetBasket = async (data:{ mail: string, pass: string }) => {
-        try {
-            const res = await axios.post(ServHost.host + '/GetBasket', data);
-            if(res.data.res !== "" && res.data.res !== null && res.data.res !== undefined ){
-                window.localStorage.setItem('basket', res.data.res)
-                let a = window.localStorage.getItem('Login')
-                if(a){
-                    sendDataToServerCheckUser({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
-                }
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const [loginProfile, setLoginProfile] = useState(() => {
-        const initialState = function () {
-            let a = window.localStorage.getItem('Login')
-            if(a){
-                sendDataToServerCheckUser({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
-                sendDataToServerGetBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1] })
-            }
-            return (
+            setLoginProfile(
                 <div className="rightHeader">
-                    <Vhod/>
+                    <Vhod />
                     <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
                 </div>
-            )
+            );
         }
-        return initialState()
-    })
+    };
+
+    const sendDataToServerGetBasket = async () => {
+        try {
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            if (refreshToken) {
+                const resCheckToken = await axios.get(ServHost.host + '/checkToken', {
+                    params: { refreshToken }
+                });
+                if (resCheckToken.status === 200 && resCheckToken.data) {
+                    const login = resCheckToken.data.login; // Извлекаем логин из ответа
+                    const resGetBasket = await axios.post(ServHost.host + '/GetBasket', { login });
+                    if (resGetBasket.data.res !== "" && resGetBasket.data.res !== null && resGetBasket.data.res !== undefined) {
+                        window.localStorage.setItem('basket', resGetBasket.data.res);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const [loginProfile, setLoginProfile] = useState(() => (
+        <div className="rightHeader">
+            <Vhod />
+            <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
+        </div>
+    ));
 
     useEffect(() => {
-
-        const interval = setInterval(() => {
-            setCounttov(UpdateCount);
-            setBackCount(UpdateBaskCount);
-
-        }, 100);
-
-        return () => clearInterval(interval);
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        if (refreshToken) {
+            sendDataToServerCheckToken(refreshToken);
+            sendDataToServerGetBasket();
+        }
     }, []);
 
-    return(
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCounttov(UpdateCount());
+            setBackCount(UpdateBaskCount());
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    const handleBasketChange = () => {
+        const basket = window.localStorage.getItem('basket');
+        const basketCount = window.localStorage.getItem('backCount');
+
+        // Проверяем наличие basket
+        if (!basket) {
+            // Если basket отсутствует, проверяем basketCount
+            if (basketCount && basketCount !== "0") {
+                // Обнуляем basketCount
+                window.localStorage.setItem('backCount', "0");
+            }
+        } else {
+            // Если basket есть, вызываем UpdateBaskCount
+            UpdateBaskCount();
+        }
+
+        // Если basket есть и не пустой, отправляем данные на сервер
+        if (basket && basket !== "") {
+            sendDataToServer({ basket });
+        }
+    };
+
+    useEffect(() => {
+        // Вызываем handleBasketChange при монтировании компонента
+        handleBasketChange();
+        // Отслеживаем изменения в корзине
+        window.addEventListener('storage', handleBasketChange);
+        setCounttov(UpdateCount());
+        setBackCount(UpdateBaskCount());
+        // Очищаем слушателя событий при размонтировании компонента
+        return () => {
+            window.removeEventListener('storage', handleBasketChange);
+        };
+    }, []);
+
+    return (
         <div className="HeaderRezerv">
             <div className="HeaderBack"></div>
             <div className="mainHeader">
                 <div className="contHeader hideMobile">
                     <div className="leftHeader">
-                        <City/>
-                        <Contacts/>
+                        <City />
+                        <Contacts />
                         <Link to={"/opt"} className='linkHeader'>Оптовые цены</Link>
                     </div>
                     {loginProfile}
@@ -142,21 +195,21 @@ function Hader(){
                 <div className="contHeader">
                     <div className="leftHeader">
                         <Link to={"/"} className='linkHeader'>
-                            <img src={logo} alt="logo"/>
+                            <img src={logo} alt="logo" />
                         </Link>
-                        <Link to={"/buy"} className='linkHeader  hideMobile'>Купить</Link>
-                        <Link to={"/faq"} className='linkHeader  hideMobile'>Частые вопросы</Link>
-                        <Link to={"/shipment"} className='linkHeader  hideMobile'>Условия работы</Link>
+                        <Link to={"/buy"} className='linkHeader hideMobile'>Купить</Link>
+                        <Link to={"/faq"} className='linkHeader hideMobile'>Частые вопросы</Link>
+                        <Link to={"/shipment"} className='linkHeader hideMobile'>Условия работы</Link>
                     </div>
                     <div className="rightHeader">
                         <Link to={"/liked"} className='linkHeader'>
                             <div className='baskHeader'>
-                                <img src={like} alt="like" className="imgtov"/>
+                                <img src={like} alt="like" className="imgtov" />
                             </div>
                         </Link>
                         <Link to={"/basket"} className='linkHeader'>
                             <div className='baskHeader'>
-                                <img src={bask} alt="bask" className="imgtov"/>
+                                <img src={bask} alt="bask" className="imgtov" />
                                 <div className='baskinfoHeader'>
                                     <label>{backCount} ₽</label>
                                     <label>{counttov} тов.</label>
@@ -165,7 +218,7 @@ function Hader(){
                         </Link>
                     </div>
                     <div className="rightHeaderMobile">
-                        <HamburgerMenu/>
+                        <HamburgerMenu />
                     </div>
                 </div>
             </div>
@@ -173,4 +226,4 @@ function Hader(){
     );
 }
 
-export default Hader;
+export default Header;

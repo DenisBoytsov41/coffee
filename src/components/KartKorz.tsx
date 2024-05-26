@@ -55,12 +55,26 @@ function KartTovar(props: Props) {
         window.location.reload();
     }
 
-    const sendDataToServerUpdateBasket = async (data:{ mail: string, pass: string , value: string}) => {
+    const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
-            const res = await axios.post(ServHost.host + '/UpdateBasket', data);
-            if(res.data.res !== ""){
-                console.log(res.data.res)
-
+            console.log("хахахах");
+            if (!refreshToken) {
+                console.error('Refresh token is missing');
+                return;
+            }
+            // Проверяем токен на сервере
+            const resCheckToken = await axios.get(ServHost.host + '/checkToken', {
+                params: { refreshToken }
+            });
+            if (resCheckToken.status === 200 && resCheckToken.data) {
+                const login = resCheckToken.data.login;
+                // Отправляем данные для обновления корзины
+                const res = await axios.post(ServHost.host + '/UpdateBasket', { login, items: basket || "" });
+                if (res.data.res !== "") {
+                    console.log(res.data.res);
+                }
+            } else {
+                console.error('Invalid or expired refresh token');
             }
         } catch (error) {
             console.error(error);
@@ -68,17 +82,12 @@ function KartTovar(props: Props) {
     };
 
     const UpdateDBBasket = () => {
-        let a = window.localStorage.getItem('Login')
-        if(a){
-            let b = window.localStorage.getItem('basket')
-            if(b) {
-                sendDataToServerUpdateBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1], value: b })
-            }
-            if(!b || b === ""){
-                sendDataToServerUpdateBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1], value: "" })
-            }
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        const basket = window.localStorage.getItem('basket');
+        if (refreshToken) {
+            sendDataToServerUpdateBasket(refreshToken, basket || "");
         }
-    }
+    };
 
     return(
         <div className='korzkarttov'>

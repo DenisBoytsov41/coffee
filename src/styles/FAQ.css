@@ -36,3 +36,32 @@ details > summary {
     flex-grow: 2;
     flex-basis: 0;
 }
+.faq-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .content-wrapper {
+    flex: 1;
+  }
+  
+  .ContentFAQ {
+    padding: 20px;
+  }
+  
+  .Zagol1FAQ, .ZagolFAQ, .textFAQ, .textopenFAQ {
+    margin-bottom: 15px;
+  }
+  
+  .FAQ {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .FAQ1 {
+    flex: 1;
+    min-width: 300px;
+  }
+  

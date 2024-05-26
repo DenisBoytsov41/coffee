@@ -3,13 +3,22 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { AuthProvider } from './components/navigation/AuthContext';
+import ErrorBoundary from './components/errors/ErrorBoundary';
+import CustomErrorComponent from './components/errors/CustomErrorComponent';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary errorElement={<CustomErrorComponent />}>
+      <React.StrictMode>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </React.StrictMode>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

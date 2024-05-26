@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./components/navigation/Home";
 import Buy from "./components/navigation/Buy";
 import Faq from "./components/navigation/Faq";
@@ -14,67 +14,135 @@ import Reset from "./components/navigation/Reset";
 import Login from "./components/navigation/Login";
 import Admin from "./components/navigation/Admin";
 import Profile from "./components/navigation/Profile";
+import { useAuth } from './components/navigation/AuthContext';
+import { jwtDecode, JwtPayload } from "jwt-decode";
+import clearExpiredTokens from './components/navigation/tokenUtils';
+import checkRefreshToken from './components/navigation/refreshTokenUtils';
+import ErrorBoundary from './components/errors/ErrorBoundary';
+import CustomErrorComponent from './components/errors/CustomErrorComponent';
+import NotFound from './components/errors/NotFound';
 
-const router = createBrowserRouter([
-  {
-    path: "opt",
-    element: <Opt/>,
-  },
-  {
-    path: "reg",
-    element: <Reg/>,
-  },
-  {
-    path: "/",
-    element: <Home/>,
-  },
-  {
-    path: "buy",
-    element: <Buy/>,
-  },
-  {
-    path: "faq",
-    element: <Faq/>,
-  },
-  {
-    path: "shipment",
-    element: <Shipment/>,
-  },
-  {
-    path: "liked",
-    element: <Liked/>,
-  },
-  {
-    path: "basket",
-    element: <Basket/>,
-  },
-  {
-    path: "about",
-    element: <About/>,
-  },
-  {
-    path: "reset",
-    element: <Reset/>,
-  },
-  {
-    path: "login",
-    element: <Login/>,
-  },
-  {
-    path: "admin",
-    element: <Admin/>,
-  },
-  {
-    path: "profile",
-    element: <Profile/>,
-  },
-]);
+const schedule = require('node-schedule');
 
-function App(){
-  return(
-      <div className="App Comissioner">
-        <RouterProvider router={router} />
-      </div>
+interface MyJwtPayload extends JwtPayload {
+  username: string;
+  guestMode: boolean;
+  currentTheme: string;
+  error: string;
+}
+
+const decodeToken = (token: string): MyJwtPayload => {
+  return jwtDecode(token) as MyJwtPayload;
+};
+
+function App() {
+  const [showPersonalCabinet, setShowPersonalCabinet] = useState(false);
+  const { isLoggedIn, login, logout } = useAuth();
+
+  const [username, setUsername] = useState('');
+  const [jwtToken, setJwtToken] = useState('');
+  const [guestMode, setGuestMode] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const loggedInState = localStorage.getItem('isLoggedIn');
+    if (loggedInState === 'true') {
+      setShowPersonalCabinet(true);
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        const decodedToken = decodeToken(accessToken);
+        setUsername(decodedToken.username);
+        setJwtToken(accessToken);
+        setGuestMode(decodedToken.guestMode);
+        setCurrentTheme(decodedToken.currentTheme);
+        setError(decodedToken.error);
+      }
+    } else {
+      setShowPersonalCabinet(false);
+    }
+  }, [isLoggedIn, login, logout]);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      const decodedToken = decodeToken(accessToken);
+      setUsername(decodedToken.username);
+      setJwtToken(accessToken);
+      setGuestMode(decodedToken.guestMode);
+      setCurrentTheme(decodedToken.currentTheme);
+      setError(decodedToken.error);
+    }
+  }, [localStorage.getItem('accessToken')]);
+
+  const handleLoginBtnClick = () => {
+    setShowPersonalCabinet(false);
+  };
+
+  const handleRegisterBtnClick = () => {
+    setShowPersonalCabinet(false);
+  };
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      window.location.reload();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  const handleLoginSuccess = () => {
+    setShowPersonalCabinet(true);
+    login();
+  };
+
+  const handleLogout = () => {
+    setShowPersonalCabinet(false);
+    logout();
+  };
+
+  useEffect(() => {
+    const job = schedule.scheduleJob('*/1 * * * *', () => {
+      //console.log("Вызвал 1 мин");
+      clearExpiredTokens();
+      setTimeout(() => {
+        checkRefreshToken();
+      }, 2000);
+    });
+
+    return () => {
+      job.cancel();
+    };
+  }, []);
+
+  return (
+    <div className="App Comissioner">
+      <ErrorBoundary errorElement={<CustomErrorComponent />}>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/buy" element={<Buy />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/shipment" element={<Shipment />} />
+            <Route path="/liked" element={<Liked />} />
+            <Route path="/basket" element={<Basket />} />
+            <Route path="/opt" element={<Opt />} />
+            <Route path="/reg" element={<Reg />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/reset" element={<Reset />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </ErrorBoundary>
+    </div>
   );
 }
+
 export default App;

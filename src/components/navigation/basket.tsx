@@ -1,71 +1,72 @@
-import React, {useEffect, useState} from "react";
-import Hader from "../Hader";
-import Futer from "../Futer";
-import {Link} from "react-router-dom";
-import "../../styles/basket.css"
+import React, { useEffect, useState } from "react";
+import Header from "../Hader";
+import Footer from "../Futer";
+import { Link } from "react-router-dom";
+import "../../styles/basket.css";
 import IMask from "imask";
 import Katalog from "../Katalog";
 import axios from "axios";
-import ServHost from "../../serverHost.json"
+import ServHost from "../../serverHost.json";
 
-function Basket(){
+function Basket() {
 
-    const sendDataToServerUpdateBasket = async (data:{ mail: string, pass: string , value: string}) => {
+    const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
-            const res = await axios.post(ServHost.host + '/UpdateBasket', data);
-            if(res.data.res !== ""){
-                console.log(res.data.res)
-
+            if (!refreshToken) {
+                console.error('Refresh token is missing');
+                return;
+            }
+            const resCheckToken = await axios.get(ServHost.host + '/checkToken', {
+                params: { refreshToken }
+            });
+            if (resCheckToken.status === 200 && resCheckToken.data) {
+                const login = resCheckToken.data.login;
+                const res = await axios.post(ServHost.host + '/UpdateBasket', { login, items: basket || "" });
+                if (res.data.res !== "") {
+                    console.log(res.data.res);
+                }
+            } else {
+                console.error('Invalid or expired refresh token');
             }
         } catch (error) {
             console.error(error);
         }
     };
 
-    const UpdateDBBasket = () => {
-        let a = window.localStorage.getItem('Login')
-        if(a){
-            let b = window.localStorage.getItem('basket')
-            if(b) {
-                sendDataToServerUpdateBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1], value: b })
-            }
-            if(!b || b === ""){
-                sendDataToServerUpdateBasket({ mail: a.split(" ")[0], pass: a.split(" ")[1], value: "" })
-            }
+    const UpdateDBBasket = async () => {
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        const basket = window.localStorage.getItem('basket');
+        if (refreshToken) {
+            await sendDataToServerUpdateBasket(refreshToken, basket || "");
         }
-    }
+    };
 
     const [PustoLogo] = useState(() => {
         const initialState = function () {
-            if(!window.localStorage.getItem("basket")) {
-                return <div className="LikedKat">ВАША КОРЗИНА ПУСТА <br/><br/></div>
-            }
-            else {
+            if (!window.localStorage.getItem("basket")) {
+                return <div className="LikedKat">ВАША КОРЗИНА ПУСТА <br /><br /></div>
+            } else {
                 return <div></div>;
             }
         }
-        return initialState()
-    })
+        return initialState();
+    });
 
     useEffect(() => {
-
         let a = "";
 
         const interval = setInterval(() => {
-            if(a !== window.localStorage.getItem('backCount')){
-                // @ts-ignore
-                a = window.localStorage.getItem('backCount')
-                if(!window.localStorage.getItem("basket")) {
+            if (a !== window.localStorage.getItem('backCount')) {
+                a = window.localStorage.getItem('backCount') || "";
+                if (!window.localStorage.getItem("basket")) {
                     setContent(
                         <div className="centerText">
                             Чтобы увидеть сохраненные в корзине товары,
-                            <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br/><br/><br/>
+                            <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br /><br /><br />
                         </div>
-                    )
-                }
-                else {
-                    // @ts-ignore
-                    setContent(LoadContentIFBask(window.localStorage.getItem('backCount')))
+                    );
+                } else {
+                    setContent(LoadContentIFBask(a));
                 }
             }
         }, 100);
@@ -73,119 +74,124 @@ function Basket(){
         return () => clearInterval(interval);
     }, []);
 
-    const LoadContentIFBask = (BC:string) => {
-        return <div className="basketContent">
-            <div className="OformlenieCont">
-                <div className="Oformlenie">
+    const LoadContentIFBask = (BC: string) => {
+        return (
+            <div className="basketContent">
+                <div className="OformlenieCont">
+                    <div className="Oformlenie">
+                        <div className="paddingCont">
+                            <br />
+                            <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
+                            <br />
+                            <br />
+                            <div className="baskText grayText">Покупатель</div>
+                            <br />
+                            <div className="inpGor">
+                                <div className="TelBask">
+                                    <input type="text" placeholder="Имя и Фамилия" className="inpBasklog whiteText" />
+                                    <input type="text" placeholder="E-mail" className="inpBasklog whiteText" />
+                                </div>
+                                <div className="TelBask">
+                                    <input type="text" placeholder="Телефон" id="tel" className="inpBasklog whiteText" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+                    <div className="AddrDost">
+                        ИНТЕГРАЦИЯ CDEK
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+                    <div className="AddrDost">
+                        ИНТЕГРАЦИЯ ЮКАССА
+                    </div>
+                </div>
+                <div className="Bask">
                     <div className="paddingCont">
-                        <br/>
-                        <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
-                        <br/>
-                        <br/>
-                        <div className="baskText grayText">Покупатель</div>
-                        <br/>
-                        <div className="inpGor">
-                            <div className="TelBask">
-                                <input type="text" placeholder="Имя и Фамилия" className="inpBasklog whiteText"/>
-                                <input type="text" placeholder="E-mail" className="inpBasklog whiteText"/>
+                        <br />
+                        <div className="baskZagol">КОРЗИНА</div>
+                        <br />
+                        <br />
+                        <Katalog type={'korzina'} katcount={0} />
+                        <br />
+                        <br />
+                        <div className="KorzVsego">
+                            <div className="KorzVsegoText">
+                                всего {BC}₽
                             </div>
-                            <div className="TelBask">
-                                <input type="text" placeholder="Телефон" id="tel" className="inpBasklog whiteText"/>
-                            </div>
+                            <button className="KorzVsegobutton" onClick={async () => {
+                                window.localStorage.setItem("basket", "");
+                                window.localStorage.setItem("backCount", "0");
+                                await UpdateDBBasket();
+                                window.location.reload();
+                            }}>Удалить все товары</button>
                         </div>
                     </div>
                 </div>
-                <br/>
-                <br/>
-                <br/>
-                <div className="AddrDost">
-                    ИНТЕГРАЦИЯ CDEK
-                </div>
-                <br/>
-                <br/>
-                <br/>
-                <div className="AddrDost">
-                    ИНТЕГРАЦИЯ ЮКАССА
-                </div>
             </div>
-            <div className="Bask">
-                <div className="paddingCont">
-                    <br/>
-                    <div className="baskZagol">КОРЗИНА</div>
-                    <br/>
-                    <br/>
-                    <Katalog type={'korzina'} katcount={0}/>
-                    <br/>
-                    <br/>
-                    <div className="KorzVsego">
-                        <div className="KorzVsegoText">
-                            всего {BC}₽
-                        </div>
-                        <button className="KorzVsegobutton" onClick={() => {
-                            window.localStorage.setItem("basket","")
-                            window.localStorage.setItem("backCount","0")
-                            UpdateDBBasket()
-                            window.location.reload()
-                        }}>Удалить все товары</button>
-                    </div>
-                </div>
-            </div>
-        </div>;
-    }
+        );
+    };
 
     const [Content, setContent] = useState(() => {
         const initialState = function () {
-            if(!window.localStorage.getItem("basket")) {
-                return <div>
-                    Чтобы увидеть сохраненные в корзине товары,
-                    <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br/><br/><br/>
-                </div>
-            }
-            else {
-                // @ts-ignore
-                return LoadContentIFBask(window.localStorage.getItem('backCount'));
+            if (!window.localStorage.getItem("basket")) {
+                return (
+                    <div>
+                        Чтобы увидеть сохраненные в корзине товары,
+                        <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br /><br /><br />
+                    </div>
+                );
+            } else {
+                return LoadContentIFBask(window.localStorage.getItem('backCount') || "0");
             }
         }
-        return initialState()
-    })
+        return initialState();
+    });
 
     const [PustoBtn] = useState(() => {
         const initialState = function () {
-            if(!window.localStorage.getItem("basket")) {
-                return <div><Link to={"/buy"} className='linkHeader'>
-                    <button className="ButtonPusto">Перейти в каталог</button>
-                </Link></div>
-            }
-            else {
+            if (!window.localStorage.getItem("basket")) {
+                return (
+                    <div>
+                        <Link to={"/buy"} className='linkHeader'>
+                            <button className="ButtonPusto">Перейти в каталог</button>
+                        </Link>
+                    </div>
+                );
+            } else {
                 return <div></div>;
             }
         }
-        return initialState()
-    })
+        return initialState();
+    });
 
     useEffect(() => {
-        if (document.getElementById('tel')){
+        if (document.getElementById('tel')) {
             const element = document.getElementById('tel');
             const maskOptions = {
                 mask: '+7(000)000-00-00',
                 lazy: false
-            }
+            };
             // @ts-ignore
-            const mask = new IMask(element, maskOptions);
+            new IMask(element, maskOptions);
         }
     });
 
     return (
         <div>
-            <Hader/>
-            <br/>
-            <br/>
+            <Header />
+            <br />
+            <br />
             <div className="contApp">
                 {PustoLogo}
                 {Content}
                 {PustoBtn}
             </div>
-            <Futer/>
+            <Footer className="footer" />
         </div>
     );
 }

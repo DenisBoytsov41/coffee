@@ -59,7 +59,7 @@ function About(){
                     ОГРНИП: 320440100014832
                 </div>
             </div>
-            <Futer/>
+            <Futer className="footer"/>
         </div>
     );
 }

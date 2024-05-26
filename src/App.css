@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   overflow-x:hidden;
+  margin: 0;
 }
 .contApp{
   display: flex;

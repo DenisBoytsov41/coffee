@@ -22,7 +22,7 @@ function Opt(){
                 <br/>
                 <Katalog type={"opt"} katcount={0}/>
             </div>
-            <Futer/>
+            <Futer className="footer"/>
         </div>
     );
 }

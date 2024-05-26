@@ -33,7 +33,7 @@ function Liked(){
                 <div className="centerText">{Pusto}</div>
                 <Katalog type={"liked"} katcount={0}/>
             </div>
-            <Futer/>
+            <Futer className="footer"/>
         </div>
     );
 }

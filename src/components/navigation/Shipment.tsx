@@ -1,54 +1,47 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Hader from "../Hader";
 import Futer from "../Futer";
-import "../../styles/Shipment.css"
+import "../../styles/Shipment.css";
+import "../../styles/stickyFooter.css"; // Импортируем новый стиль для фиксации футера
 import backSh from "../../images/dostavka.jpg";
 import cdek from "../../images/CDEK.jpg";
 
-function Shipment(){
-
-    return(
-        <div>
-            <Hader/>
-            <img src={backSh} alt="back" className="imgbackSh"/>
-            <div className="imgText">
-                ДОСТАВКА И ОПЛАТА
-            </div>
-            <div className="ContentSh">
-                <div className="Dostavka">
-                    <div className="Dost1">
-                        <div className="ZagolSh">
-                            ДОСТАВКА
+function Shipment() {
+    return (
+        <div className="shipment-page">
+            <Hader />
+            <div className="content-wrapper">
+                <img src={backSh} alt="back" className="imgbackSh" />
+                <div className="imgText">ДОСТАВКА И ОПЛАТА</div>
+                <div className="ContentSh">
+                    <div className="Dostavka">
+                        <div className="Dost1">
+                            <div className="ZagolSh">ДОСТАВКА</div>
+                            <div className="textSh">
+                                Мы сотрудничаем с крупными транспортными компаниями и доставляем заказы до двери, пунктов
+                                выдачи и постаматов. Почти всегда делаем это за наш счёт.
+                                Стоимость доставки в труднодоступные/удаленные города и регионы России и другие страны
+                                рассчитывается автоматически в корзине.
+                            </div>
                         </div>
-                        <div className="textSh">
-                            Мы сотрудничаем с крупными транспортными компаниями и доставляем заказы до двери,
-                            пунктов
-                            выдачи
-                            и
-                            постаматов. Почти всегда делаем это за наш счёт.
-                            Стоимость доставки в труднодоступные/удаленные города и регионы России и другие страны
-                            рассчитывается автоматически в корзине.
-                        </div>
-                    </div>
-                    <div className="Dost2">
-                        <div className="ZagolSh">
-                            Служба доставки
-                            <img src={cdek} alt="cdek" className="imgcdek"/>
+                        <div className="Dost2">
+                            <div className="ZagolSh">
+                                Служба доставки
+                                <img src={cdek} alt="cdek" className="imgcdek" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <br/>
-                <br/>
-                <div className="ZagolSh">
-                    ОПЛАТА
-                </div>
-                <div className="textSh">
-                    Минимальная сумма заказа — 800 рублей. Оплатить заказ можно онлайн на сайте или при получении.
-                    Оплата на сайте происходит с использованием банковских карт систем МИР, VISA или Mastercard.
-                    Принимаем оплату через ЮMoney.
+                    <br />
+                    <br />
+                    <div className="ZagolSh">ОПЛАТА</div>
+                    <div className="textSh">
+                        Минимальная сумма заказа — 800 рублей. Оплатить заказ можно онлайн на сайте или при получении.
+                        Оплата на сайте происходит с использованием банковских карт систем МИР, VISA или Mastercard.
+                        Принимаем оплату через ЮMoney.
+                    </div>
                 </div>
             </div>
-            <Futer/>
+            <Futer className="footer" />
         </div>
     );
 }
