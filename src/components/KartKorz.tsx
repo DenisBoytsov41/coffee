@@ -56,7 +56,7 @@ function KartTovar(props: Props) {
 
     const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
-            console.log("хахахах");
+            //console.log("хахахах");
             if (!refreshToken) {
                 console.error('Refresh token is missing');
                 return;

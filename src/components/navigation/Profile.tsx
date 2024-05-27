@@ -12,8 +12,8 @@ interface MyForm {
     email: string,
     phone: string,
     gender: string,
-    oldPassword: string,
-    newPassword: string
+    oldPassword?: string,
+    newPassword?: string
 }
 
 function Profile() {
@@ -25,6 +25,8 @@ function Profile() {
     } = useForm<MyForm>({ mode: "onBlur" });
 
     const [login, setLogin] = useState<string>('');
+    const [serverMessage, setServerMessage] = useState<string>('');
+    const [messageColor, setMessageColor] = useState<string>('');
 
     const sendDataToServerUpdateInfoUser = async (data: MyForm) => {
         try {
@@ -42,11 +44,23 @@ function Profile() {
 
             if (response.status === 200) {
                 console.log('User info updated successfully');
+                setServerMessage('Информация о пользователе успешно обновлена');
+                setMessageColor('green');
+                setTimeout(() => setServerMessage(''), 5000);
             } else {
                 console.error('Failed to update user info');
+                setServerMessage('Не удалось обновить информацию о пользователе');
+                setMessageColor('red');
+                setTimeout(() => setServerMessage(''), 5000);
             }
         } catch (error) {
             console.error('Error updating user info:', error);
+            setServerMessage('Произошла ошибка при обновлении информации о пользователе');
+            setMessageColor('red');
+            setTimeout(() => {
+                setServerMessage('');
+                window.location.reload();
+            }, 5000);
         }
     };
 
@@ -58,7 +72,6 @@ function Profile() {
 
             if (response.status === 200) {
                 const userData = response.data;
-                //console.log(userData);
                 setLogin(userData.login);
                 setValue('firstname', userData.firstName);
                 setValue('lastname', userData.lastName);
@@ -85,6 +98,12 @@ function Profile() {
     }, []);
 
     const submit: SubmitHandler<MyForm> = (data) => {
+        if (data.oldPassword || data.newPassword) {
+            setServerMessage('Нельзя сменить пароль. Пожалуйста, оставьте поля пароля пустыми.');
+            setMessageColor('red');
+            setTimeout(() => setServerMessage(''), 5000);
+            return;
+        }
         sendDataToServerUpdateInfoUser(data);
     };
 
@@ -94,6 +113,7 @@ function Profile() {
             <div className="contApp">
                 <form onSubmit={handleSubmit(submit)}>
                     <div className="noabsformVhod">
+                        {serverMessage && <div className="serverMessage" style={{ color: messageColor }}>{serverMessage}</div>}
                         <label className="lableVhlog">Пользовательские Данные</label>
                         <input type="text" placeholder="Имя" className="inpVhlog" {...register('firstname', { required: true })} />
                         {errors.firstname && <span className="Error">Имя обязательно к заполнению</span>}
