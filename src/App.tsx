@@ -13,6 +13,7 @@ import About from "./components/navigation/About";
 import Reset from "./components/navigation/Reset";
 import Login from "./components/navigation/Login";
 import Admin from "./components/navigation/Admin";
+import ResetURL from "./components/navigation/ResetURL";
 import Profile from "./components/navigation/Profile";
 import { useAuth } from './components/navigation/AuthContext';
 import { jwtDecode, JwtPayload } from "jwt-decode";
@@ -107,7 +108,6 @@ function App() {
 
   useEffect(() => {
     const job = schedule.scheduleJob('*/1 * * * *', () => {
-      //console.log("Вызвал 1 мин");
       clearExpiredTokens();
       setTimeout(() => {
         checkRefreshToken();
@@ -137,6 +137,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/resetURL/:email/:token" element={<ResetURL />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

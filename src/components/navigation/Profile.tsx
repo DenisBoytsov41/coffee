@@ -27,6 +27,13 @@ function Profile() {
     const [login, setLogin] = useState<string>('');
     const [serverMessage, setServerMessage] = useState<string>('');
     const [messageColor, setMessageColor] = useState<string>('');
+    const clearLocalStorageTokens = () => {
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshTokenExpiration');
+        localStorage.removeItem('accessTokenExpiration');
+    };
+
 
     const sendDataToServerUpdateInfoUser = async (data: MyForm) => {
         try {
@@ -51,12 +58,14 @@ function Profile() {
                 console.error('Failed to update user info');
                 setServerMessage('Не удалось обновить информацию о пользователе');
                 setMessageColor('red');
+                clearLocalStorageTokens();
                 setTimeout(() => setServerMessage(''), 5000);
             }
         } catch (error) {
             console.error('Error updating user info:', error);
             setServerMessage('Произошла ошибка при обновлении информации о пользователе');
             setMessageColor('red');
+            clearLocalStorageTokens();
             setTimeout(() => {
                 setServerMessage('');
                 window.location.reload();
@@ -79,9 +88,11 @@ function Profile() {
                 setValue('phone', userData.phone);
                 setValue('gender', userData.gender);
             } else {
+                clearLocalStorageTokens();
                 window.location.replace("/login");
             }
         } catch (error) {
+            clearLocalStorageTokens();
             console.error('Error checking token:', error);
             window.location.replace("/login");
         }
