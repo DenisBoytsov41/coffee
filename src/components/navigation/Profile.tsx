@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import Hader from "../Hader";
 import Futer from "../Futer";
 import '../../styles/Reset.css';
+import '../../styles/SelectGender.css'
 import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import ServHost from "../../serverHost.json";
+import ChangePassword from "./ChangePassword"; // Импортируем новый компонент
 
 interface MyForm {
     firstname: string,
     lastname: string,
     email: string,
     phone: string,
-    gender: string,
-    oldPassword?: string,
-    newPassword?: string
+    gender: string
 }
 
 function Profile() {
@@ -27,6 +27,8 @@ function Profile() {
     const [login, setLogin] = useState<string>('');
     const [serverMessage, setServerMessage] = useState<string>('');
     const [messageColor, setMessageColor] = useState<string>('');
+    const [activeTab, setActiveTab] = useState<string>('profile'); // Добавляем состояние для активной вкладки
+
     const clearLocalStorageTokens = () => {
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('accessToken');
@@ -34,13 +36,13 @@ function Profile() {
         localStorage.removeItem('accessTokenExpiration');
     };
 
-
     const sendDataToServerUpdateInfoUser = async (data: MyForm) => {
         try {
             const refreshToken = window.localStorage.getItem("refreshToken");
 
             if (!refreshToken) {
                 window.location.replace("/login");
+                //clearLocalStorageTokens();
                 return;
             }
 
@@ -58,14 +60,14 @@ function Profile() {
                 console.error('Failed to update user info');
                 setServerMessage('Не удалось обновить информацию о пользователе');
                 setMessageColor('red');
-                clearLocalStorageTokens();
+                //clearLocalStorageTokens();
                 setTimeout(() => setServerMessage(''), 5000);
             }
         } catch (error) {
             console.error('Error updating user info:', error);
             setServerMessage('Произошла ошибка при обновлении информации о пользователе');
             setMessageColor('red');
-            clearLocalStorageTokens();
+            //clearLocalStorageTokens();
             setTimeout(() => {
                 setServerMessage('');
                 window.location.reload();
@@ -88,11 +90,11 @@ function Profile() {
                 setValue('phone', userData.phone);
                 setValue('gender', userData.gender);
             } else {
-                clearLocalStorageTokens();
+                //clearLocalStorageTokens();
                 window.location.replace("/login");
             }
         } catch (error) {
-            clearLocalStorageTokens();
+            //clearLocalStorageTokens();
             console.error('Error checking token:', error);
             window.location.replace("/login");
         }
@@ -100,21 +102,17 @@ function Profile() {
 
     useEffect(() => {
         const refreshToken = window.localStorage.getItem('refreshToken');
+        const accessToken = window.localStorage.getItem('accessToken');;
 
-        if (refreshToken) {
+        if (refreshToken || (refreshToken && accessToken)) {
             sendDataToServerCheckToken(refreshToken);
         } else {
+            //clearLocalStorageTokens();
             window.location.replace("/login");
         }
     }, []);
 
     const submit: SubmitHandler<MyForm> = (data) => {
-        if (data.oldPassword || data.newPassword) {
-            setServerMessage('Нельзя сменить пароль. Пожалуйста, оставьте поля пароля пустыми.');
-            setMessageColor('red');
-            setTimeout(() => setServerMessage(''), 5000);
-            return;
-        }
         sendDataToServerUpdateInfoUser(data);
     };
 
@@ -122,42 +120,44 @@ function Profile() {
         <div>
             <Hader />
             <div className="contApp">
-                <form onSubmit={handleSubmit(submit)}>
-                    <div className="noabsformVhod">
-                        {serverMessage && <div className="serverMessage" style={{ color: messageColor }}>{serverMessage}</div>}
-                        <label className="lableVhlog">Пользовательские Данные</label>
-                        <input type="text" placeholder="Имя" className="inpVhlog" {...register('firstname', { required: true })} />
-                        {errors.firstname && <span className="Error">Имя обязательно к заполнению</span>}
-                        
-                        <input type="text" placeholder="Фамилия" className="inpVhlog" {...register('lastname', { required: true })} />
-                        {errors.lastname && <span className="Error">Фамилия обязательна к заполнению</span>}
-                        
-                        <input type="email" placeholder="E-mail" className="inpVhlog" {...register('email', { required: true })} />
-                        {errors.email && <span className="Error">Email обязателен к заполнению</span>}
-                        
-                        <input type="tel" placeholder="Телефон" className="inpVhlog" {...register('phone', { required: true })} />
-                        {errors.phone && <span className="Error">Телефон обязателен к заполнению</span>}
-                        
-                        <div>
-                            <label>Пол:</label>
-                            <select {...register('gender', { required: true })}>
-                                <option value="">Выберите пол</option>
-                                <option value="Мужской">Мужской</option>
-                                <option value="Женский">Женский</option>
-                            </select>
-                        </div>
-                        {errors.gender && <span className="Error">Пол обязателен к заполнению</span>}
+                <div className="tabs">
+                    <button onClick={() => setActiveTab('profile')}>Профиль</button>
+                    <button onClick={() => setActiveTab('changePassword')}>Смена пароля</button>
+                </div>
+                {activeTab === 'profile' && (
+                    <form onSubmit={handleSubmit(submit)}>
+                        <div className="noabsformVhod">
+                            {serverMessage && <div className="serverMessage" style={{ color: messageColor }}>{serverMessage}</div>}
+                            <label className="lableVhlog">Пользовательские Данные</label>
+                            <input type="text" placeholder="Имя" className="inpVhlog" {...register('firstname', { required: true })} />
+                            {errors.firstname && <span className="Error">Имя обязательно к заполнению</span>}
+                            
+                            <input type="text" placeholder="Фамилия" className="inpVhlog" {...register('lastname', { required: true })} />
+                            {errors.lastname && <span className="Error">Фамилия обязательна к заполнению</span>}
+                            
+                            <input type="email" placeholder="E-mail" className="inpVhlog" {...register('email', { required: true })} />
+                            {errors.email && <span className="Error">Email обязателен к заполнению</span>}
+                            
+                            <input type="tel" placeholder="Телефон" className="inpVhlog" {...register('phone', { required: true })} />
+                            {errors.phone && <span className="Error">Телефон обязателен к заполнению</span>}
+                            
+                            <div>
+                                <label>Пол:</label>
+                                <select {...register('gender', { required: true })} className="select-gender">
+                                    <option value="">Выберите пол</option>
+                                    <option value="Мужской">Мужской</option>
+                                    <option value="Женский">Женский</option>
+                                </select>
+                            </div>
+                            {errors.gender && <span className="Error">Пол обязателен к заполнению</span>}
 
-                        <label className="lableVhlog">Смена пароля</label>
-                        <input type="password" placeholder="Старый Пароль" className="inpVhlog" {...register('oldPassword')} />
-                        <input type="password" placeholder="Новый Пароль" className="inpVhlog" {...register('newPassword')} />
-
-                        <div className="warrior_black">Если хотите поменять только Пользовательские данные не затрагивая пароль, оставьте поля с паролями пустыми</div>
-                        <div>
-                            <button className="ButtonRes">СОХРАНИТЬ</button>
+                            <div>
+                                <button className="ButtonRes">СОХРАНИТЬ</button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                )}
+                {activeTab === 'changePassword' && <ChangePassword />}
             </div>
             <Futer className="footer" />
         </div>

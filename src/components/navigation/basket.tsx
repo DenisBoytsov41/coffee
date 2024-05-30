@@ -10,6 +10,10 @@ import ServHost from "../../serverHost.json";
 
 function Basket() {
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({ name: "", email: "", phone: "" });
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
 
     const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
@@ -80,6 +84,41 @@ function Basket() {
         return () => clearInterval(interval);
     }, []);
 
+    const validateForm = () => {
+        const newErrors = { name: "", email: "", phone: "" };
+        let isValid = true;
+
+        if (!name.trim()) {
+            newErrors.name = "Имя и фамилия обязательны.";
+            isValid = false;
+        }
+        if (!email.trim()) {
+            newErrors.email = "Email обязателен.";
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            newErrors.email = "Неверный формат email.";
+            isValid = false;
+        }
+        if (!phone.trim()) {
+            newErrors.phone = "Телефон обязателен.";
+            isValid = false;
+        } else if (!/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(phone)) {
+            newErrors.phone = "Неверный формат телефона.";
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (validateForm()) {
+            // Здесь можно отправить данные на сервер
+            console.log("Форма валидна и отправлена.");
+        }
+    };
+
     const loadContentIFBask = (BC: string) => {
         return (
             <div className="basketContent">
@@ -94,11 +133,33 @@ function Basket() {
                             <br />
                             <div className="inpGor">
                                 <div className="TelBask">
-                                    <input type="text" placeholder="Имя и Фамилия" className="inpBasklog whiteText" />
-                                    <input type="text" placeholder="E-mail" className="inpBasklog whiteText" />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Имя и Фамилия" 
+                                        className="inpBasklog whiteText" 
+                                        defaultValue={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
+                                    {errors.name && <span className="error">{errors.name}</span>}
+                                    <input 
+                                        type="email" 
+                                        placeholder="E-mail" 
+                                        className="inpBasklog whiteText" 
+                                        defaultValue={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                    {errors.email && <span className="error">{errors.email}</span>}
                                 </div>
                                 <div className="TelBask">
-                                    <input type="text" placeholder="Телефон" id="tel" className="inpBasklog whiteText" />
+                                    <input 
+                                        type="tel" 
+                                        placeholder="Телефон" 
+                                        id="tel" 
+                                        className="inpBasklog whiteText" 
+                                        defaultValue={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                    />
+                                    {errors.phone && <span className="error">{errors.phone}</span>}
                                 </div>
                             </div>
                         </div>
@@ -176,7 +237,7 @@ function Basket() {
             // @ts-ignore
             new IMask(element, maskOptions);
         }
-    });
+    }, []);
 
     return (
         <div>

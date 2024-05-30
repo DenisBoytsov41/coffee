@@ -110,6 +110,12 @@
 .centerText {
     text-align: center;
 }
+.inpBasklog {
+    z-index: 10;
+    position: relative; 
+    pointer-events: auto;
+}
+
 
 @media screen and (max-width: 1090px) {
     .basketContent {
