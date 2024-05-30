@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useRef, useState } from "react";
 import { SubmitHandler, useForm, FieldValues } from "react-hook-form";
 import "../styles/ItemAdmin.css";
-import axios from "axios";
 
 interface UniversalTableItemProps<T extends FieldValues> {
     data: T;
@@ -9,6 +8,8 @@ interface UniversalTableItemProps<T extends FieldValues> {
     onDelete?: () => void;
     onAdd?: () => void;
     fields: { label: string; key: keyof T; type: "text" | "number" }[];
+    imagePathField?: keyof T;
+    allowImageUpload?: boolean;
 }
 
 function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProps<T>) {
@@ -33,6 +34,8 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
     };
 
     const [formData, setFormData] = useState<T>(props.data);
+    const [image, setImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
     const {
         register,
@@ -40,8 +43,31 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
         handleSubmit
     } = useForm<T>({ mode: "onBlur" });
 
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            setImage(files[0]);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    };
+
     const submit: SubmitHandler<T> = (data) => {
-        sendDataToServerUpdate(data);
+        if (props.allowImageUpload && props.imagePathField && image) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                if (props.imagePathField) {
+                    data[props.imagePathField] = reader.result as any;
+                }
+                sendDataToServerUpdate(data);
+            };
+            reader.readAsDataURL(image);
+        } else {
+            sendDataToServerUpdate(data);
+        }
     };
 
     const deleteBtn = useRef<HTMLButtonElement>(null);
@@ -65,6 +91,31 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
                             />
                         </div>
                     ))}
+                    {props.allowImageUpload && (
+                        <div className="PoleItem">
+                            <label className="UploadImageLabel" htmlFor="image">Выберите изображение</label>
+                            <input
+                                type="file"
+                                id="image"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="UploadImageButton"
+                            />
+                            <label htmlFor="image" className="UploadImageButtonLabel">
+                                Выбрать файл
+                            </label>
+                        </div>
+                    )}
+                    {props.allowImageUpload && imagePreview && (
+                        <div className="PoleItem">
+                            <img src={imagePreview} alt="Предварительный просмотр" className="PreviewImage" />
+                        </div>
+                    )}
+                    {props.allowImageUpload && props.imagePathField && formData[props.imagePathField] && !imagePreview && (
+                        <div className="PoleItem">
+                            <img src={formData[props.imagePathField] as any} alt="Товар" className="PreviewImage" />
+                        </div>
+                    )}
                     <div className="gapButton">
                         {props.onDelete && (
                             <button ref={deleteBtn} type="button" onClick={sendDataToServerDelete} className="ButtonAdm">

@@ -98,6 +98,7 @@ function Reg() {
           // Обработка ошибки от сервера
           setRegistrationError(response.data.error.join(' ')); // Объединяем сообщения об ошибке в строку
           setErrVisible(false);
+          setTimeout(() => setRegistrationError(''), 5000); // Очищаем сообщение об ошибке через 5 секунд
         }
       }
     } catch (error: any) {
@@ -107,6 +108,7 @@ function Reg() {
         } else {
           setRegistrationError('Ошибка при регистрации. Пожалуйста, попробуйте еще раз или обратитесь за помощью.');
         }
+        setTimeout(() => setRegistrationError(''), 5000);
       }
   };
   

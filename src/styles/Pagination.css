@@ -1,11 +1,13 @@
 .pagination {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    margin-top: 10px;
 }
 
 .pagination button {
-    margin: 0 5px;
+    margin: 5px; 
     padding: 8px 16px;
     border: none;
     border-radius: 5px;
@@ -29,5 +31,5 @@
 }
 
 .pagination .prev-next button {
-    margin: 0;
+    margin: 5px;
 }

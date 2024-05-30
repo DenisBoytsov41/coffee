@@ -1,31 +1,44 @@
+* {
+    box-sizing: border-box; 
+}
 .inpItem {
     height: 30px;
     border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
-    margin-bottom: 10px; /* Добавленный отступ между полями */
+    margin-bottom: 10px;
+    padding: 0 10px; 
+    width: calc(100% - 22px);
+    font-size: 14px;
 }
 
 .PoleItem {
     display: flex;
     flex-direction: column;
     text-align: center;
+    margin-bottom: 20px;
+    margin-right: 2px;
 }
 
 .Items {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .ButtonAdm {
-    padding: 10px 20px;
+    height: 30px;
+    padding: 0 20px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     outline: none;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    font-size: 14px;
 }
 
 .ButtonAdm:hover {
@@ -41,29 +54,31 @@
 .gapButton {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    margin-left: 10px;
+    justify-content: space-between;
     gap: 10px;
     padding-left: 10px;
     margin-top: 20px;
 }
 
-/* Стили для загрузки изображения */
-.UploadImageLabel {
-    margin-top: 10px; /* Отступ сверху для метки */
-}
 
 .UploadImageButton {
-    display: none; /* Скрываем стандартную кнопку загрузки */
+    display: none; 
 }
 
 .UploadImageButtonLabel {
-    padding: 10px 20px;
+    height: 30px;
+    padding: 0 20px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     outline: none;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
 }
 
 .UploadImageButtonLabel:hover {
@@ -74,4 +89,48 @@
     background-color: rgba(0, 0, 0, 0.4);
     color: black;
     border: 2px solid black;
+}
+
+.PreviewImage {
+    max-width: 200px;
+    max-height: 200px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+    .inpItem {
+        width: calc(100% - 22px);
+    }
+
+    .ButtonAdm,
+    .UploadImageButtonLabel {
+        width: 100%;
+    }
+
+    .gapButton {
+        flex-direction: column; 
+    }
+    
+    .Items {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .inpItem,
+    label {
+        font-size: 12px;
+    }
+
+    .ButtonAdm,
+    .UploadImageButtonLabel {
+        font-size: 12px;
+    }
+    .Items {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }

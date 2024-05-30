@@ -4,6 +4,7 @@ import AdminItem from "./AdminItem";
 import ServHost from "../serverHost.json";
 import "../styles/AdminProfile.css";
 import Pagination from "../components/navigation/Pagination";
+import UniversalTableItem from "./UniversalTableItem"; 
 
 function AdminProfile() {
     const [data, setData] = useState<any[] | null>(null);
@@ -23,6 +24,23 @@ function AdminProfile() {
     const sendDataToServerAddItem = async (data:{ mail: string, pass: string }) => {
         try {
             const res = await axios.post(ServHost.host + '/addItem', data);
+            console.log(res.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const sendDataToServerDelete = async (id: number) => { // Adjusted to accept only the item id
+        try {
+            const res = await axios.post(ServHost.host + '/deleteItem', { id });
+            console.log(res.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const sendDataToServerUpdate = async (itemData: any) => { // Adjusted to accept item data
+        try {
+            const res = await axios.post(ServHost.host + '/UpdateItem', itemData);
             console.log(res.data);
         } catch (error) {
             console.error(error);
@@ -74,14 +92,23 @@ function AdminProfile() {
                 <div className="admin-profile-items">
                     {loading ? <div className="admin-profile-loading">Загрузка...</div> :
                         currentItems?.map(item => (
-                            <AdminItem
+                            <UniversalTableItem
                                 key={item.id}
-                                name={item.name}
-                                opisanie={item.opisanie}
-                                price={item.price}
-                                id={item.id}
-                                optprice={item.optprice}
+                                data={item}
+                                fields={[
+                                    { label: "Id", key: "id", type: "number" },
+                                    { label: "Name", key: "name", type: "text" },
+                                    { label: "Description", key: "opisanie", type: "text" },
+                                    { label: "Price", key: "price", type: "number" },
+                                    { label: "Opt Price", key: "optprice", type: "number" }
+                                ]}
+                                imagePathField="imagePath"
+                                allowImageUpload={true}
+                                onUpdate={sendDataToServerUpdate}
+                                onDelete={() => sendDataToServerDelete(item.id)}
                             />
+
+
                         ))
                     }
                 </div>
