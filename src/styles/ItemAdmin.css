@@ -1,34 +1,77 @@
-.inpItem{
+.inpItem {
     height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    margin-bottom: 10px; /* Добавленный отступ между полями */
 }
-.PoleItem{
+
+.PoleItem {
     display: flex;
     flex-direction: column;
     text-align: center;
 }
-.Items{
+
+.Items {
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
-.ButtonAdm{
-    background-color: white;
-    height: 36px;
-    color: black;
-    border: 2px solid black;
-}
-.ButtonAdm:hover{
-    background-color: black;
+
+.ButtonAdm {
+    padding: 10px 20px;
+    background-color: #007bff;
     color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
 }
+
+.ButtonAdm:hover {
+    background-color: #0056b3;
+}
+
 .ButtonAdm:active {
     background-color: rgba(0, 0, 0, 0.4);
     color: black;
     border: 2px solid black;
 }
-.gapButton{
+
+.gapButton {
     display: flex;
     flex-direction: row;
-    align-items: end;
+    justify-content: center;
     gap: 10px;
     padding-left: 10px;
+    margin-top: 20px;
+}
+
+/* Стили для загрузки изображения */
+.UploadImageLabel {
+    margin-top: 10px; /* Отступ сверху для метки */
+}
+
+.UploadImageButton {
+    display: none; /* Скрываем стандартную кнопку загрузки */
+}
+
+.UploadImageButtonLabel {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+}
+
+.UploadImageButtonLabel:hover {
+    background-color: #0056b3;
+}
+
+.UploadImageButtonLabel:active {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: black;
+    border: 2px solid black;
 }

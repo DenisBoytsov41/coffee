@@ -1,0 +1,33 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination button:hover {
+    background-color: #f0f0f0;
+}
+
+.pagination .active {
+    background-color: #f0f0f0;
+}
+
+.pagination .prev-next {
+    margin-right: auto;
+}
+
+.pagination .prev-next button {
+    margin: 0;
+}
