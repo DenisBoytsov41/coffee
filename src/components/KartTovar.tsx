@@ -136,7 +136,7 @@ function KartTovar(props: Props) {
                 const newBasket = basket.replace(itemString, `${props.id}:${newCount}`);
                 const newBackCount = backCount - props.price;
                 await Promise.all([
-                    UpdateDBBasket(newBasket),
+                    await UpdateDBBasket(newBasket),
                     window.localStorage.setItem("basket", newBasket),
                     window.localStorage.setItem("backCount", String(newBackCount))
                 ]);
@@ -155,7 +155,7 @@ function KartTovar(props: Props) {
                 const newBasket = basket.replace(itemString, `${props.id}:${newCount}`);
                 const newBackCount = backCount + props.price;
                 await Promise.all([
-                    UpdateDBBasket(newBasket),
+                    await UpdateDBBasket(newBasket),
                     window.localStorage.setItem("basket", newBasket),
                     window.localStorage.setItem("backCount", String(newBackCount))
                 ]);
