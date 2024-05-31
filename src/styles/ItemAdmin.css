@@ -118,6 +118,17 @@
     }
 }
 
+.admin-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.admin-login-form {
+    width: 300px;
+}
+
 @media (max-width: 480px) {
     .inpItem,
     label {
