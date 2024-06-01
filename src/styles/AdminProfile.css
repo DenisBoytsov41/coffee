@@ -51,6 +51,18 @@
     font-size: 18px;
     color: #007bff;
 }
+.success-message {
+    color: green;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
 
 @media (max-width: 768px) {
     .admin-profile-buttons,

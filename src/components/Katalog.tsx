@@ -12,8 +12,16 @@ interface Props {
     onRemoveLikedItem?: (itemId: number) => void; // добавляем проп для удаления из избранного
 }
 
+interface Item {
+    id: number;
+    name: string;
+    opisanie: string;
+    price: number;
+    optprice?: number;
+}
+
 function Katalog(props: Props) {
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<Item[]>([]);
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
@@ -26,10 +34,6 @@ function Katalog(props: Props) {
         setData(prevData => prevData.filter(item => item.id !== id));
     }, []);
 
-    useEffect(() => {
-        // Trigger re-render when the refresh state changes
-    }, [refresh]);
-
     return (
         <div className='katalog'>
             {LoadKatalog(props.type, props.katcount, data, handleDelete, props.onRemoveLikedItem).map((el, index) => (
@@ -41,7 +45,7 @@ function Katalog(props: Props) {
 
 export default Katalog;
 
-function LoadKatalog(type: string, count: number, data: any[], onDelete: (id: number) => void, onRemoveLikedItem?: (itemId: number) => void) {
+function LoadKatalog(type: string, count: number, data: Item[], onDelete: (id: number) => void, onRemoveLikedItem?: (itemId: number) => void) {
     const elementsArray = [];
     const datcount = data.length;
 
@@ -49,18 +53,22 @@ function LoadKatalog(type: string, count: number, data: any[], onDelete: (id: nu
         count = datcount;
     }
 
+    const isValidItem = (item: Item) => item.name && item.price && item.price > 0;
+
     if (type === 'opt') {
         for (let i = 0; i < count; i++) {
             const item = data[i];
-            elementsArray.push(
-                <KartTovarOpt 
-                    key={item?.id || i}
-                    name={item?.name || "Loading..."} 
-                    opis={item?.opisanie || "Loading..."} 
-                    price={item?.optprice || "Loading..."} 
-                    id={item?.id || "Loading..."} 
-                />
-            );
+            if (isValidItem(item)) {
+                elementsArray.push(
+                    <KartTovarOpt 
+                        key={item.id}
+                        name={item.name} 
+                        opis={item.opisanie} 
+                        price={item.optprice || 0} 
+                        id={item.id} 
+                    />
+                );
+            }
         }
     }
 
@@ -68,14 +76,14 @@ function LoadKatalog(type: string, count: number, data: any[], onDelete: (id: nu
         const likedItems = window.localStorage.getItem("liked")?.split(",") || [];
         for (let i = 0; i < count; i++) {
             const item = data[i];
-            if (likedItems.includes(String(item.id))) {
+            if (likedItems.includes(String(item.id)) && isValidItem(item)) {
                 elementsArray.push(
                     <KartTovar 
-                        key={item?.id || i}
-                        name={item?.name || "Loading..."} 
-                        opis={item?.opisanie || "Loading..."} 
-                        price={item?.price || "Loading..."} 
-                        id={item?.id || "Loading..."} 
+                        key={item.id}
+                        name={item.name} 
+                        opis={item.opisanie} 
+                        price={item.price} 
+                        id={item.id} 
                         image={ti}
                         onRemoveLikedItem={onRemoveLikedItem} // передаем проп далее
                     />
@@ -88,13 +96,13 @@ function LoadKatalog(type: string, count: number, data: any[], onDelete: (id: nu
         const basketItems = window.localStorage.getItem("basket")?.split(",") || [];
         for (let i = 0; i < count; i++) {
             const item = data[i];
-            if (basketItems.some(basketItem => basketItem.startsWith(String(item.id) + ":"))) {
+            if (basketItems.some(basketItem => basketItem.startsWith(String(item.id) + ":")) && isValidItem(item)) {
                 elementsArray.push(
                     <KartKorz 
-                        key={item?.id || i}
-                        name={item?.name || "Loading..."} 
-                        price={item?.price || "Loading..."} 
-                        id={item?.id || "Loading..."} 
+                        key={item.id}
+                        name={item.name} 
+                        price={item.price} 
+                        id={item.id} 
                         image={ti}
                         onDelete={onDelete}
                     />
@@ -106,16 +114,18 @@ function LoadKatalog(type: string, count: number, data: any[], onDelete: (id: nu
     if (type === '') {
         for (let i = 0; i < count; i++) {
             const item = data[i];
-            elementsArray.push(
-                <KartTovar 
-                    key={item?.id || i}
-                    name={item?.name || "Loading..."} 
-                    opis={item?.opisanie || "Loading..."} 
-                    price={item?.price || "Loading..."} 
-                    image={ti}
-                    id={item?.id || "Loading..."} 
-                />
-            );
+            if (isValidItem(item)) {
+                elementsArray.push(
+                    <KartTovar 
+                        key={item.id}
+                        name={item.name} 
+                        opis={item.opisanie} 
+                        price={item.price} 
+                        image={ti}
+                        id={item.id} 
+                    />
+                );
+            }
         }
     }
 

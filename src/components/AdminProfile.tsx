@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 interface AdminProfileProps {
     onLogout: () => void;
 }
+
 interface Product {
     id: number;
     name: string;
@@ -35,10 +36,12 @@ interface UserPermission {
 type DataType = Product[] | User[] | UserPermission[];
 
 function AdminProfile({ onLogout }: AdminProfileProps) {
-    const [data, setData] = useState<any[] | null>(null);
+    const [data, setData] = useState<DataType | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedButton, setSelectedButton] = useState('tovar');
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const itemsPerPage = 5;
 
     useEffect(() => {
@@ -51,8 +54,16 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                     }
                 });
                 setData(response.data);
+                setSuccessMessage('Успешный запрос');
+                setTimeout(() => {
+                    setSuccessMessage(null);
+                }, 2000);
                 setLoading(false);
-            } catch (error) {
+            } catch (error: any) {
+                setErrorMessage(error.response.data);
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 2000);
                 console.error(error);
             }
         };
@@ -61,6 +72,13 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
 
     const sendDataToServerAddItem = async (data: { refreshToken: string, name: string, opisanie: string, price: number, optprice: number, PhotoPath: string }) => {
         try {
+            if (data.price < 0 || data.optprice < 0) {
+                setErrorMessage('Цена не может быть отрицательной.');
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 2000);
+                return;
+            }
             const token = Cookies.get("authToken");
             const res = await axios.post(ServHost.host + '/addItem', data, {
                 headers: {
@@ -68,28 +86,93 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 }
             });
             console.log(res.data);
-            window.location.reload();
-        } catch (error) {
+            setSuccessMessage('Товар успешно добавлен.');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+            fetchData(selectedButton);
+        } catch (error: any) {
+            setErrorMessage(error.response.data);
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 2000);
             console.error(error);
         }
     };
 
-    const sendDataToServerDelete = async (id: number) => {
+    const sendDataToServerAddUser = async (data: { login: string, firstName: string, lastName: string, email: string, gender: string, phone: string }) => {
         try {
             const token = Cookies.get("authToken");
-            const res = await axios.post(ServHost.host + '/deleteItem', { id }, {
+            const res = await axios.post(ServHost.host + '/addUser', data, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             console.log(res.data);
-            window.location.reload();
-        } catch (error) {
+            setSuccessMessage('Пользователь успешно добавлен');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+            fetchData(selectedButton);
+        } catch (error:any) {
+            setErrorMessage(error.response.data);
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 2000);
             console.error(error);
         }
     };
+
+    const sendDataToServerAddPermission = async (data: { login: string, access_level: string }) => {
+        try {
+            const token = Cookies.get("authToken");
+            const res = await axios.post(ServHost.host + '/addPermission', data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(res.data);
+            setSuccessMessage('Права успешно добавлены');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+            fetchData(selectedButton);
+        } catch (error: any) {
+            setErrorMessage(error.response.data);
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 2000);
+            console.error(error);
+        }
+    };
+
+    const sendDataToServerDelete = async (id: number | string) => {
+        try {
+            const token = Cookies.get("authToken");
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            const res = await axios.post(ServHost.host + '/deleteItem', { refreshToken,id }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(res.data);
+            setSuccessMessage('Товар успешно удалён');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+            fetchData(selectedButton);
+        } catch (error: any) {
+            setErrorMessage(error.response.data);
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 2000);
+            console.error(error);
+        }
+    };
+
     const fetchData = async (endpoint: string) => {
         try {
+            setLoading(true);
             const token = Cookies.get("authToken");
             setSelectedButton(endpoint);
             const response = await axios.get(ServHost.host + endpoint, {
@@ -99,22 +182,44 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             });
             setData(response.data);
             setLoading(false);
-        } catch (error) {
+            setSuccessMessage('Запрос успешно выполнен');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+        } catch (error: any) {
+            setErrorMessage(error.response.data);
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 2000);
+            setLoading(false);
             console.error(error);
         }
     };
 
     const sendDataToServerUpdate = async (itemData: any) => {
         try {
+            if (itemData.price < 0 || itemData.optprice < 0) {
+                console.error('Цена не может быть отрицательной.');
+                return;
+            }
             const token = Cookies.get("authToken");
-            const res = await axios.post(ServHost.host + '/UpdateItem', itemData, {
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            const res = await axios.post(ServHost.host + '/UpdateItem', {...itemData, refreshToken}, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             console.log(res.data);
-            window.location.reload();
-        } catch (error) {
+            fetchData(selectedButton);
+            setSuccessMessage('Товар обновлен');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+        } catch (error: any) {
+            setErrorMessage(error.response.data);
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 2000);
             console.error(error);
         }
     };
@@ -129,23 +234,19 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
         window.location.reload();
     };
 
-    const Add = (addItem: Function, type: string) => {
-        let endpoint = '';
-        let data = {};
-    
-        if (type === 'tovar') {
-            endpoint = '/addItem';
-            data = { refreshToken: localStorage.getItem('refreshToken'), name: '', opisanie: '', price: 0, optprice: 0, PhotoPath: '' 
-             };
-        } else if (type === 'users') {
-            endpoint = '/addUser';
-            data = {};
-        } else if (type === 'permissions') {
-            endpoint = '/addPermission';
-            data = {};
-        }
-    
-        addItem(data, endpoint);
+    const AddItem = () => {
+        const data = { refreshToken: localStorage.getItem('refreshToken') || '', name: '', opisanie: '', price: 0, optprice: 0, PhotoPath: '' };
+        sendDataToServerAddItem(data);
+    };
+
+    const AddUser = () => {
+        const data = { login: '', firstName: '', lastName: '', email: '', gender: '', phone: '' };
+        sendDataToServerAddUser(data);
+    };
+
+    const AddPermission = () => {
+        const data = { login: '', access_level: '' };
+        sendDataToServerAddPermission(data);
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -173,27 +274,73 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                     <button onClick={() => fetchData('/tovar')} className="admin-profile-button">Товары</button>
                     <button onClick={() => fetchData('/users')} className="admin-profile-button">Пользователи</button>
                     <button onClick={() => fetchData('/permissions')} className="admin-profile-button">Права пользователей</button>
-                    <button onClick={() => Add(sendDataToServerAddItem, selectedButton)} className="admin-profile-button">ДОБАВИТЬ</button>
                 </div>
+                <div className="admin-profile-add-button">
+                    {selectedButton === '/tovar' && <button onClick={AddItem} className="admin-profile-button">ДОБАВИТЬ ТОВАР</button>}
+                    {selectedButton === '/users' && <button onClick={AddUser} className="admin-profile-button">ДОБАВИТЬ ПОЛЬЗОВАТЕЛЯ</button>}
+                    {selectedButton === '/permissions' && <button onClick={AddPermission} className="admin-profile-button">ДОБАВИТЬ ПРАВА</button>}
+                </div>
+                {successMessage && <div className="success-message">{successMessage}</div>}
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
                 <div className="admin-profile-items">
                     {loading ? <div className="admin-profile-loading">Загрузка...</div> :
-                        currentItems?.map(item => (
-                            <UniversalTableItem
-                                key={item.id}
-                                data={item}
-                                fields={[
-                                    { label: "Id", key: "id", type: "number" },
-                                    { label: "Name", key: "name", type: "text" },
-                                    { label: "Description", key: "opisanie", type: "text" },
-                                    { label: "Price", key: "price", type: "number" },
-                                    { label: "Opt Price", key: "optprice", type: "number" }
-                                ]}
-                                imagePathField="imagePath"
-                                allowImageUpload={true}
-                                onUpdate={sendDataToServerUpdate}
-                                onDelete={() => sendDataToServerDelete(item.id)}
-                            />
-                        ))
+                        currentItems?.map(item => {
+                            if (selectedButton === '/tovar' && 'id' in item) {
+                                const product = item as Product;
+                                return (
+                                    <UniversalTableItem
+                                        key={product.id}
+                                        data={product}
+                                        fields={[
+                                            { label: "Id", key: "id", type: "number" },
+                                            { label: "Name", key: "name", type: "text" },
+                                            { label: "Opisanie", key: "opisanie", type: "text" },
+                                            { label: "Price", key: "price", type: "number" },
+                                            { label: "OptPrice", key: "optprice", type: "number" }
+                                        ]}
+                                        imagePathField="imagePath"
+                                        allowImageUpload={true}
+                                        onUpdate={sendDataToServerUpdate}
+                                        onDelete={() => sendDataToServerDelete(product.id)}
+                                    />
+                                );
+                            } else if (selectedButton === '/users' && 'login' in item) {
+                                const user = item as User;
+                                return (
+                                    <UniversalTableItem
+                                        key={user.login}
+                                        data={user}
+                                        fields={[
+                                            { label: "Login", key: "login", type: "text" },
+                                            { label: "First Name", key: "firstName", type: "text" },
+                                            { label: "Last Name", key: "lastName", type: "text" },
+                                            { label: "Email", key: "email", type: "text" },
+                                            { label: "Gender", key: "gender", type: "text" },
+                                            { label: "Phone", key: "phone", type: "text" }
+                                        ]}
+                                        allowImageUpload={false}
+                                        onUpdate={sendDataToServerUpdate}
+                                        onDelete={() => sendDataToServerDelete(user.login)}
+                                    />
+                                );
+                            } else if (selectedButton === '/permissions' && 'login' in item) {
+                                const permission = item as UserPermission;
+                                return (
+                                    <UniversalTableItem
+                                        key={permission.login}
+                                        data={permission}
+                                        fields={[
+                                            { label: "Login", key: "login", type: "text" },
+                                            { label: "Access Level", key: "access_level", type: "text" }
+                                        ]}
+                                        allowImageUpload={false}
+                                        onUpdate={sendDataToServerUpdate}
+                                        onDelete={() => sendDataToServerDelete(permission.login)}
+                                    />
+                                );
+                            }
+                            return null;
+                        })
                     }
                 </div>
                 <Pagination
