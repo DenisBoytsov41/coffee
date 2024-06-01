@@ -1,40 +1,32 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import AdminLogin from "../AdminLogin";
 import AdminProfile from "../AdminProfile";
-import axios from "axios";
-import ServHost from "../../serverHost.json"
+import Cookies from "js-cookie";
 
-function Admin(){
+function Admin() {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-    const sendDataToServer = async (data:{ mail: string, pass: string }) => {
-        try {
-            const res = await axios.post(ServHost.host + '/loginAdmin', data);
-            console.log(res.data.res);
-            if(res.data.res){
-                setContent(<AdminProfile/>)
-            }
-        } catch (error) {
-            console.error(error);
+    useEffect(() => {
+        const token = Cookies.get("authToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (token && refreshToken) {
+            setIsAuthenticated(true);
+        } else {
+            handleLogout();
         }
+    }, []);
+
+    const handleLogin = (token: string) => {
+        Cookies.set("authToken", token, { expires: 1 });
+        setIsAuthenticated(true);
     };
 
-    const [content, setContent] = useState(() => {
-        const initialState = function () {
-            let a = window.localStorage.getItem("AdminLogin")
-            if(a){
-                let data = a.split(" ")
-                sendDataToServer({mail: data[0], pass: data[1]});
-            }
-            return <AdminLogin/>
-        }
-        return initialState()
-    })
+    const handleLogout = () => {
+        Cookies.remove("authToken");
+        setIsAuthenticated(false);
+    };
 
-    return (
-        <div>
-            {content}
-        </div>
-);
+    return isAuthenticated ? <AdminProfile onLogout={handleLogout} /> : <AdminLogin onLogin={handleLogin} />;
 }
 
 export default Admin;

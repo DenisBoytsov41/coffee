@@ -3,14 +3,21 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import ServHost from "../serverHost.json";
 import "../styles/ItemAdmin.css";
+import { v4 as uuidv4 } from 'uuid';
+import Cookies from "js-cookie";
 
 interface MyForm {
-    pass: string;
-    mail: string;
+    password: string;
+    login: string;
 }
 
-function AdminLogin() {
+interface AdminLoginProps {
+    onLogin: (token: string) => void;
+}
+
+function AdminLogin({ onLogin }: AdminLoginProps) {
     const [error, setError] = useState<string>("");
+    const [successMessage, setSuccessMessage] = useState<string>("");
 
     const {
         register,
@@ -20,15 +27,63 @@ function AdminLogin() {
 
     const submit: SubmitHandler<MyForm> = async (data) => {
         try {
-            const response = await axios.post(ServHost.host + "checkAdminAccess", data);
-
+            const refreshToken = localStorage.getItem('refreshToken');
+    
+            if (!refreshToken) {
+                throw new Error('Отсутствует refreshToken');
+            }
+    
+            const response = await axios.post(ServHost.host + "/checkAdminCredentials", { ...data, refreshToken });
+    
             if (response.status !== 200) {
                 throw new Error(response.data);
             }
 
-            window.location.href = "/admin";
+            const authToken = uuidv4(); // Генерация уникального токена
+            Cookies.set("authToken", authToken, { expires: 1 }); // Установка токена в куки на 1 день
+            setSuccessMessage("Успешный вход");
+            setTimeout(() => setSuccessMessage(""), 5000);
+            onLogin(authToken);  // Вызов onLogin с токеном
         } catch (error: any) {
-            setError(error.message as string);
+            console.log(error);
+            if (error.message === 'Отсутствует refreshToken') {
+                setError('Отсутствует refreshToken');
+                setTimeout(() => setError(""), 5000);
+            } else {
+                setError(error.response.data.error as string);
+                setTimeout(() => setError(""), 5000);
+            }
+        }
+    };
+
+    const handleAddUserAdmin: SubmitHandler<MyForm> = async (data) => {
+        try {
+            const refreshToken = localStorage.getItem('refreshToken');
+    
+            if (!refreshToken) {
+                throw new Error('Отсутствует refreshToken');
+            }
+    
+            const responseCheckRights = await axios.post(ServHost.host + "/checkAdminCredentialsRefreshToken", { refreshToken });
+    
+            if (responseCheckRights.status !== 200) {
+                throw new Error(responseCheckRights.data.error || 'Ошибка при проверке прав пользователя');
+            }
+    
+            const responseAddUserAdmin = await axios.post(ServHost.host + "/addUserAdmin", data);
+    
+            if (responseAddUserAdmin.status !== 200) {
+                console.log(responseAddUserAdmin.data.error);
+                throw new Error(responseAddUserAdmin.data.error || 'Произошла ошибка сервера');
+            }
+    
+            setSuccessMessage("Пользователь успешно зарегистрирован");
+            setTimeout(() => setSuccessMessage(""), 5000);
+        } catch (error: any) {
+            console.log(error);
+            const errorMessage = error.response ? error.response.data.error as string : error.message || 'Произошла ошибка сервера';
+            setError(errorMessage);
+            setTimeout(() => setError(""), 5000);
         }
     };
 
@@ -38,28 +93,32 @@ function AdminLogin() {
                 <div className="form-group">
                     <input
                         type="text"
-                        placeholder="Mail"
+                        placeholder="Логин"
                         className="inpVhlog"
-                        {...register("mail", { required: true })}
+                        {...register("login", { required: true })}
                     />
-                    {errors?.mail && <div className="Error">Поле обязательно к заполнению!</div>}
+                    {errors?.login && <div className="Error">Поле обязательно к заполнению!</div>}
                 </div>
                 <div className="form-group">
                     <input
                         type="password"
                         placeholder="Пароль"
                         className="inpVhlog"
-                        {...register("pass", { required: true })}
+                        {...register("password", { required: true })}
                     />
-                    {errors?.pass && <div className="Error">Поле обязательно к заполнению!</div>}
+                    {errors?.password && <div className="Error">Поле обязательно к заполнению!</div>}
                 </div>
-                <button type="submit" className="ButtonAdm">Войти</button>
-                {error && <div className="Error">{error}</div>}
+                <div className="ButtonsContainer">
+                    <button type="submit" className="ButtonAdm" style={{ marginTop: "10px" }}>Войти</button>
+                    <button onClick={handleSubmit(handleAddUserAdmin)} className="ButtonAdm" style={{ marginTop: "10px" }}>Добавить пользователя администратора</button>
+                </div>
+                <div className="CenteredMessages">
+                    {error && <div className="Error">{error}</div>}
+                    {successMessage && <div className="Success">{successMessage}</div>}
+                </div>
             </form>
         </div>
     );
-    
-    
 }
 
 export default AdminLogin;
