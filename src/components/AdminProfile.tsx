@@ -39,7 +39,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
     const [data, setData] = useState<DataType | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedButton, setSelectedButton] = useState('tovar');
+    const [selectedButton, setSelectedButton] = useState('/tovar');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const itemsPerPage = 5;
@@ -48,7 +48,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
         const fetchData = async () => {
             try {
                 const token = Cookies.get("authToken");
-                const response = await axios.get(ServHost.host + '/tovar', {
+                const response = await axios.get(ServHost.host + selectedButton, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -68,7 +68,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }
         };
         fetchData();
-    }, []);
+    }, [selectedButton]);
 
     const sendDataToServerAddItem = async (data: { refreshToken: string, name: string, opisanie: string, price: number, optprice: number, PhotoPath: string }) => {
         try {
@@ -93,9 +93,9 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             fetchData(selectedButton);
         } catch (error: any) {
             setErrorMessage(error.response.data);
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 2000);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
             console.error(error);
         }
     };
@@ -114,11 +114,11 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 setSuccessMessage(null);
             }, 2000);
             fetchData(selectedButton);
-        } catch (error:any) {
+        } catch (error: any) {
             setErrorMessage(error.response.data);
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 2000);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
             console.error(error);
         }
     };
@@ -139,9 +139,9 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             fetchData(selectedButton);
         } catch (error: any) {
             setErrorMessage(error.response.data);
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 2000);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
             console.error(error);
         }
     };
@@ -150,7 +150,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
         try {
             const token = Cookies.get("authToken");
             const refreshToken = window.localStorage.getItem('refreshToken');
-            const res = await axios.post(ServHost.host + '/deleteItem', { refreshToken,id }, {
+            const res = await axios.post(ServHost.host + '/deleteItem', { refreshToken, id }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -163,9 +163,9 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             fetchData(selectedButton);
         } catch (error: any) {
             setErrorMessage(error.response.data);
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 2000);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
             console.error(error);
         }
     };
@@ -188,9 +188,9 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }, 2000);
         } catch (error: any) {
             setErrorMessage(error.response.data);
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 2000);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
             setLoading(false);
             console.error(error);
         }
@@ -204,7 +204,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }
             const token = Cookies.get("authToken");
             const refreshToken = window.localStorage.getItem('refreshToken');
-            const res = await axios.post(ServHost.host + '/UpdateItem', {...itemData, refreshToken}, {
+            const res = await axios.post(ServHost.host + '/UpdateItem', { ...itemData, refreshToken }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -217,9 +217,33 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }, 2000);
         } catch (error: any) {
             setErrorMessage(error.response.data);
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 2000);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
+            console.error(error);
+        }
+    };
+
+    const sendDataToServerUpdatePermission = async (permissionData: UserPermission) => {
+        try {
+            const token = Cookies.get("authToken");
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            const res = await axios.post(ServHost.host + '/updateUserAccessLevel', {...permissionData, refreshToken}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(res.data);
+            fetchData(selectedButton);
+            setSuccessMessage('Права пользователя обновлены');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+        } catch (error: any) {
+            setErrorMessage(error.response.data);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
             console.error(error);
         }
     };
@@ -272,13 +296,12 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 </div>
                 <div className="admin-profile-buttons-main">
                     <button onClick={() => fetchData('/tovar')} className="admin-profile-button">Товары</button>
-                    <button onClick={() => fetchData('/users')} className="admin-profile-button">Пользователи</button>
-                    <button onClick={() => fetchData('/permissions')} className="admin-profile-button">Права пользователей</button>
+                    <button onClick={() => fetchData('/getNewUsers')} className="admin-profile-button">Пользователи</button>
+                    <button onClick={() => fetchData('/getUserAccessRights')} className="admin-profile-button">Права пользователей</button>
                 </div>
                 <div className="admin-profile-add-button">
                     {selectedButton === '/tovar' && <button onClick={AddItem} className="admin-profile-button">ДОБАВИТЬ ТОВАР</button>}
-                    {selectedButton === '/users' && <button onClick={AddUser} className="admin-profile-button">ДОБАВИТЬ ПОЛЬЗОВАТЕЛЯ</button>}
-                    {selectedButton === '/permissions' && <button onClick={AddPermission} className="admin-profile-button">ДОБАВИТЬ ПРАВА</button>}
+                    {selectedButton === '/getNewUsers' && <button onClick={AddUser} className="admin-profile-button">ДОБАВИТЬ ПОЛЬЗОВАТЕЛЯ</button>}
                 </div>
                 {successMessage && <div className="success-message">{successMessage}</div>}
                 {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -304,7 +327,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                                         onDelete={() => sendDataToServerDelete(product.id)}
                                     />
                                 );
-                            } else if (selectedButton === '/users' && 'login' in item) {
+                            } else if (selectedButton === '/getNewUsers' && 'login' in item) {
                                 const user = item as User;
                                 return (
                                     <UniversalTableItem
@@ -323,19 +346,19 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                                         onDelete={() => sendDataToServerDelete(user.login)}
                                     />
                                 );
-                            } else if (selectedButton === '/permissions' && 'login' in item) {
+                            } else if (selectedButton === '/getUserAccessRights' && 'login' in item) {
                                 const permission = item as UserPermission;
                                 return (
                                     <UniversalTableItem
                                         key={permission.login}
                                         data={permission}
                                         fields={[
-                                            { label: "Login", key: "login", type: "text" },
+                                            { label: "Login", key: "login", type: "text", readOnly: true },
                                             { label: "Access Level", key: "access_level", type: "text" }
                                         ]}
                                         allowImageUpload={false}
-                                        onUpdate={sendDataToServerUpdate}
-                                        onDelete={() => sendDataToServerDelete(permission.login)}
+                                        onUpdate={sendDataToServerUpdatePermission}
+                                        onDelete={undefined}
                                     />
                                 );
                             }

@@ -7,7 +7,7 @@ interface UniversalTableItemProps<T extends FieldValues> {
     onUpdate?: (data: T) => void;
     onDelete?: () => void;
     onAdd?: () => void;
-    fields: { label: string; key: keyof T; type: "text" | "number" }[];
+    fields: { label: string; key: keyof T; type: "text" | "number"; readOnly?: boolean }[];
     imagePathField?: keyof T;
     allowImageUpload?: boolean;
 }
@@ -88,6 +88,7 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
                                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                                     setFormData({ ...formData, [field.key]: e.target.value })
                                 }
+                                readOnly={field.readOnly}
                             />
                         </div>
                     ))}
