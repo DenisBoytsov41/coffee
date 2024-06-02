@@ -247,6 +247,60 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             console.error(error);
         }
     };
+    const sendDataToServerDeleteUser = async (loginToDelete: string) => {
+        try {
+            const token = Cookies.get("authToken");
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            const res = await axios.post(ServHost.host + '/deleteNewUser', { refreshToken, loginToDelete }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(res.data);
+            setSuccessMessage('Пользователь успешно удален');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+            fetchData(selectedButton);
+        } catch (error: any) {
+            setErrorMessage(error.response?.data?.error || 'Произошла ошибка');
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
+            console.error(error);
+        }
+    };
+    const sendDataToServerUpdateUser = async (userData: User) => {
+        try {
+            const token = Cookies.get("authToken");
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            
+            const { login, firstName, lastName, gender, phone, email } = userData;
+            const requestData = { refreshToken, login, firstname: firstName, lastname: lastName, gender, phone, email };
+            //console.log(requestData);
+    
+            const res = await axios.post(ServHost.host + '/updateNewUserAdminInfo', requestData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+    
+            console.log(res.data);
+            fetchData(selectedButton);
+            setSuccessMessage('Информация о пользователе обновлена');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+        } catch (error: any) {
+            setErrorMessage(error.response.data);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
+            console.error(error);
+        }
+    };
+    
+    
 
     const handlePageChange = (pageNumber: number) => {
         setCurrentPage(pageNumber);
@@ -301,7 +355,6 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 </div>
                 <div className="admin-profile-add-button">
                     {selectedButton === '/tovar' && <button onClick={AddItem} className="admin-profile-button">ДОБАВИТЬ ТОВАР</button>}
-                    {selectedButton === '/getNewUsers' && <button onClick={AddUser} className="admin-profile-button">ДОБАВИТЬ ПОЛЬЗОВАТЕЛЯ</button>}
                 </div>
                 {successMessage && <div className="success-message">{successMessage}</div>}
                 {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -334,16 +387,16 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                                         key={user.login}
                                         data={user}
                                         fields={[
-                                            { label: "Login", key: "login", type: "text" },
+                                            { label: "Login", key: "login", type: "text", readOnly: true },
                                             { label: "First Name", key: "firstName", type: "text" },
                                             { label: "Last Name", key: "lastName", type: "text" },
-                                            { label: "Email", key: "email", type: "text" },
+                                            { label: "Email", key: "email", type: "text", readOnly: true },
                                             { label: "Gender", key: "gender", type: "text" },
                                             { label: "Phone", key: "phone", type: "text" }
                                         ]}
                                         allowImageUpload={false}
-                                        onUpdate={sendDataToServerUpdate}
-                                        onDelete={() => sendDataToServerDelete(user.login)}
+                                        onUpdate={(updatedData) => sendDataToServerUpdateUser(updatedData)}
+                                        onDelete={() => sendDataToServerDeleteUser(user.login)}
                                     />
                                 );
                             } else if (selectedButton === '/getUserAccessRights' && 'login' in item) {

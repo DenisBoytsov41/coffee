@@ -45,7 +45,7 @@ function AdminLogin({ onLogin }: AdminLoginProps) {
             setTimeout(() => setSuccessMessage(""), 5000);
             onLogin(authToken);  // Вызов onLogin с токеном
         } catch (error: any) {
-            console.log(error);
+            //console.log(error);
             if (error.message === 'Отсутствует refreshToken') {
                 setError('Отсутствует refreshToken');
                 setTimeout(() => setError(""), 5000);
@@ -90,6 +90,10 @@ function AdminLogin({ onLogin }: AdminLoginProps) {
     return (
         <div className="admin-login-container">
             <form onSubmit={handleSubmit(submit)} className="admin-login-form">
+                <div className="CenteredMessages">
+                    {error && <div className="Error">{error}</div>}
+                    {successMessage && <div className="Success">{successMessage}</div>}
+                </div>
                 <div className="form-group">
                     <input
                         type="text"
@@ -112,10 +116,7 @@ function AdminLogin({ onLogin }: AdminLoginProps) {
                     <button type="submit" className="ButtonAdm" style={{ marginTop: "10px" }}>Войти</button>
                     <button onClick={handleSubmit(handleAddUserAdmin)} className="ButtonAdm" style={{ marginTop: "10px" }}>Добавить пользователя администратора</button>
                 </div>
-                <div className="CenteredMessages">
-                    {error && <div className="Error">{error}</div>}
-                    {successMessage && <div className="Success">{successMessage}</div>}
-                </div>
+                
             </form>
         </div>
     );

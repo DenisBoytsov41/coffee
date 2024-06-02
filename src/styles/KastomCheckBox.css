@@ -64,3 +64,24 @@ input[type="checkbox"]:not(:checked) + label:after{
 input[type="checkbox"]:checked + label:after{
     opacity: 1;
 }
+
+.linkHeader {
+    display: block;
+    color: #000000;
+    text-decoration: none;
+    padding: 8px;
+    font-size: 16px;
+    position: relative;
+}
+
+.absformHamburger {
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    padding: 8px;
+    width: 200px;
+    z-index: 999;
+}

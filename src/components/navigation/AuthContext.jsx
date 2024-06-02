@@ -12,7 +12,7 @@ global.ACCESS_TOKEN_EXPIRATION = 180
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const login = (refreshLogin, accessToken) => {
+  const login = (refreshLogin, accessToken, isPublicComputer) => {
     setIsLoggedIn(prevIsLoggedIn => {
       console.log("Я в login");
       console.log(prevIsLoggedIn);
@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('refreshTokenExpiration', moment().add(global.REFRESH_TOKEN_EXPIRATION, 'seconds').tz('Europe/Moscow').format());
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('accessTokenExpiration', moment().add(global.ACCESS_TOKEN_EXPIRATION, 'seconds').tz('Europe/Moscow').format());
+      localStorage.setItem('isPublicComputer', isPublicComputer ? 'true' : 'false');
       return true;
     });
   };
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }) => {
       window.localStorage.setItem("basket", "");
       window.localStorage.setItem("backCount", "0");
       localStorage.removeItem('liked');
+      localStorage.removeItem('isPublicComputer');
       return false;
     });
   };

@@ -10,6 +10,7 @@ import { useAuth } from '../components/navigation/AuthContext';
 interface MyForm {
     loginOrEmail: string;
     pass: string;
+    isPublicComputer: boolean;
 }
 
 declare global {
@@ -85,7 +86,7 @@ function Vhod() {
             if (response.status == 200) {
                 console.log(response.data.message);
                 setLoginMessage(response.data.message);
-                login(response.data.refreshToken, response.data.accessToken);
+                login(response.data.refreshToken, response.data.accessToken, data.isPublicComputer);
                 UpdateDBBasket();
                 UpdateDBLiked();
             } else {
@@ -214,7 +215,10 @@ function Vhod() {
                                 <Link to={'/reset'} className='linkHeader'>Забыли пароль?</Link>
                             </div>
                             <div className="Comp">
-                                <div><input type="checkbox" id="cb1" /> <label htmlFor="cb1">Чужой компьютер</label></div>
+                                <div>
+                                    <input type="checkbox" id="cb2" {...register('isPublicComputer')} /> 
+                                    <label htmlFor="cb2">Чужой компьютер</label>
+                                </div>
                             </div>
                             <div className="line1"></div>
                             <Link to={'/reg'} className='linkHeader'>Регистрация</Link>

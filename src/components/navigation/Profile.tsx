@@ -6,7 +6,7 @@ import '../../styles/SelectGender.css'
 import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import ServHost from "../../serverHost.json";
-import ChangePassword from "./ChangePassword"; // Импортируем новый компонент
+import ChangePassword from "./ChangePassword";
 
 interface MyForm {
     firstname: string,
@@ -27,7 +27,8 @@ function Profile() {
     const [login, setLogin] = useState<string>('');
     const [serverMessage, setServerMessage] = useState<string>('');
     const [messageColor, setMessageColor] = useState<string>('');
-    const [activeTab, setActiveTab] = useState<string>('profile'); // Добавляем состояние для активной вкладки
+    const [activeTab, setActiveTab] = useState<string>('profile');
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     const clearLocalStorageTokens = () => {
         localStorage.removeItem('refreshToken');
@@ -100,12 +101,35 @@ function Profile() {
         }
     };
 
+    const checkAdminCredentials = async () => {
+        try {
+            const refreshToken = window.localStorage.getItem("refreshToken");
+
+            if (!refreshToken) {
+                window.location.replace("/login");
+                return;
+            }
+
+            const response = await axios.post(`${ServHost.host}/checkAdminCredentialsRefreshToken`, {
+                refreshToken
+            });
+
+            if (response.status === 200 && response.data.status === 'ok') {
+                setIsAdmin(true);
+            }
+        } catch (error) {
+            console.error('Ошибка проверки прав пользователя:', error);
+            //window.location.replace("/login");
+        }
+    };
+
     useEffect(() => {
         const refreshToken = window.localStorage.getItem('refreshToken');
         const accessToken = window.localStorage.getItem('accessToken');;
 
         if (refreshToken || (refreshToken && accessToken)) {
             sendDataToServerCheckToken(refreshToken);
+            checkAdminCredentials();
         } else {
             //clearLocalStorageTokens();
             window.location.replace("/login");
@@ -123,6 +147,7 @@ function Profile() {
                 <div className="tabs">
                     <button onClick={() => setActiveTab('profile')}>Профиль</button>
                     <button onClick={() => setActiveTab('changePassword')}>Смена пароля</button>
+                    {isAdmin && <button onClick={() => window.location.replace("/admin")}>Панель администратора</button>}
                 </div>
                 {activeTab === 'profile' && (
                     <form onSubmit={handleSubmit(submit)}>

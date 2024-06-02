@@ -12,6 +12,7 @@ import { useAuth } from './AuthContext';
 interface MyForm {
     loginOrEmail: string;
     pass: string;
+    isPublicComputer: boolean;
 }
 
 declare global {
@@ -40,27 +41,21 @@ function Login() {
         formState: { errors },
         handleSubmit
     } = useForm<MyForm>({ mode: "onBlur" });
-    
+
     useEffect(() => {
         let logged = window.localStorage.getItem("isLoggedIn");
         let refresh = window.localStorage.getItem("refreshToken");
         const timer = setTimeout(() => {
-            if(!logged)
-            {
+            if (!logged) {
                 UpdateDBBasket();
                 UpdateDBLiked();
-            }
-            else if(logged && refresh){
+            } else if (logged && refresh) {
                 window.location.replace("/");
             }
         }, 1000);
 
         return () => clearTimeout(timer);
     }, [isLoggedIn]);
-    
-    
-    
-   
 
     const sendDataToServer = async (data: MyForm) => {
         try {
@@ -69,7 +64,7 @@ function Login() {
             if (response.status == 200) {
                 console.log(response.data.message);
                 setLoginMessage(response.data.message);
-                login(response.data.refreshToken, response.data.accessToken);
+                login(response.data.refreshToken, response.data.accessToken, data.isPublicComputer);
             } else {
                 console.error(response.data.message);
                 setLoginError(response.data.message);
@@ -81,27 +76,25 @@ function Login() {
             } else {
                 setLoginError('Ошибка при входе. Пожалуйста, попробуйте еще раз или обратитесь за помощью.');
             }
-          }
+        }
     };
+
     const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
             if (!refreshToken) {
                 console.error('Refresh token is missing');
                 return;
             }
-            // Проверяем токен на сервере
             const resCheckToken = await axios.get(ServHost.host + '/checkToken', {
                 params: { refreshToken }
             });
             if (resCheckToken.status === 200 && resCheckToken.data) {
                 const login = resCheckToken.data.login;
-                // Отправляем данные для обновления корзины
                 const res = await axios.post(ServHost.host + '/MergeBasket', { login, items: basket || "" });
                 if (res.data.res !== "") {
                     console.log(res.data.res);
                     let logged = window.localStorage.getItem("isLoggedIn");
-                    if (logged)
-                    {
+                    if (logged) {
                         window.location.replace("/");
                     }
                 }
@@ -120,25 +113,23 @@ function Login() {
             await sendDataToServerUpdateBasket(refreshToken, basket || "");
         }
     };
-    const sendDataToServerUpdateLiked= async (refreshToken: string | null, liked: string | null) => {
+
+    const sendDataToServerUpdateLiked = async (refreshToken: string | null, liked: string | null) => {
         try {
             if (!refreshToken) {
                 console.error('Refresh token is missing');
                 return;
             }
-            // Проверяем токен на сервере
             const resCheckToken = await axios.get(ServHost.host + '/checkToken', {
                 params: { refreshToken }
             });
             if (resCheckToken.status === 200 && resCheckToken.data) {
                 const login = resCheckToken.data.login;
-                // Отправляем данные для обновления корзины
                 const res = await axios.post(ServHost.host + '/MergeLiked', { login, items: liked || "" });
                 if (res.data.res !== "") {
                     console.log(res.data.res);
                     let logged = window.localStorage.getItem("isLoggedIn");
-                    if (logged)
-                    {
+                    if (logged) {
                         window.location.replace("/");
                     }
                 }
@@ -158,7 +149,6 @@ function Login() {
             await sendDataToServerUpdateLiked(refreshToken, liked || "");
         }
     };
-    
 
     const submit: SubmitHandler<MyForm> = (data) => {
         sendDataToServer(data);
@@ -195,7 +185,10 @@ function Login() {
                             <Link to={'/reset'} className='linkHeader'>Забыли пароль?</Link>
                         </div>
                         <div className="Comp">
-                            <div><input type="checkbox" id="cb2" /> <label htmlFor="cb2">Чужой компьютер</label></div>
+                            <div>
+                                <input type="checkbox" id="cb2" {...register('isPublicComputer')} /> 
+                                <label htmlFor="cb2">Чужой компьютер</label>
+                            </div>
                         </div>
                         <div className="line1"></div>
                         <Link to={'/reg'} className='linkHeader'>Регистрация</Link>
