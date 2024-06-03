@@ -38,8 +38,6 @@ type DataType = Product[] | User[] | UserPermission[];
 function AdminProfile({ onLogout }: AdminProfileProps) {
     const [data, setData] = useState<DataType | null>(null);
     const [loading, setLoading] = useState(true);
-    const [image, setImage] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedButton, setSelectedButton] = useState('/tovar');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -324,29 +322,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             console.error(error);
         }
     };
-    const handleImageChange = async (e: ChangeEvent<HTMLInputElement>, itemData: Product) => {
-        const files = e.target.files;
-        if (files && files.length > 0) {
-            try {
-                const selectedFile = files[0];
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setImagePreview(reader.result as string);
-                    // Используем уникальный ключ для каждого элемента таблицы
-                    console.log(itemData.id);
-                    sendDataToServerUpdate(itemData, selectedFile);
-                };
-                reader.readAsDataURL(selectedFile);
-                // Вызываем функцию для отправки данных на сервер
-                await sendDataToServerUpdate(itemData, selectedFile);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    };
-    
-    
-    
+   
     const handleDownloadImage = async (imagePath: string) => {
         console.log(`Загрузка изображения с пути: ${imagePath}`);
         try {
@@ -449,7 +425,6 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                                             onUpdate={sendDataToServerUpdate}
                                             onDelete={() => sendDataToServerDelete(product.id)}
                                             onDownloadImage={handleDownloadImage}
-                                            handleImageChange={handleImageChange}
                                             onDeleteImage={handleDeleteImage}
                                         />
                                 );

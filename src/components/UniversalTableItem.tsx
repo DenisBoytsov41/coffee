@@ -2,6 +2,7 @@ import React, { ChangeEvent, useRef, useState } from "react";
 import { SubmitHandler, useForm, FieldValues } from "react-hook-form";
 import "../styles/ItemAdmin.css";
 
+
 interface UniversalTableItemProps<T extends FieldValues> {
     data: T;
     onUpdate?: (data: T, PhotoPath: File | null) => void;
@@ -9,7 +10,6 @@ interface UniversalTableItemProps<T extends FieldValues> {
     onAdd?: () => void;
     onDownloadImage?: (PhotoPath: string) => void;
     onDeleteImage?: () => void;
-    handleImageChange?: (e: ChangeEvent<HTMLInputElement>, itemData: T, sendDataToServerUpdate: (itemData: T, selectedFile: File | null) => Promise<void>) => void;
     fields: { label: string; key: keyof T; type: "text" | "number"; readOnly?: boolean }[];
     imagePathField?: keyof T;
     allowImageUpload?: boolean;
@@ -123,15 +123,15 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
                     ))}
                     {props.allowImageUpload && (
                         <div className="PoleItem">
-                            <label className="UploadImageLabel" htmlFor="image">Выберите изображение</label>
+                            <label className="UploadImageLabel" htmlFor={`image-${props.data.id}`}>Выберите изображение</label>
                             <input
                                 type="file"
-                                id="image"
+                                id={`image-${props.data.id}`}
                                 accept="image/*"
                                 onChange={(e) => handleImageChange?.(e)}
                                 className="UploadImageButton"
                             />
-                            <label htmlFor="image" className="UploadImageButtonLabel">
+                            <label htmlFor={`image-${props.data.id}`} className="UploadImageButtonLabel">
                                 Выбрать файл
                             </label>
                         </div>
