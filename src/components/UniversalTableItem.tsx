@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, useRef, useEffect, useState } from "react";
 import { SubmitHandler, useForm, FieldValues } from "react-hook-form";
 import "../styles/ItemAdmin.css";
 
@@ -46,6 +46,10 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
         formState: { errors },
         handleSubmit
     } = useForm<T>({ mode: "onBlur" });
+
+    useEffect(() => {
+        setFormData(props.data);
+    }, [props.data]);
 
     const updateImageState = (key: string, file: File | null, preview: string | null) => {
         setImages(prevState => ({

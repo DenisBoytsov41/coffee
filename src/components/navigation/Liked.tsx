@@ -56,12 +56,12 @@ function Liked() {
         }
     }, [likedItems]);
 
-    const handleRemoveLikedItem = (itemId: number) => {
+    const handleRemoveLikedItem = async (itemId: number) => {
         const newLikedItems = likedItems.filter(item => item !== String(itemId));
         setLikedItems(newLikedItems);
         const newLikedString = newLikedItems.join(",");
         window.localStorage.setItem("liked", newLikedString);
-        UpdateDBLiked(newLikedString);
+        await UpdateDBLiked(newLikedString);
     };
 
     return (
@@ -76,7 +76,7 @@ function Liked() {
                 <br />
                 <br />
                 <div className="centerText">{Pusto}</div>
-                <Katalog type={"liked"} katcount={0} onRemoveLikedItem={handleRemoveLikedItem} />
+                <Katalog type={"liked"} katcount={0} pagination={false} itemsPerPage={10} onRemoveLikedItem={handleRemoveLikedItem} />
             </div>
             <Futer className="footer" />
         </div>

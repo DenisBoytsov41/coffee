@@ -192,17 +192,17 @@ function KartTovar(props: Props) {
                         {props.price}₽
                     </div>
                     <div className="tovbutt">
-                        <button onClick={() => {
+                        <button onClick={async () => {
                             let liked = window.localStorage.getItem("liked") || "";
                             if (!liked.includes(String(props.id))) {
                                 liked += liked ? `,${props.id}` : `${props.id}`;
                                 window.localStorage.setItem("liked", liked);
-                                UpdateDBLiked(liked);
+                                await UpdateDBLiked(liked);
                                 setLikeImage(tla);
                             } else {
                                 liked = liked.split(",").filter(id => id !== String(props.id)).join(",");
                                 window.localStorage.setItem("liked", liked);
-                                UpdateDBLiked(liked);
+                                await UpdateDBLiked(liked);
                                 setLikeImage(tld);
                                 if (props.onRemoveLikedItem) {
                                     props.onRemoveLikedItem(props.id);

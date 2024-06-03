@@ -20,7 +20,7 @@ function Opt(){
                 </div>
                 <br/>
                 <br/>
-                <Katalog type={"opt"} katcount={0}/>
+                <Katalog type={"opt"} katcount={0} pagination={true} itemsPerPage={10}/>
             </div>
             <Futer className="footer"/>
         </div>

@@ -183,7 +183,7 @@ function Basket() {
                         <div className="baskZagol">КОРЗИНА</div>
                         <br />
                         <br />
-                        <Katalog type={'korzina'} katcount={0} />
+                        <Katalog type={'korzina'} katcount={0} pagination={false} itemsPerPage={10}/>
                         <br />
                         <br />
                         <div className="KorzVsego">

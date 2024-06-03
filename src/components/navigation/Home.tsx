@@ -26,7 +26,7 @@ function Home() {
           <div className="devizmal">МЫ ЛЮБИМ ТО, ЧТО ДЕЛАЕМ И ЦЕНИМ ПРОДУКТ, КОТОРЫЙ ПРОДАЁМ.</div>
         </div>
         <div className="contApp">
-          <Katalog type={''} katcount={6} />
+          <Katalog type={''} katcount={6} pagination={false} itemsPerPage={10} />
           <br />
           <br />
           <Link to={"/buy"} className="linkHome">

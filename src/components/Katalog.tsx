@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import KartTovar from "./KartTovar";
 import '../styles/katalog.css';
 import KartTovarOpt from "./KartTovOpt";
+import Pagination from "../components/navigation/Pagination";
 import ti from "../images/tovimage.jpg";
 import KartKorz from "./KartKorz";
 import ServHost from "../serverHost.json";
@@ -9,8 +10,12 @@ import ServHost from "../serverHost.json";
 interface Props {
     type: string;
     katcount: number;
-    onRemoveLikedItem?: (itemId: number) => void; // добавляем проп для удаления из избранного
+    pagination?: boolean;
+    itemsPerPage?: number;
+    onRemoveLikedItem?: (itemId: number) => void;
+    searchEnabled?: boolean;
 }
+
 
 interface Item {
     id: number;
@@ -23,26 +28,84 @@ interface Item {
 
 function Katalog(props: Props) {
     const [data, setData] = useState<Item[]>([]);
-    const [refresh, setRefresh] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchData, setSearchData] = useState<Item[]>([]);
+    const [totalItems, setTotalItems] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
         fetch(ServHost.host + '/tovar')
             .then(res => res.json())
-            .then(res => setData(res));
+            .then(res => {
+                setData(res);
+                setSearchData(res);
+                setTotalItems(res.length); // Устанавливаем общее количество элементов при загрузке данных
+                setTotalPages(Math.ceil(res.length / (props.itemsPerPage || 10))); // Рассчитываем общее количество страниц
+            });
     }, []);
 
     const handleDelete = useCallback((id: number) => {
         setData(prevData => prevData.filter(item => item.id !== id));
-    }, []);
+        setSearchData(prevData => prevData.filter(item => item.id !== id));
+        setTotalItems(prevTotal => prevTotal - 1); // Уменьшаем общее количество элементов при удалении элемента
+        setTotalPages(Math.ceil((totalItems - 1) / (props.itemsPerPage || 10))); // Пересчитываем общее количество страниц
+    }, [totalItems, props.itemsPerPage]);
+
+    useEffect(() => {
+        const filteredData = data.filter(item => {
+            return (
+                item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.opisanie.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        });
+        setSearchData(filteredData);
+        setTotalItems(filteredData.length); // Устанавливаем общее количество элементов после фильтрации
+        setTotalPages(Math.ceil(filteredData.length / (props.itemsPerPage || 10))); // Пересчитываем общее количество страниц после фильтрации
+    }, [data, searchQuery, props.itemsPerPage]);
+
+    let currentItems = props.searchEnabled ? searchData : data;
+
+    if (props.pagination !== false) {
+        const itemsPerPage = props.itemsPerPage || 10;
+        const currentPageIndex = currentPage - 1;
+        const indexOfLastItem = Math.min((currentPageIndex + 1) * itemsPerPage, totalItems);
+        const indexOfFirstItem = Math.min(currentPageIndex * itemsPerPage, indexOfLastItem);
+        currentItems = currentItems.slice(indexOfFirstItem, indexOfLastItem);
+    }
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
-        <div className='katalog'>
-            {LoadKatalog(props.type, props.katcount, data, handleDelete, props.onRemoveLikedItem).map((el, index) => (
-                <div className="ItemKatalog" key={index}>{el}</div>
-            ))}
+        <div>  
+            <div className="search">
+                {props.searchEnabled && (
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Поиск..."
+                        className="search-input"
+                    />
+                )}
+            </div>
+            
+            <div className='katalog'>
+                {LoadKatalog(props.type, props.katcount, currentItems, handleDelete, props.onRemoveLikedItem)}
+            </div>
+            <div id='pagin'>
+                {props.pagination && 
+                    <Pagination 
+                        currentPage={currentPage} 
+                        totalPages={totalPages} // Используем новое состояние totalPages
+                        onPageChange={paginate} 
+                    />
+                }
+            </div>
         </div>
     );
 }
+
 
 export default Katalog;
 
@@ -53,7 +116,6 @@ function LoadKatalog(type: string, count: number, data: Item[], onDelete: (id: n
     if (count === 0 || count > datcount) {
         count = datcount;
     }
-    console.log(data);
 
     const isValidItem = (item: Item) => item.name && item.price && item.price > 0;
 
@@ -127,11 +189,11 @@ function LoadKatalog(type: string, count: number, data: Item[], onDelete: (id: n
                         price={item.price} 
                         image={item.PhotoPath ? item.PhotoPath.replace('blob:', '') : ti}
                         id={item.id} 
-                    />
-                );
-            }
+                />
+            );
         }
     }
+}
 
-    return elementsArray;
+return elementsArray;
 }

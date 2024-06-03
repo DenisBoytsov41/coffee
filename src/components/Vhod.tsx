@@ -50,25 +50,24 @@ function Vhod() {
     }, []);
 
     useEffect(() => {
-        let logged = window.localStorage.getItem("isLoggedIn");
-        let refresh = window.localStorage.getItem("refreshToken");
-        const timer = setTimeout(() => {
-            if(!logged)
-            {
-                UpdateDBBasket();
-                UpdateDBLiked();
-            }else if(logged && refresh ==""){
-                window.localStorage.setItem("isLoggedIn","false");
-                window.location.replace("/");
-            }
-        }, 1000);
-
-        return () => clearTimeout(timer);
+        const fetchData = async () => {
+            let logged = window.localStorage.getItem("isLoggedIn");
+            let refresh = window.localStorage.getItem("refreshToken");
+            const timer = setTimeout(async () => {
+                if (!logged) {
+                    await UpdateDBBasket();
+                    await UpdateDBLiked();
+                } else if (logged && refresh === "") {
+                    window.localStorage.setItem("isLoggedIn", "false");
+                    window.location.replace("/");
+                }
+            }, 1000);
+            return () => clearTimeout(timer);
+        };
+    
+        fetchData();
     }, [isLoggedIn]);
     
-    
-
-
     const handleButtonClick = () => {
         setElementVisible(!isElementVisible);
     };
@@ -87,8 +86,8 @@ function Vhod() {
                 console.log(response.data.message);
                 setLoginMessage(response.data.message);
                 login(response.data.refreshToken, response.data.accessToken, data.isPublicComputer);
-                UpdateDBBasket();
-                UpdateDBLiked();
+                await UpdateDBBasket();
+                await UpdateDBLiked();
             } else {
                 console.error(response.data.message);
                 setLoginError(response.data.message);
@@ -102,6 +101,7 @@ function Vhod() {
             }
         }
     };
+    
     const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
             if (!refreshToken) {
@@ -173,6 +173,7 @@ function Vhod() {
             await sendDataToServerUpdateLiked(refreshToken, liked || "");
         }
     };
+    
 
     const submit: SubmitHandler<MyForm> = (data) => {
         sendDataToServer(data);

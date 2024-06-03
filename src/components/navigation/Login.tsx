@@ -43,19 +43,23 @@ function Login() {
     } = useForm<MyForm>({ mode: "onBlur" });
 
     useEffect(() => {
-        let logged = window.localStorage.getItem("isLoggedIn");
-        let refresh = window.localStorage.getItem("refreshToken");
-        const timer = setTimeout(() => {
-            if (!logged) {
-                UpdateDBBasket();
-                UpdateDBLiked();
-            } else if (logged && refresh) {
-                window.location.replace("/");
-            }
-        }, 1000);
-
-        return () => clearTimeout(timer);
+        const fetchData = async () => {
+            let logged = window.localStorage.getItem("isLoggedIn");
+            let refresh = window.localStorage.getItem("refreshToken");
+            const timer = setTimeout(async () => {
+                if (!logged) {
+                    await UpdateDBBasket();
+                    await UpdateDBLiked();
+                } else if (logged && refresh) {
+                    window.location.replace("/");
+                }
+            }, 1000);
+            return () => clearTimeout(timer);
+        };
+    
+        fetchData();
     }, [isLoggedIn]);
+    
 
     const sendDataToServer = async (data: MyForm) => {
         try {

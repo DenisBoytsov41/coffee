@@ -42,6 +42,10 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
     const [selectedButton, setSelectedButton] = useState('/tovar');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredData, setFilteredData] = useState<DataType | null>(null);
+    const [currentItems, setCurrentItems] = useState<DataType | null>(null);
+    const [totalPages, setTotalPages] = useState(0);
     const itemsPerPage = 5;
 
     useEffect(() => {
@@ -60,7 +64,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 }, 2000);
                 setLoading(false);
             } catch (error: any) {
-                setErrorMessage(error?.response?.data?.error || 'Ошибка');
+                setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
                 setTimeout(() => {
                     setErrorMessage(null);
                 }, 2000);
@@ -69,6 +73,78 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
         };
         fetchData();
     }, [selectedButton]);
+
+
+    const filterProducts = (data: DataType, searchQuery: string): Product[] => {
+        return (data as Product[]).filter((item: Product) => {
+            return (item.id && item.id.toString().includes(searchQuery)) ||
+                   (item.name && item.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.opisanie && item.opisanie.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.price && item.price.toString().includes(searchQuery)) ||
+                   (item.optprice && item.optprice.toString().includes(searchQuery));
+        });
+    };
+   
+    
+    const filterUsers = (data: DataType, searchQuery: string): User[] => {
+        return (data as User[]).filter((item: User) => {
+            return (item.login && item.login.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.firstName && item.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.lastName && item.lastName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.email && item.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.gender && item.gender.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.phone && item.phone.toLowerCase().includes(searchQuery.toLowerCase()));
+        });
+    };
+    
+    
+    const filterPermissions = (data: DataType, searchQuery: string): UserPermission[] => {
+        return (data as UserPermission[]).filter((item: UserPermission) => {
+            return (item.login && item.login.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (item.access_level && item.access_level.toLowerCase().includes(searchQuery.toLowerCase()));
+        });
+    };
+    
+    useEffect(() => {
+        if (!data) return;
+
+        //console.log(data);        
+        let filtered: DataType;
+        
+        switch (selectedButton) {
+            case '/tovar':
+                filtered = filterProducts(data, searchQuery);
+                //console.log(searchQuery);
+                //console.log(filtered);
+                break;
+            case '/getNewUsers':
+                filtered = filterUsers(data, searchQuery);
+                break;
+            case '/getUserAccessRights':
+                filtered = filterPermissions(data, searchQuery);
+                break;
+            default:
+                filtered = data;
+                break;
+        }
+    
+        setFilteredData(filtered);
+    }, [data, searchQuery, selectedButton]);
+
+
+    useEffect(() => {
+        if (!filteredData) {
+            setCurrentItems(null);
+            setTotalPages(0);
+        } else {
+            let indexOfLastItem = currentPage * itemsPerPage;
+            let indexOfFirstItem = indexOfLastItem - itemsPerPage;
+            setCurrentItems((filteredData as DataType).slice(indexOfFirstItem, indexOfLastItem));
+            setTotalPages(Math.ceil((filteredData?.length || 0) / itemsPerPage));
+        }
+    }, [filteredData, currentPage]);
+    
+      
 
     const sendDataToServerAddItem = async (data: { refreshToken: string, name: string, opisanie: string, price: number, optprice: number, PhotoPath: string }) => {
         try {
@@ -92,59 +168,16 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }, 2000);
             fetchData(selectedButton);
         } catch (error: any) {
-            setErrorMessage(error?.response?.data?.error || 'Ошибка');
+            setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
             console.error(error);
         }
     };
-
-    const sendDataToServerAddUser = async (data: { login: string, firstName: string, lastName: string, email: string, gender: string, phone: string }) => {
-        try {
-            const token = Cookies.get("authToken");
-            const res = await axios.post(ServHost.host + '/addUser', data, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            console.log(res.data);
-            setSuccessMessage('Пользователь успешно добавлен');
-            setTimeout(() => {
-                setSuccessMessage(null);
-            }, 2000);
-            fetchData(selectedButton);
-        } catch (error: any) {
-            setErrorMessage(error?.response?.data?.error || 'Ошибка');
-            setTimeout(() => {
-                setErrorMessage(null);
-            }, 2000);
-            console.error(error);
-        }
-    };
-
-    const sendDataToServerAddPermission = async (data: { login: string, access_level: string }) => {
-        try {
-            const token = Cookies.get("authToken");
-            const res = await axios.post(ServHost.host + '/addPermission', data, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            console.log(res.data);
-            setSuccessMessage('Права успешно добавлены');
-            setTimeout(() => {
-                setSuccessMessage(null);
-            }, 2000);
-            fetchData(selectedButton);
-        } catch (error: any) {
-            setErrorMessage(error?.response?.data?.error || 'Ошибка');
-            setTimeout(() => {
-                setErrorMessage(null);
-            }, 2000);
-            console.error(error);
-        }
-    };
+    const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    };       
 
     const sendDataToServerDelete = async (id: number | string) => {
         try {
@@ -162,7 +195,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }, 2000);
             fetchData(selectedButton);
         } catch (error: any) {
-            setErrorMessage(error?.response?.data?.error || 'Ошибка');
+            setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -181,13 +214,14 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 }
             });
             setData(response.data);
+            console.log(response.data);
             setLoading(false);
             setSuccessMessage('Запрос успешно выполнен');
             setTimeout(() => {
                 setSuccessMessage(null);
             }, 2000);
         } catch (error: any) {
-            setErrorMessage(error?.response?.data?.error || 'Ошибка');
+            setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -238,7 +272,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 setSuccessMessage(null);
             }, 2000);
         } catch (error: any) {
-            setErrorMessage(error?.response?.data?.error || 'Ошибка');
+            setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -263,7 +297,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 setSuccessMessage(null);
             }, 2000);
         } catch (error: any) {
-            setErrorMessage(error?.response?.data?.error || 'Ошибка');
+            setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -315,7 +349,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 setSuccessMessage(null);
             }, 2000);
         } catch (error: any) {
-            setErrorMessage(error?.response?.data?.error || 'Ошибка');
+            setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -363,21 +397,13 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
         sendDataToServerAddItem(data);
     };
 
-    const AddUser = () => {
-        const data = { login: '', firstName: '', lastName: '', email: '', gender: '', phone: '' };
-        sendDataToServerAddUser(data);
-    };
+    if (loading) {
+        return <div>Загрузка...</div>;
+    }
 
-    const AddPermission = () => {
-        const data = { login: '', access_level: '' };
-        sendDataToServerAddPermission(data);
-    };
-
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = data?.slice(indexOfFirstItem, indexOfLastItem);
-
-    const totalPages = Math.ceil((data?.length || 0) / itemsPerPage);
+    if (!data || !filteredData) {
+        return <div>Нет данных для отображения</div>;
+    }
 
     return (
         <div className="admin-profile-container">
@@ -399,17 +425,28 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                     <button onClick={() => fetchData('/getNewUsers')} className="admin-profile-button">Пользователи</button>
                     <button onClick={() => fetchData('/getUserAccessRights')} className="admin-profile-button">Права пользователей</button>
                 </div>
+                <div className="admin-profile-search">
+                    <input
+                        type="text"
+                        placeholder="Поиск..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="admin-profile-search-input"
+                    />
+                </div>
                 <div className="admin-profile-add-button">
                     {selectedButton === '/tovar' && <button onClick={AddItem} className="admin-profile-button">ДОБАВИТЬ ТОВАР</button>}
                 </div>
                 {successMessage && <div className="success-message">{successMessage}</div>}
                 {errorMessage && <div className="error-message">{errorMessage}</div>}
                 <div className="admin-profile-items">
-                    {loading ? <div className="admin-profile-loading">Загрузка...</div> :
-                        currentItems?.map(item => {
-                            if (selectedButton === '/tovar' && 'id' in item) {
-                                const product = item as Product;
-                                return (
+                {!loading && (
+                    <div className="admin-profile-items">
+                        {(currentItems as (Product | User | UserPermission)[])
+                            ?.map((item: Product | User | UserPermission) => {
+                                if (selectedButton === "/tovar" && "id" in item) {
+                                    const product = item as Product;
+                                    return (
                                         <UniversalTableItem
                                             key={product.id}
                                             data={product}
@@ -418,7 +455,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                                                 { label: "Name", key: "name", type: "text" },
                                                 { label: "Opisanie", key: "opisanie", type: "text" },
                                                 { label: "Price", key: "price", type: "number" },
-                                                { label: "OptPrice", key: "optprice", type: "number" }
+                                                { label: "OptPrice", key: "optprice", type: "number" },
                                             ]}
                                             imagePathField="PhotoPath"
                                             allowImageUpload={true}
@@ -427,45 +464,46 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                                             onDownloadImage={handleDownloadImage}
                                             onDeleteImage={handleDeleteImage}
                                         />
-                                );
-                            } else if (selectedButton === '/getNewUsers' && 'login' in item) {
-                                const user = item as User;
-                                return (
-                                    <UniversalTableItem
-                                        key={user.login}
-                                        data={user}
-                                        fields={[
-                                            { label: "Login", key: "login", type: "text", readOnly: true },
-                                            { label: "First Name", key: "firstName", type: "text" },
-                                            { label: "Last Name", key: "lastName", type: "text" },
-                                            { label: "Email", key: "email", type: "text", readOnly: true },
-                                            { label: "Gender", key: "gender", type: "text" },
-                                            { label: "Phone", key: "phone", type: "text" }
-                                        ]}
-                                        allowImageUpload={false}
-                                        onUpdate={(updatedData) => sendDataToServerUpdateUser(updatedData)}
-                                        onDelete={() => sendDataToServerDeleteUser(user.login)}
-                                    />
-                                );
-                            } else if (selectedButton === '/getUserAccessRights' && 'login' in item) {
-                                const permission = item as UserPermission;
-                                return (
-                                    <UniversalTableItem
-                                        key={permission.login}
-                                        data={permission}
-                                        fields={[
-                                            { label: "Login", key: "login", type: "text", readOnly: true },
-                                            { label: "Access Level", key: "access_level", type: "text" }
-                                        ]}
-                                        allowImageUpload={false}
-                                        onUpdate={sendDataToServerUpdatePermission}
-                                        onDelete={undefined}
-                                    />
-                                );
-                            }
-                            return null;
-                        })
-                    }
+                                    );
+                                } else if (selectedButton === "/getNewUsers" && "login" in item) {
+                                    const user = item as User;
+                                    return (
+                                        <UniversalTableItem
+                                            key={user.login}
+                                            data={user}
+                                            fields={[
+                                                { label: "Login", key: "login", type: "text", readOnly: true },
+                                                { label: "First Name", key: "firstName", type: "text" },
+                                                { label: "Last Name", key: "lastName", type: "text" },
+                                                { label: "Email", key: "email", type: "text", readOnly: true },
+                                                { label: "Gender", key: "gender", type: "text" },
+                                                { label: "Phone", key: "phone", type: "text" },
+                                            ]}
+                                            allowImageUpload={false}
+                                            onUpdate={(updatedData) => sendDataToServerUpdateUser(updatedData)}
+                                            onDelete={() => sendDataToServerDeleteUser(user.login)}
+                                        />
+                                    );
+                                } else if (selectedButton === "/getUserAccessRights" && "login" in item) {
+                                    const permission = item as UserPermission;
+                                    return (
+                                        <UniversalTableItem
+                                            key={permission.login}
+                                            data={permission}
+                                            fields={[
+                                                { label: "Login", key: "login", type: "text", readOnly: true },
+                                                { label: "Access Level", key: "access_level", type: "text" },
+                                            ]}
+                                            allowImageUpload={false}
+                                            onUpdate={sendDataToServerUpdatePermission}
+                                            onDelete={undefined}
+                                        />
+                                    );
+                                }
+                                return null;
+                            })}
+                    </div>
+                )}
                 </div>
                 <Pagination
                     currentPage={currentPage}

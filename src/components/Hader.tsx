@@ -186,6 +186,7 @@ function Header() {
         if (refreshToken) {
             sendDataToServerCheckToken(refreshToken);
             sendDataToServerGetBasket();
+            sendDataToServerGetLiked();
             const basket = window.localStorage.getItem('basket');
             if (basket && basket !== "") {
                 sendDataToServer({ basket });
@@ -203,7 +204,7 @@ function Header() {
         return () => clearInterval(intervalId);
     }, []);
 
-    const handleBasketChange = () => {
+    const handleBasketChange = async () => {
         const basket = window.localStorage.getItem('basket');
         const basketCount = window.localStorage.getItem('backCount');
         const liked = window.localStorage.getItem('liked');
@@ -219,7 +220,7 @@ function Header() {
         else {
             setCounttov(UpdateCount());
             setBackCount(UpdateBaskCount());
-            sendDataToServerGetLiked();    
+            await sendDataToServerGetLiked();    
         }
         // Проверяем наличие backCount
         if (!basketCount || basketCount === "") {

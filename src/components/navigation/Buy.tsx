@@ -1,19 +1,18 @@
-import React, {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import Hader from "../Hader";
 import Futer from "../Futer";
 import Katalog from "../Katalog";
 
-function Buy(){
-
-    return(
+function Buy() {
+    return (
         <div>
-            <Hader/>
-            <br/>
-            <br/>
+            <Hader />
+            <br />
+            <br />
             <div className="contApp">
-                <Katalog type={''} katcount={0}/>
+                <Katalog type={''} katcount={0} pagination={true} itemsPerPage={10} searchEnabled={true} />
             </div>
-            <Futer className="footer"/>
+            <Futer className="footer" />
         </div>
     );
 }
