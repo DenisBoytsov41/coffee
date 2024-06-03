@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import axios from "axios";
 import ServHost from "../serverHost.json";
 import "../styles/AdminProfile.css";
@@ -16,7 +16,7 @@ interface Product {
     opisanie: string;
     price: number;
     optprice: number;
-    imagePath: string;
+    PhotoPath: string;
 }
 
 interface User {
@@ -38,6 +38,8 @@ type DataType = Product[] | User[] | UserPermission[];
 function AdminProfile({ onLogout }: AdminProfileProps) {
     const [data, setData] = useState<DataType | null>(null);
     const [loading, setLoading] = useState(true);
+    const [image, setImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedButton, setSelectedButton] = useState('/tovar');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -60,7 +62,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 }, 2000);
                 setLoading(false);
             } catch (error: any) {
-                setErrorMessage(error.response.data);
+                setErrorMessage(error?.response?.data?.error || 'Ошибка');
                 setTimeout(() => {
                     setErrorMessage(null);
                 }, 2000);
@@ -92,7 +94,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }, 2000);
             fetchData(selectedButton);
         } catch (error: any) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error?.response?.data?.error || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -115,7 +117,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }, 2000);
             fetchData(selectedButton);
         } catch (error: any) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error?.response?.data?.error || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -138,7 +140,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }, 2000);
             fetchData(selectedButton);
         } catch (error: any) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error?.response?.data?.error || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -162,7 +164,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             }, 2000);
             fetchData(selectedButton);
         } catch (error: any) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error?.response?.data?.error || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -187,7 +189,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 setSuccessMessage(null);
             }, 2000);
         } catch (error: any) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error?.response?.data?.error || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -196,19 +198,41 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
         }
     };
 
-    const sendDataToServerUpdate = async (itemData: any) => {
+    const sendDataToServerUpdate = async (itemData: Product, selectedFile: File | null | undefined) => {
         try {
             if (itemData.price < 0 || itemData.optprice < 0) {
                 console.error('Цена не может быть отрицательной.');
                 return;
             }
+    
             const token = Cookies.get("authToken");
             const refreshToken = window.localStorage.getItem('refreshToken');
-            const res = await axios.post(ServHost.host + '/UpdateItem', { ...itemData, refreshToken }, {
+            const updatedData = { ...itemData };
+    
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append('image', selectedFile);
+                console.log(formData);
+                console.log(selectedFile);
+    
+                // Отправляем файл на сервер и получаем путь к нему
+                const response = await axios.post(ServHost.host + '/uploadImage', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+    
+                // Используем путь к файлу изображения
+                updatedData.PhotoPath = response.data.filePath;
+            }
+    
+            const res = await axios.post(ServHost.host + '/UpdateItem', { ...updatedData, refreshToken }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+    
             console.log(res.data);
             fetchData(selectedButton);
             setSuccessMessage('Товар обновлен');
@@ -216,14 +240,15 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 setSuccessMessage(null);
             }, 2000);
         } catch (error: any) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error?.response?.data?.error || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
             console.error(error);
         }
     };
-
+    
+    
     const sendDataToServerUpdatePermission = async (permissionData: UserPermission) => {
         try {
             const token = Cookies.get("authToken");
@@ -240,7 +265,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 setSuccessMessage(null);
             }, 2000);
         } catch (error: any) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error?.response?.data?.error || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
@@ -292,14 +317,59 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 setSuccessMessage(null);
             }, 2000);
         } catch (error: any) {
-            setErrorMessage(error.response.data);
+            setErrorMessage(error?.response?.data?.error || 'Ошибка');
             setTimeout(() => {
                 setErrorMessage(null);
             }, 2000);
             console.error(error);
         }
     };
+    const handleImageChange = async (e: ChangeEvent<HTMLInputElement>, itemData: Product) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            try {
+                const selectedFile = files[0];
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setImagePreview(reader.result as string);
+                    // Используем уникальный ключ для каждого элемента таблицы
+                    console.log(itemData.id);
+                    sendDataToServerUpdate(itemData, selectedFile);
+                };
+                reader.readAsDataURL(selectedFile);
+                // Вызываем функцию для отправки данных на сервер
+                await sendDataToServerUpdate(itemData, selectedFile);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
     
+    
+    
+    const handleDownloadImage = async (imagePath: string) => {
+        console.log(`Загрузка изображения с пути: ${imagePath}`);
+        try {
+            const response = await fetch(imagePath);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = imagePath.split('/').pop() || 'image';
+            link.click();
+
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Ошибка загрузки файла:', error);
+        }
+    };
+    
+    
+    
+    const handleDeleteImage = () => {
+        console.log("Изображение удалено");
+    };
     
 
     const handlePageChange = (pageNumber: number) => {
@@ -364,21 +434,24 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                             if (selectedButton === '/tovar' && 'id' in item) {
                                 const product = item as Product;
                                 return (
-                                    <UniversalTableItem
-                                        key={product.id}
-                                        data={product}
-                                        fields={[
-                                            { label: "Id", key: "id", type: "number" },
-                                            { label: "Name", key: "name", type: "text" },
-                                            { label: "Opisanie", key: "opisanie", type: "text" },
-                                            { label: "Price", key: "price", type: "number" },
-                                            { label: "OptPrice", key: "optprice", type: "number" }
-                                        ]}
-                                        imagePathField="imagePath"
-                                        allowImageUpload={true}
-                                        onUpdate={sendDataToServerUpdate}
-                                        onDelete={() => sendDataToServerDelete(product.id)}
-                                    />
+                                        <UniversalTableItem
+                                            key={product.id}
+                                            data={product}
+                                            fields={[
+                                                { label: "Id", key: "id", type: "number" },
+                                                { label: "Name", key: "name", type: "text" },
+                                                { label: "Opisanie", key: "opisanie", type: "text" },
+                                                { label: "Price", key: "price", type: "number" },
+                                                { label: "OptPrice", key: "optprice", type: "number" }
+                                            ]}
+                                            imagePathField="PhotoPath"
+                                            allowImageUpload={true}
+                                            onUpdate={sendDataToServerUpdate}
+                                            onDelete={() => sendDataToServerDelete(product.id)}
+                                            onDownloadImage={handleDownloadImage}
+                                            handleImageChange={handleImageChange}
+                                            onDeleteImage={handleDeleteImage}
+                                        />
                                 );
                             } else if (selectedButton === '/getNewUsers' && 'login' in item) {
                                 const user = item as User;

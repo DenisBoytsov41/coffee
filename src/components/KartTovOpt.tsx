@@ -1,18 +1,16 @@
-import React, {useState} from "react";
+import React from "react";
 import '../styles/katalog.css';
-import ti from "../images/tovimage.jpg";
-import tb from "../images/tovbuy.jpg";
-import tl from "../images/tovlike.jpg";
 
 interface Props {
     name: string;
     opis: string;
     price: number;
     id: number;
+    image: string;
 }
 
 function KartTovarOpt(props: Props) {
-    return(
+    return (
         <div className='karttov'>
             <div className="tovhead">
                 <div className="tovname">
@@ -24,7 +22,7 @@ function KartTovarOpt(props: Props) {
             </div>
             <div className="bottomCont">
                 <div className="tovcont">
-                    <img src={ti} alt="ti"/>
+                    <img src={props.image} alt="tovimage"/>
                     <div className="tovopis">
                         {props.opis}
                     </div>

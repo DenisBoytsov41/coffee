@@ -153,7 +153,7 @@ function Header() {
                         window.localStorage.setItem('liked', resGetBasket.data.res);
                         if (resGetBasket.data.res!=liked)
                         {
-                            window.location.reload();
+                            //window.location.reload();
                         }
                     }
                 }

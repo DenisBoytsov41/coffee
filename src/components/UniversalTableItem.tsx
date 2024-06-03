@@ -4,9 +4,12 @@ import "../styles/ItemAdmin.css";
 
 interface UniversalTableItemProps<T extends FieldValues> {
     data: T;
-    onUpdate?: (data: T) => void;
+    onUpdate?: (data: T, PhotoPath: File | null) => void;
     onDelete?: () => void;
     onAdd?: () => void;
+    onDownloadImage?: (PhotoPath: string) => void;
+    onDeleteImage?: () => void;
+    handleImageChange?: (e: ChangeEvent<HTMLInputElement>, itemData: T, sendDataToServerUpdate: (itemData: T, selectedFile: File | null) => Promise<void>) => void;
     fields: { label: string; key: keyof T; type: "text" | "number"; readOnly?: boolean }[];
     imagePathField?: keyof T;
     allowImageUpload?: boolean;
@@ -23,10 +26,10 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
         }
     };
 
-    const sendDataToServerUpdate = async (data: T) => {
+    const sendDataToServerUpdate = async (itemData: T, PhotoPath: File | null) => {
         try {
             if (props.onUpdate) {
-                await props.onUpdate(data);
+                await props.onUpdate(itemData, PhotoPath);
             }
         } catch (error) {
             console.error(error);
@@ -36,6 +39,7 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
     const [formData, setFormData] = useState<T>(props.data);
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [images, setImages] = useState<{ [key: string]: { file: File | null, preview: string | null } }>({});
 
     const {
         register,
@@ -43,13 +47,24 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
         handleSubmit
     } = useForm<T>({ mode: "onBlur" });
 
+    const updateImageState = (key: string, file: File | null, preview: string | null) => {
+        setImages(prevState => ({
+            ...prevState,
+            [key]: { file, preview }
+        }));
+    };
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length > 0) {
+            console.log(files);
             setImage(files[0]);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
+                // Используем уникальный ключ для каждого элемента таблицы
+                console.log(props);
+                console.log(props.data.id);
+                updateImageState(props.data.id.toString(), files[0], reader.result as string);
             };
             reader.readAsDataURL(files[0]);
         }
@@ -57,16 +72,30 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
 
     const submit: SubmitHandler<T> = (data) => {
         if (props.allowImageUpload && props.imagePathField && image) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                if (props.imagePathField) {
-                    data[props.imagePathField] = reader.result as any;
-                }
-                sendDataToServerUpdate(data);
-            };
-            reader.readAsDataURL(image);
+            sendDataToServerUpdate(data, image);
         } else {
-            sendDataToServerUpdate(data);
+            sendDataToServerUpdate(data, null);
+        }
+    };
+
+    const handleDownloadImage = () => {
+        console.log("Кнопка 'Скачать изображение' нажата");
+        if (props.onDownloadImage && props.imagePathField && formData[props.imagePathField]) {
+            props.onDownloadImage(formData[props.imagePathField] as string);
+        } else {
+            console.error("Функция загрузки изображения или путь к изображению не определены");
+        }
+    };
+
+    const handleDeleteImage = () => {
+        console.log("Кнопка 'Удалить изображение' нажата");
+        if (props.onDeleteImage && props.imagePathField) {
+            props.onDeleteImage();
+            setImage(null);
+            setImagePreview(null);
+            setFormData({ ...formData, [props.imagePathField]: "" } as T);
+        } else {
+            console.error("Функция удаления изображения или поле пути изображения не определены");
         }
     };
 
@@ -99,7 +128,7 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
                                 type="file"
                                 id="image"
                                 accept="image/*"
-                                onChange={handleImageChange}
+                                onChange={(e) => handleImageChange?.(e)}
                                 className="UploadImageButton"
                             />
                             <label htmlFor="image" className="UploadImageButtonLabel">
@@ -112,9 +141,19 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
                             <img src={imagePreview} alt="Предварительный просмотр" className="PreviewImage" />
                         </div>
                     )}
-                    {props.allowImageUpload && props.imagePathField && formData[props.imagePathField] && !imagePreview && (
+                    {props.allowImageUpload && props.imagePathField && formData[props.imagePathField as keyof T] && !imagePreview && (
                         <div className="PoleItem">
-                            <img src={formData[props.imagePathField] as any} alt="Товар" className="PreviewImage" />
+                            <img src={formData[props.imagePathField as keyof T] as any} alt="Товар" className="PreviewImage" />
+                        </div>
+                    )}
+                    {props.allowImageUpload && props.imagePathField && formData[props.imagePathField as keyof T] && (
+                        <div className="PoleItem">
+                            <button type="button" onClick={handleDownloadImage} className="ButtonAd">
+                                СКАЧАТЬ ИЗОБРАЖЕНИЕ
+                            </button>
+                            <button type="button" onClick={handleDeleteImage} className="ButtonAd">
+                                УДАЛИТЬ ИЗОБРАЖЕНИЕ
+                            </button>
                         </div>
                     )}
                     <div className="gapButton">

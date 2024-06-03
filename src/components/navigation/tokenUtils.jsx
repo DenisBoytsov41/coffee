@@ -27,10 +27,16 @@ const clearExpiredTokens = () => {
       if (!response.ok) {
         throw new Error('Ошибка при удалении refreshToken из базы данных');
       }
+      localStorage.setItem('isLoggedIn', 'false');
       localStorage.removeItem('refreshToken');
-      localStorage.removeItem('refreshTokenExpiration');
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshTokenExpiration');
       localStorage.removeItem('accessTokenExpiration');
+      window.localStorage.removeItem('basket');
+      window.localStorage.setItem("basket", "");
+      window.localStorage.setItem("backCount", "0");
+      localStorage.removeItem('liked');
+      localStorage.removeItem('isPublicComputer');
       console.log('Токен успешно удален из базы данных');
       window.location.reload();
     })

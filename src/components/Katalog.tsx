@@ -18,6 +18,7 @@ interface Item {
     opisanie: string;
     price: number;
     optprice?: number;
+    PhotoPath?: string;
 }
 
 function Katalog(props: Props) {
@@ -52,6 +53,7 @@ function LoadKatalog(type: string, count: number, data: Item[], onDelete: (id: n
     if (count === 0 || count > datcount) {
         count = datcount;
     }
+    console.log(data);
 
     const isValidItem = (item: Item) => item.name && item.price && item.price > 0;
 
@@ -66,7 +68,9 @@ function LoadKatalog(type: string, count: number, data: Item[], onDelete: (id: n
                         opis={item.opisanie} 
                         price={item.optprice || 0} 
                         id={item.id} 
+                        image={item.PhotoPath ? item.PhotoPath.replace('blob:', '') : ti}
                     />
+
                 );
             }
         }
@@ -84,7 +88,7 @@ function LoadKatalog(type: string, count: number, data: Item[], onDelete: (id: n
                         opis={item.opisanie} 
                         price={item.price} 
                         id={item.id} 
-                        image={ti}
+                        image={item.PhotoPath ? item.PhotoPath.replace('blob:', '') : ti}
                         onRemoveLikedItem={onRemoveLikedItem} // передаем проп далее
                     />
                 );
@@ -103,7 +107,7 @@ function LoadKatalog(type: string, count: number, data: Item[], onDelete: (id: n
                         name={item.name} 
                         price={item.price} 
                         id={item.id} 
-                        image={ti}
+                        image={item.PhotoPath ? item.PhotoPath.replace('blob:', '') : ti}
                         onDelete={onDelete}
                     />
                 );
@@ -121,7 +125,7 @@ function LoadKatalog(type: string, count: number, data: Item[], onDelete: (id: n
                         name={item.name} 
                         opis={item.opisanie} 
                         price={item.price} 
-                        image={ti}
+                        image={item.PhotoPath ? item.PhotoPath.replace('blob:', '') : ti}
                         id={item.id} 
                     />
                 );

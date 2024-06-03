@@ -13,7 +13,7 @@ interface Props {
     price: number;
     id: number;
     image: string;
-    onRemoveLikedItem?: (itemId: number) => void; // New prop for removing liked item
+    onRemoveLikedItem?: (itemId: number) => void; 
 }
 
 function KartTovar(props: Props) {
@@ -126,6 +126,7 @@ function KartTovar(props: Props) {
             await sendDataToServerUpdateLiked(refreshToken, liked || "");
         }
     };
+
     const handleMinusClick = async () => {
         if (counttov > 1) {
             const newCount = counttov - 1;
@@ -136,7 +137,7 @@ function KartTovar(props: Props) {
                 const newBasket = basket.replace(itemString, `${props.id}:${newCount}`);
                 const newBackCount = backCount - props.price;
                 await Promise.all([
-                    await UpdateDBBasket(newBasket),
+                    UpdateDBBasket(newBasket),
                     window.localStorage.setItem("basket", newBasket),
                     window.localStorage.setItem("backCount", String(newBackCount))
                 ]);
@@ -144,7 +145,7 @@ function KartTovar(props: Props) {
             setCounttov(newCount);
         }
     };
-    
+
     const handlePlusClick = async () => {
         if (counttov < 1000) {
             const newCount = counttov + 1;
@@ -155,7 +156,7 @@ function KartTovar(props: Props) {
                 const newBasket = basket.replace(itemString, `${props.id}:${newCount}`);
                 const newBackCount = backCount + props.price;
                 await Promise.all([
-                    await UpdateDBBasket(newBasket),
+                    UpdateDBBasket(newBasket),
                     window.localStorage.setItem("basket", newBasket),
                     window.localStorage.setItem("backCount", String(newBackCount))
                 ]);
@@ -163,9 +164,7 @@ function KartTovar(props: Props) {
             setCounttov(newCount);
         }
     };
-    
-    
-    
+
     return (
         <div className='karttov'>
             <div className="tovhead">
@@ -184,9 +183,9 @@ function KartTovar(props: Props) {
                     </div>
                 </div>
                 <div className='tovcountinp'>
-                    <button onClick={() => handleMinusClick()}>-</button>
+                    <button onClick={handleMinusClick}>-</button>
                     <div className="tovcount">{counttov}</div>
-                    <button onClick={() => handlePlusClick()}>+</button>
+                    <button onClick={handlePlusClick}>+</button>
                 </div>
                 <div className="tovfut">
                     <div className='tovprice'>
