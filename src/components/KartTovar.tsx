@@ -6,6 +6,7 @@ import tld from "../images/tovlike.jpg";
 import tla from "../images/tovlikeakt.jpg";
 import axios from "axios";
 import ServHost from "../serverHost.json";
+import Modal from '../components/Modal'
 
 interface Props {
     name: string;
@@ -32,6 +33,7 @@ function KartTovar(props: Props) {
 
     const [LikeImage, setLikeImage] = useState(tld);
     const [BuyImage, setBuyImage] = useState(tbd);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         if (window.localStorage.getItem("liked")) {
@@ -127,7 +129,8 @@ function KartTovar(props: Props) {
         }
     };
 
-    const handleMinusClick = async () => {
+    const handleMinusClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         if (counttov > 1) {
             const newCount = counttov - 1;
             const basket = window.localStorage.getItem("basket") || "";
@@ -137,7 +140,7 @@ function KartTovar(props: Props) {
                 const newBasket = basket.replace(itemString, `${props.id}:${newCount}`);
                 const newBackCount = backCount - props.price;
                 await Promise.all([
-                    UpdateDBBasket(newBasket),
+                    await UpdateDBBasket(newBasket),
                     window.localStorage.setItem("basket", newBasket),
                     window.localStorage.setItem("backCount", String(newBackCount))
                 ]);
@@ -146,7 +149,8 @@ function KartTovar(props: Props) {
         }
     };
 
-    const handlePlusClick = async () => {
+    const handlePlusClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
         if (counttov < 1000) {
             const newCount = counttov + 1;
             const basket = window.localStorage.getItem("basket") || "";
@@ -156,7 +160,7 @@ function KartTovar(props: Props) {
                 const newBasket = basket.replace(itemString, `${props.id}:${newCount}`);
                 const newBackCount = backCount + props.price;
                 await Promise.all([
-                    UpdateDBBasket(newBasket),
+                    await UpdateDBBasket(newBasket),
                     window.localStorage.setItem("basket", newBasket),
                     window.localStorage.setItem("backCount", String(newBackCount))
                 ]);
@@ -165,78 +169,117 @@ function KartTovar(props: Props) {
         }
     };
 
-    return (
-        <div className='karttov'>
-            <div className="tovhead">
-                <div className="tovname">
-                    {props.name}
-                </div>
-                <div>
-                    натуральный
-                </div>
-            </div>
-            <div className="bottomCont">
-                <div className="tovcont">
-                    <img src={props.image} alt="tovar" />
-                    <div className="tovopis">
-                        {props.opis}
-                    </div>
-                </div>
-                <div className='tovcountinp'>
-                    <button onClick={handleMinusClick}>-</button>
-                    <div className="tovcount">{counttov}</div>
-                    <button onClick={handlePlusClick}>+</button>
-                </div>
-                <div className="tovfut">
-                    <div className='tovprice'>
-                        {props.price}₽
-                    </div>
-                    <div className="tovbutt">
-                        <button onClick={async () => {
-                            let liked = window.localStorage.getItem("liked") || "";
-                            if (!liked.includes(String(props.id))) {
-                                liked += liked ? `,${props.id}` : `${props.id}`;
-                                window.localStorage.setItem("liked", liked);
-                                await UpdateDBLiked(liked);
-                                setLikeImage(tla);
-                            } else {
-                                liked = liked.split(",").filter(id => id !== String(props.id)).join(",");
-                                window.localStorage.setItem("liked", liked);
-                                await UpdateDBLiked(liked);
-                                setLikeImage(tld);
-                                if (props.onRemoveLikedItem) {
-                                    props.onRemoveLikedItem(props.id);
-                                }
-                            }
-                        }}>
-                            <img src={LikeImage} alt="tl" className='imgtov' />
-                        </button>
-                        <button onClick={async () => {
-                            let basket = window.localStorage.getItem("basket") || "";
-                            let backCount = Number(window.localStorage.getItem("backCount") || 0);
+    const handleLikeClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        let liked = window.localStorage.getItem("liked") || "";
+        if (!liked.includes(String(props.id))) {
+            liked += liked ? `,${props.id}` : `${props.id}`;
+            window.localStorage.setItem("liked", liked);
+            await UpdateDBLiked(liked);
+            setLikeImage(tla);
+        } else {
+            liked = liked.split(",").filter(id => id !== String(props.id)).join(",");
+            window.localStorage.setItem("liked", liked);
+            await UpdateDBLiked(liked);
+            setLikeImage(tld);
+            if (props.onRemoveLikedItem) {
+                props.onRemoveLikedItem(props.id);
+            }
+        }
+    };
 
-                            if (!basket.includes(String(props.id + ":" + counttov))) {
-                                basket += basket ? `,${props.id}:${counttov}` : `${props.id}:${counttov}`;
-                                backCount += props.price * counttov;
-                                setBuyImage(tba);
-                                UpdateBackCount("pl");
-                            } else {
-                                basket = basket.replace(`,${props.id}:${counttov}`, "")
-                                               .replace(`${props.id}:${counttov},`, "")
-                                               .replace(`${props.id}:${counttov}`, "");
-                                backCount -= props.price * counttov;
-                                setBuyImage(tbd);
-                                UpdateBackCount("min");
-                            }
-                            await UpdateDBBasket(basket);
-                            window.localStorage.setItem("basket", basket);
-                            window.localStorage.setItem("backCount", String(backCount));
-                        }}>
-                            <img src={BuyImage} alt="tb" className='imgtov' />
-                        </button>
+    const handleBuyClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        let basket = window.localStorage.getItem("basket") || "";
+        let backCount = Number(window.localStorage.getItem("backCount") || 0);
+
+        if (!basket.includes(String(props.id + ":" + counttov))) {
+            basket += basket ? `,${props.id}:${counttov}` : `${props.id}:${counttov}`;
+            backCount += props.price * counttov;
+            setBuyImage(tba);
+            UpdateBackCount("pl");
+        } else {
+            basket = basket.replace(`,${props.id}:${counttov}`, "")
+                            .replace(`${props.id}:${counttov},`, "")
+                            .replace(`${props.id}:${counttov}`, "");
+            backCount -= props.price * counttov;
+            setBuyImage(tbd);
+            UpdateBackCount("min");
+        }
+        await UpdateDBBasket(basket);
+        window.localStorage.setItem("basket", basket);
+        window.localStorage.setItem("backCount", String(backCount));
+    };
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
+    return (
+        <div>
+            <div className='karttov' onClick={openModal}>
+                <div className="tovhead">
+                    <div className="tovname">
+                        {props.name}
+                    </div>
+                    <div>
+                        натуральный
+                    </div>
+                </div>
+                <div className="bottomCont">
+                    <div className="tovcont">
+                        <img src={props.image} alt="tovar" />
+                        <div className="tovopis">
+                            {props.opis}
+                        </div>
+                    </div>
+                    <div className='tovcountinp'>
+                        <button onClick={handleMinusClick}>-</button>
+                        <div className="tovcount">{counttov}</div>
+                        <button onClick={handlePlusClick}>+</button>
+                    </div>
+                    <div className="tovfut">
+                        <div className='tovprice'>
+                            {props.price}₽
+                        </div>
+                        <div className="tovbutt">
+                            <button onClick={handleLikeClick}>
+                                <img src={LikeImage} alt="tl" className='imgtov' />
+                            </button>
+                            <button onClick={handleBuyClick}>
+                                <img src={BuyImage} alt="tb" className='imgtov' />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <div className="modal-content">
+                    <div className="mainContent">
+                        <h2>{props.name}</h2>
+                        <img src={props.image} alt="tovar" className="modal-image" />
+                        <p>{props.opis}</p>
+                    </div>
+                    <div className='tovcountinp'>
+                        <button onClick={handleMinusClick}>-</button>
+                        <div className="tovcount">{counttov}</div>
+                        <button onClick={handlePlusClick}>+</button>
+                    </div>
+                    <div className="newModal">
+                        <div className='tovprice'>
+                            {props.price}₽
+                        </div>
+                        <div className="tovbutt">
+                            <button onClick={handleLikeClick}>
+                                <img src={LikeImage} alt="tl" className='imgtov' />
+                            </button>
+                            <button onClick={handleBuyClick}>
+                                <img src={BuyImage} alt="tb" className='imgtov' />
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </Modal>
         </div>
     );
 }

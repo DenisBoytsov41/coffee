@@ -26,6 +26,7 @@ const Reset: React.FC = () => {
     const [login, setLogin] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const [resetURL, setresetURL] = useState<string | null>(null);
     
 
     const { register, formState: { errors }, handleSubmit, setValue } = useForm<MyForm>({});
@@ -117,25 +118,48 @@ const Reset: React.FC = () => {
         try {
             const res = await axios.post(`${ServHost.host}/sendPasswordResetSMS`, { phone: phone, login: login });
             setResendTimeout(60);
-            console.log(res.data);
-            setSmsCode(res.data.code); // Сохраняем код SMS
+            //console.log(res.data);
+            //setSmsCode(res.data.code); // Сохраняем код SMS
+        } catch (error) {
+            setErrorMessage("Ошибка при отправке кода СМС.");
+            console.error(error);
+        }
+    };
+
+    const sendCode = async () => {
+        try {
+            const res = await axios.get(`${ServHost.host}/sendNumberReset`, { 
+                params: { 
+                    phone: phone, 
+                    login: login 
+                }
+            });
+            setResendTimeout(60);
+            //console.log(res.data);
+            //console.log(res.data);
+            setresetURL(res.data.resetURL);
+    
+            // Перенаправление на res.data.resetURL
+            window.location.href = res.data.resetURL;
         } catch (error) {
             setErrorMessage("Ошибка при отправке кода СМС.");
             console.error(error);
         }
     };
     
+       
     
     const checkResetCode = async (data: { login: string, resetCode: string }) => {
         try {
             const res = await axios.post(`${ServHost.host}/checkResetCode`, data);
             setResetCodeValid(res.data.valid);
-            console.log(res.data);
+            //console.log(res.data);
             if (!res.data.match) {
                 setErrorMessage("Неправильный код сброса.");
             } else {
                 setErrorMessage(null);
                 setValidResetCode(true);
+                await sendCode();
             }
         } catch (error) {
             if (axios.isAxiosError(error)) { // Проверяем, является ли ошибка объектом AxiosError

@@ -108,38 +108,47 @@ function KartKorz(props: Props) {
     const handleMinusClick = async () => {
         if (counttov > 1) {
             const newCount = counttov - 1;
-            const newBasket = `${props.id}:${newCount}`;
-            const newBackCount = Number(window.localStorage.getItem("backCount") || 0) - props.price;
+            const basket = window.localStorage.getItem("basket") || "";
+            const backCount = Number(window.localStorage.getItem("backCount") || 0);
+            const itemString = `${props.id}:${counttov}`;
+
+            if (basket.includes(itemString)) {
+                const newBasket = basket.replace(itemString, `${props.id}:${newCount}`);
+                const newBackCount = backCount - props.price;
+                const promises = [
+                    await UpdateDBBasket(newBasket),
+                    window.localStorage.setItem("basket", newBasket),
+                    window.localStorage.setItem("backCount", String(newBackCount)),
+                    setCounttov(newCount),
+                    setVsego(props.price * newCount) // Динамическое вычисление общей стоимости
+                ];
+                // Дождаться выполнения всех промисов
+                await Promise.all(promises);
+            }
     
-            const promises = [
-                await UpdateDBBasket(newBasket),
-                window.localStorage.setItem("basket", newBasket),
-                window.localStorage.setItem("backCount", String(newBackCount)),
-                setCounttov(newCount),
-                setVsego(props.price * newCount) // Динамическое вычисление общей стоимости
-            ];
-    
-            // Дождаться выполнения всех промисов
-            await Promise.all(promises);
         }
+        
     };
     
     const handlePlusClick = async () => {
         if (counttov < 1000) {
             const newCount = counttov + 1;
-            const newBasket = `${props.id}:${newCount}`;
-            const newBackCount = Number(window.localStorage.getItem("backCount") || 0) + props.price;
-    
-            const promises = [
-                await UpdateDBBasket(newBasket),
-                window.localStorage.setItem("basket", newBasket),
-                window.localStorage.setItem("backCount", String(newBackCount)),
-                setCounttov(newCount),
-                setVsego(props.price * newCount) // Динамическое вычисление общей стоимости
-            ];
-    
-            // Дождаться выполнения всех промисов
-            await Promise.all(promises);
+            const basket = window.localStorage.getItem("basket") || "";
+            const backCount = Number(window.localStorage.getItem("backCount") || 0);
+            const itemString = `${props.id}:${counttov}`;
+            if (basket.includes(itemString)) {
+                const newBasket = basket.replace(itemString, `${props.id}:${newCount}`);
+                const newBackCount = backCount + props.price;
+                const promises = [
+                    await UpdateDBBasket(newBasket),
+                    window.localStorage.setItem("basket", newBasket),
+                    window.localStorage.setItem("backCount", String(newBackCount)),
+                    setCounttov(newCount),
+                    setVsego(props.price * newCount) // Динамическое вычисление общей стоимости
+                ];
+        
+                await Promise.all(promises);
+            }
         }
     };
     

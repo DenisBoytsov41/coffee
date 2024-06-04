@@ -4,6 +4,10 @@
   justify-content: center;
   overflow-x:hidden;
   margin: 0;
+  flex-direction: column;
+}
+.content-wrapper {
+  margin-bottom: 20px;
 }
 .contApp{
   display: flex;
@@ -37,4 +41,11 @@ src: url("../fonts/Commissioner-VariableFont_wght.ttf") format("truetype");
   font-family: "Comissioner";
   font-style: oblique;
   font-weight: 350;
+}
+.chatbot-icon-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  cursor: pointer;
+  z-index: 999;
 }

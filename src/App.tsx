@@ -22,6 +22,9 @@ import checkRefreshToken from './components/navigation/refreshTokenUtils';
 import ErrorBoundary from './components/errors/ErrorBoundary';
 import CustomErrorComponent from './components/errors/CustomErrorComponent';
 import NotFound from './components/errors/NotFound';
+import { BotProvider } from "./components/navigation/Bot/BotContext"
+import Chat  from "./components/navigation/Bot/Chat"
+import chat from './images/chat-svgrepo-com.svg'
 
 const schedule = require('node-schedule');
 
@@ -45,6 +48,7 @@ function App() {
   const [guestMode, setGuestMode] = useState(false);
   const [currentTheme, setCurrentTheme] = useState('');
   const [error, setError] = useState('');
+  const [isChatOpen, setIsChatOpen] = useState(false); 
 
   useEffect(() => {
     const loggedInState = localStorage.getItem('isLoggedIn');
@@ -119,29 +123,57 @@ function App() {
     };
   }, []);
 
+  const toggleChat = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+  const handleCloseChat = () => {
+    setIsChatOpen(false);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleCloseChat();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
+    
     <div className="App Comissioner">
-      <ErrorBoundary errorElement={<CustomErrorComponent />}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/buy" element={<Buy />} />
-            <Route path="/faq" element={<Faq />} />
-            <Route path="/shipment" element={<Shipment />} />
-            <Route path="/liked" element={<Liked />} />
-            <Route path="/basket" element={<Basket />} />
-            <Route path="/opt" element={<Opt />} />
-            <Route path="/reg" element={<Reg />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/reset" element={<Reset />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/resetURL/:email/:token" element={<ResetURL />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Router>
-      </ErrorBoundary>
+      <BotProvider>
+        <ErrorBoundary errorElement={<CustomErrorComponent />}>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/buy" element={<Buy />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="/shipment" element={<Shipment />} />
+              <Route path="/liked" element={<Liked />} />
+              <Route path="/basket" element={<Basket />} />
+              <Route path="/opt" element={<Opt />} />
+              <Route path="/reg" element={<Reg />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/reset" element={<Reset />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/resetURL/:email/:token" element={<ResetURL />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Router>
+          <div className="chatbot-icon-container" onClick={toggleChat}>
+            <img src={chat} alt="Chat Icon" />
+          </div>
+          {isChatOpen && <Chat onClose={handleCloseChat} />}
+        </ErrorBoundary>
+      </BotProvider>
     </div>
   );
 }
