@@ -41,7 +41,7 @@
 }
 
 .OformlenieCont {
-    width: 100%; /* изменено */
+    width: 100%;
     @media (max-width: 1090px) {
         width: 100%;
     }
@@ -51,6 +51,7 @@
     background: #252525;
     height: fit-content;
     width: 100%;
+    position: sticky
 }
 
 .paddingCont {

@@ -62,6 +62,65 @@ function Basket() {
         }
     });
 
+    const handlePayment = async () => {
+        const refreshToken = window.localStorage.getItem("refreshToken");
+        const basket = window.localStorage.getItem("basket");
+
+        if (!basket) {
+            console.error('Missing basket');
+            return;
+        }
+
+        if (refreshToken) {
+            console.log('daad');
+            try {
+                setLoading(true);
+                const response = await axios.post(`${ServHost.host}/processPayment`, {
+                    refreshToken,
+                    basket
+                });
+
+                if (response.status === 200 && response.data.success) {
+                    console.log('Payment successful');
+                    window.localStorage.setItem("basket", "");
+                    window.localStorage.setItem("backCount", "0");
+                    window.location.reload();
+                } else {
+                    console.error('Payment failed');
+                }
+            } catch (error) {
+                console.error('Error processing payment:', error);
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            if (!validateForm(name, email, phone)) {
+                return;
+            }
+
+            try {
+                setLoading(true);
+                const response = await axios.post(`${ServHost.host}/processPayment`, {
+                    email,
+                    basket
+                });
+
+                if (response.status === 200 && response.data.success) {
+                    console.log('Payment successful');
+                    window.localStorage.setItem("basket", "");
+                    window.localStorage.setItem("backCount", "0");
+                    window.location.reload();
+                } else {
+                    console.error('Payment failed');
+                }
+            } catch (error) {
+                console.error('Error processing payment:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
     useEffect(() => {
         let a = "";
 
@@ -83,104 +142,140 @@ function Basket() {
 
         return () => clearInterval(interval);
     }, []);
+    
 
-    const validateForm = () => {
-        const newErrors = { name: "", email: "", phone: "" };
-        let isValid = true;
-
-        if (!name.trim()) {
-            newErrors.name = "Имя и фамилия обязательны.";
-            isValid = false;
-        }
-        if (!email.trim()) {
-            newErrors.email = "Email обязателен.";
-            isValid = false;
-        } else if (!/\S+@\S+\.\S+/.test(email)) {
-            newErrors.email = "Неверный формат email.";
-            isValid = false;
-        }
-        if (!phone.trim()) {
-            newErrors.phone = "Телефон обязателен.";
-            isValid = false;
-        } else if (!/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(phone)) {
-            newErrors.phone = "Неверный формат телефона.";
-            isValid = false;
-        }
-
-        setErrors(newErrors);
-        return isValid;
+    const validateForm = (name: string, email: string, phone: string) => {
+        return new Promise<void>((resolve, reject) => {
+            const newErrors = { name: "", email: "", phone: "" };
+            let isValid = true;
+    
+            if (!name.trim()) {
+                newErrors.name = "Имя и фамилия обязательны.";
+                isValid = false;
+            }
+            if (!email.trim()) {
+                newErrors.email = "Email обязателен.";
+                isValid = false;
+            } else if (!/\S+@\S+\.\S+/.test(email)) {
+                newErrors.email = "Неверный формат email.";
+                isValid = false;
+            }
+            if (!phone.trim()) {
+                newErrors.phone = "Телефон обязателен.";
+                isValid = false;
+            } else if (!/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(phone)) {
+                newErrors.phone = "Неверный формат телефона.";
+                isValid = false;
+            }
+    
+            // Установка новых ошибок
+            setErrors(newErrors);
+    
+            if (isValid) {
+                resolve();
+            } else {
+                reject();
+            }
+        });
     };
+    
 
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        console.log(errors);
+        if (Object.values(errors).some(error => error !== "")) {
+            const timer = setTimeout(() => {
+                setErrors({ name: "", email: "", phone: "" });
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [errors]);
+
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (validateForm()) {
-            // Здесь можно отправить данные на сервер
-            console.log("Форма валидна и отправлена.");
+        try {
+            //await validateForm(name, email, phone);
+            console.log('Форма валидна, выполняем оплату');
+            await handlePayment();
+        } catch {
+            console.log('Форма не валидна, не выполняем оплату');
         }
     };
+
+    useEffect(() => {
+        console.log(errors);
+    }, [errors]);
+    
 
     const loadContentIFBask = (BC: string) => {
         return (
             <div className="basketContent">
                 <div className="OformlenieCont">
-                    <div className="Oformlenie">
-                        <div className="paddingCont">
-                            <br />
-                            <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
-                            <br />
-                            <br />
-                            <div className="baskText grayText">Покупатель</div>
-                            <br />
-                            <div className="inpGor">
-                                <div className="TelBask">
-                                    <input 
-                                        type="text" 
-                                        placeholder="Имя и Фамилия" 
-                                        className="inpBasklog whiteText" 
-                                        defaultValue={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                    />
-                                    {errors.name && <span className="error">{errors.name}</span>}
-                                    <input 
-                                        type="email" 
-                                        placeholder="E-mail" 
-                                        className="inpBasklog whiteText" 
-                                        defaultValue={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                    {errors.email && <span className="error">{errors.email}</span>}
-                                </div>
-                                <div className="TelBask">
-                                    <input 
-                                        type="tel" 
-                                        placeholder="Телефон" 
-                                        id="tel" 
-                                        className="inpBasklog whiteText" 
-                                        defaultValue={phone}
-                                        onChange={(e) => setPhone(e.target.value)}
-                                    />
-                                    {errors.phone && <span className="error">{errors.phone}</span>}
+                    <form onSubmit={handleFormSubmit}>
+                        <div className="Oformlenie">
+                            <div className="paddingCont">
+                                <br />
+                                <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
+                                <br />
+                                <br />
+                                <div className="baskText grayText">Покупатель</div>
+                                <br />
+                                <div className="inpGor">
+                                    <div className="TelBask">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Имя и Фамилия" 
+                                            className="inpBasklog whiteText" 
+                                            defaultValue={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                        />
+                                        {errors.name && <div className="error">{errors?.name}</div>}
+                                        <input 
+                                            type="email" 
+                                            placeholder="E-mail" 
+                                            className="inpBasklog whiteText" 
+                                            defaultValue={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                        />
+                                        {errors.email && <div className="error">{errors?.email}</div>}
+                                    </div>
+                                    <div className="TelBask">
+                                        <input 
+                                            type="tel" 
+                                            placeholder="Телефон" 
+                                            id="tel" 
+                                            className="inpBasklog whiteText" 
+                                            defaultValue={phone}
+                                            onChange={(e) => setPhone(e.target.value)}
+                                        />
+                                        {errors.phone && <div className="error">{errors?.phone}</div>}
+                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                    <div className="AddrDost">
-                        ИНТЕГРАЦИЯ CDEK
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                    <div className="AddrDost">
-                        ИНТЕГРАЦИЯ ЮКАССА
-                    </div>
+                        <br />
+                        <br />
+                        <br />
+                        <div className="AddrDost">
+                            ИНТЕГРАЦИЯ CDEK
+                        </div>
+                        <br />
+                        <br />
+                        <br />
+                        <div className="AddrDost">
+                            ИНТЕГРАЦИЯ ЮКАССА
+                        </div>
+                        <br />
+                        <button type="submit" className="KorzVsegobutton" disabled={loading}>
+                            {loading ? 'Оплата...' : 'Оплатить товар'}
+                        </button>
+                    </form>
                 </div>
                 <div className="Bask">
                     <div className="paddingCont">
                         <br />
-                        <div className="baskZagol">КОРЗИНА</div>
+                        <div className="baskZagол">КОРЗИНА</div>
                         <br />
                         <br />
                         <Katalog type={'korzina'} katcount={0} pagination={false} itemsPerPage={10}/>
@@ -249,6 +344,9 @@ function Basket() {
                 {Content}
                 {PustoBtn}
             </div>
+            {/*<div className="errorList">
+                {Object.values(errors).map((error, index) => error && <div key={index} className="errorItem">{error}</div>)}
+             </div>*/}
             <Footer className="footer" />
         </div>
     );

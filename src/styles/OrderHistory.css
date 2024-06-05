@@ -1,0 +1,28 @@
+.order-history {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.order {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.order h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.order p {
+    margin: 5px 0;
+}
+
+.order ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.order ul li {
+    margin: 5px 0;
+}

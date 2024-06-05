@@ -7,6 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import ServHost from "../../serverHost.json";
 import ChangePassword from "./ChangePassword";
+import OrderHistory from "./OrderHistory"; // Импортируем новый компонент
 
 interface MyForm {
     firstname: string,
@@ -43,7 +44,6 @@ function Profile() {
 
             if (!refreshToken) {
                 window.location.replace("/login");
-                //clearLocalStorageTokens();
                 return;
             }
 
@@ -61,14 +61,12 @@ function Profile() {
                 console.error('Failed to update user info');
                 setServerMessage('Не удалось обновить информацию о пользователе');
                 setMessageColor('red');
-                //clearLocalStorageTokens();
                 setTimeout(() => setServerMessage(''), 5000);
             }
         } catch (error) {
             console.error('Error updating user info:', error);
             setServerMessage('Произошла ошибка при обновлении информации о пользователе');
             setMessageColor('red');
-            //clearLocalStorageTokens();
             setTimeout(() => {
                 setServerMessage('');
                 window.location.reload();
@@ -91,11 +89,9 @@ function Profile() {
                 setValue('phone', userData.phone);
                 setValue('gender', userData.gender);
             } else {
-                //clearLocalStorageTokens();
                 window.location.replace("/login");
             }
         } catch (error) {
-            //clearLocalStorageTokens();
             console.error('Error checking token:', error);
             window.location.replace("/login");
         }
@@ -119,19 +115,17 @@ function Profile() {
             }
         } catch (error) {
             console.error('Ошибка проверки прав пользователя:', error);
-            //window.location.replace("/login");
         }
     };
 
     useEffect(() => {
         const refreshToken = window.localStorage.getItem('refreshToken');
-        const accessToken = window.localStorage.getItem('accessToken');;
+        const accessToken = window.localStorage.getItem('accessToken');
 
         if (refreshToken || (refreshToken && accessToken)) {
             sendDataToServerCheckToken(refreshToken);
             checkAdminCredentials();
         } else {
-            //clearLocalStorageTokens();
             window.location.replace("/login");
         }
     }, []);
@@ -147,6 +141,7 @@ function Profile() {
                 <div className="tabs">
                     <button onClick={() => setActiveTab('profile')}>Профиль</button>
                     <button onClick={() => setActiveTab('changePassword')}>Смена пароля</button>
+                    <button onClick={() => setActiveTab('orderHistory')}>История заказов</button>
                     {isAdmin && <button onClick={() => window.location.replace("/admin")}>Панель администратора</button>}
                 </div>
                 {activeTab === 'profile' && (
@@ -183,6 +178,7 @@ function Profile() {
                     </form>
                 )}
                 {activeTab === 'changePassword' && <ChangePassword />}
+                {activeTab === 'orderHistory' && <OrderHistory />}
             </div>
             <Futer className="footer" />
         </div>

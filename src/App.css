@@ -49,3 +49,23 @@ src: url("../fonts/Commissioner-VariableFont_wght.ttf") format("truetype");
   cursor: pointer;
   z-index: 999;
 }
+.error {
+  color: #ff2600db;
+}
+.errorList {
+  position: relative;
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+.errorItem {
+  background-color: #ffe6e6;
+  color: #ff3333;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  width: fit-content;
+}
+
+
