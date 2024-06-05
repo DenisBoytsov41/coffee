@@ -33,7 +33,18 @@ interface UserPermission {
     access_level: string;
 }
 
-type DataType = Product[] | User[] | UserPermission[];
+interface OrderHistory {
+    id: number;
+    login: string;
+    orderId: string;
+    date: string;
+    status: 'В обработке' | 'Оплачен' | 'Отменен' | 'Доставлен';
+    total: string;
+    items: string;
+}
+
+
+type DataType = Product[] | User[] | UserPermission[] | OrderHistory[];
 
 function AdminProfile({ onLogout }: AdminProfileProps) {
     const [data, setData] = useState<DataType | null>(null);
@@ -104,6 +115,18 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 (item.access_level && item.access_level.toLowerCase().includes(searchQuery.toLowerCase()));
         });
     };
+
+    const filterOrder = (data: DataType, searchQuery: string): OrderHistory[] => {
+        return (data as OrderHistory[]).filter((item: OrderHistory) => {
+            return (item.id && item.id.toString().includes(searchQuery))  ||
+                   (item.login && item.login.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.orderId && item.orderId.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.date && item.date.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.status && item.status.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.total && item.total.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                   (item.items && item.items.toLowerCase().includes(searchQuery.toLowerCase()));
+        });
+    };
     
     useEffect(() => {
         if (!data) return;
@@ -122,6 +145,9 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 break;
             case '/getUserAccessRights':
                 filtered = filterPermissions(data, searchQuery);
+                break;
+            case '/getOrderHistoryAdmin':
+                filtered = filterOrder(data, searchQuery);
                 break;
             default:
                 filtered = data;
@@ -356,6 +382,53 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             console.error(error);
         }
     };
+    const sendDataToServerDeleteOrder = async (orderIdToDelete: number) => {
+        try {
+            const token = Cookies.get("authToken");
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            const res = await axios.post(ServHost.host + '/deleteOrder', { refreshToken, orderIdToDelete }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(res.data);
+            setSuccessMessage('Заказ успешно удален');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+            fetchData(selectedButton);
+        } catch (error: any) {
+            setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
+            console.error(error);
+        }
+    };
+    const sendDataToServerUpdateOrder = async (orderId: number, updatedData: Partial<OrderHistory>) => {
+        try {
+            const token = Cookies.get("authToken");
+            const refreshToken = window.localStorage.getItem('refreshToken');
+            const res = await axios.post(ServHost.host + '/updateOrder', { ...updatedData, refreshToken, id: orderId }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log(res.data);
+            setSuccessMessage('Информация о заказе обновлена');
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 2000);
+            fetchData(selectedButton);
+        } catch (error: any) {
+            setErrorMessage(error?.response?.data?.error || error?.response?.data || 'Ошибка');
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 2000);
+            console.error(error);
+        }
+    };
+       
    
     const handleDownloadImage = async (imagePath: string) => {
         console.log(`Загрузка изображения с пути: ${imagePath}`);
@@ -374,8 +447,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
             console.error('Ошибка загрузки файла:', error);
         }
     };
-    
-    
+        
     
     const handleDeleteImage = () => {
         console.log("Изображение удалено");
@@ -424,6 +496,7 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                     <button onClick={() => fetchData('/tovar')} className="admin-profile-button">Товары</button>
                     <button onClick={() => fetchData('/getNewUsers')} className="admin-profile-button">Пользователи</button>
                     <button onClick={() => fetchData('/getUserAccessRights')} className="admin-profile-button">Права пользователей</button>
+                    <button onClick={() => fetchData('/getOrderHistoryAdmin')} className="admin-profile-button">Таблица заказов</button>
                 </div>
                 <div className="admin-profile-search">
                     <input
@@ -442,8 +515,8 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                 <div className="admin-profile-items">
                 {!loading && (
                     <div className="admin-profile-items">
-                        {(currentItems as (Product | User | UserPermission)[])
-                            ?.map((item: Product | User | UserPermission) => {
+                        {(currentItems as (Product | User | UserPermission | OrderHistory)[])
+                            ?.map((item: Product | User | UserPermission | OrderHistory) => {
                                 if (selectedButton === "/tovar" && "id" in item) {
                                     const product = item as Product;
                                     return (
@@ -497,6 +570,27 @@ function AdminProfile({ onLogout }: AdminProfileProps) {
                                             allowImageUpload={false}
                                             onUpdate={sendDataToServerUpdatePermission}
                                             onDelete={undefined}
+                                        />
+                                    );
+                                }
+                                else if (selectedButton === "/getOrderHistoryAdmin" && "id" in item) {
+                                    const order = item as OrderHistory;
+                                    return (
+                                        <UniversalTableItem
+                                            key={order.id}
+                                            data={order}
+                                            fields={[
+                                                { label: "Id", key: "id", type: "number", readOnly: true  },
+                                                { label: "Login", key: "login", type: "text", readOnly: true },
+                                                { label: "Order ID", key: "orderId", type: "text", readOnly: true  },
+                                                { label: "Date", key: "date", type: "text", readOnly: true  },
+                                                { label: "Status", key: "status", type: "text"},
+                                                { label: "Total", key: "total", type: "text", readOnly: true  },
+                                                { label: "Items", key: "items", type: "text", readOnly: true  },
+                                            ]}
+                                            allowImageUpload={false}
+                                            onUpdate={(updatedData) => sendDataToServerUpdateOrder(order.id, updatedData)}
+                                            onDelete={() => sendDataToServerDeleteOrder(order.id)}
                                         />
                                     );
                                 }

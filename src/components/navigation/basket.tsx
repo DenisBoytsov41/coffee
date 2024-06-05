@@ -14,6 +14,8 @@ function Basket() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [content, setContent] = useState<JSX.Element | null>(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
@@ -67,7 +69,7 @@ function Basket() {
         const basket = window.localStorage.getItem("basket");
 
         if (!basket) {
-            console.error('Missing basket');
+            console.error('Отсутсвует корзина');
             return;
         }
 
@@ -80,18 +82,18 @@ function Basket() {
                     basket
                 });
 
-                if (response.status === 200 && response.data.success) {
-                    console.log('Payment successful');
-                    window.localStorage.setItem("basket", "");
-                    window.localStorage.setItem("backCount", "0");
-                    window.location.reload();
+                if (response.status === 200) {
+                    console.log('Оплата успешна');
+                    await handleDeleteAll();
                 } else {
-                    console.error('Payment failed');
+                    console.log(response);
+                    console.error('Ошибка оплаты');
                 }
             } catch (error) {
-                console.error('Error processing payment:', error);
+                console.error('Ошибка в процессе оплаты:', error);
             } finally {
                 setLoading(false);
+                //window.location.reload();
             }
         } else {
             if (!validateForm(name, email, phone)) {
@@ -105,11 +107,9 @@ function Basket() {
                     basket
                 });
 
-                if (response.status === 200 && response.data.success) {
+                if (response.status === 200) {
                     console.log('Payment successful');
-                    window.localStorage.setItem("basket", "");
-                    window.localStorage.setItem("backCount", "0");
-                    window.location.reload();
+                    await handleDeleteAll();
                 } else {
                     console.error('Payment failed');
                 }
@@ -117,9 +117,15 @@ function Basket() {
                 console.error('Error processing payment:', error);
             } finally {
                 setLoading(false);
+                window.location.reload();
             }
         }
     };
+
+    useEffect(() => {
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        setIsLoggedIn(!!refreshToken);
+    }, []);
 
     useEffect(() => {
         let a = "";
@@ -135,192 +141,143 @@ function Basket() {
                         </div>
                     );
                 } else {
-                    setContent(loadContentIFBask(a));
+                    setContent(
+                        <div className="basketContent">
+                            <div className="OformlenieCont">
+                                <form onSubmit={handleFormSubmit}>
+                                    <div className="Oformlenie">
+                                        <div className="paddingCont">
+                                            <br />
+                                            <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
+                                            <br />
+                                            <br />
+                                            <div className="baskText grayText">Покупатель</div>
+                                            <br />
+                                            {!isLoggedIn && (
+                                                <div className="inpGor">
+                                                    <div className="TelBask">
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="Имя и Фамилия" 
+                                                            className="inpBasklog whiteText" 
+                                                            defaultValue={name}
+                                                            onChange={(e) => setName(e.target.value)}
+                                                        />
+                                                        {errors.name && <div className="error">{errors.name}</div>}
+                                                        <input 
+                                                            type="email" 
+                                                            placeholder="E-mail" 
+                                                            className="inpBasklog whiteText" 
+                                                            defaultValue={email}
+                                                            onChange={(e) => setEmail(e.target.value)}
+                                                        />
+                                                        {errors.email && <div className="error">{errors.email}</div>}
+                                                    </div>
+                                                    <div className="TelBask">
+                                                        <input 
+                                                            type="tel" 
+                                                            placeholder="Телефон" 
+                                                            id="tel" 
+                                                            className="inpBasklog whiteText" 
+                                                            defaultValue={phone}
+                                                            onChange={(e) => setPhone(e.target.value)}
+                                                        />
+                                                        {errors.phone && <div className="error">{errors.phone}</div>}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <div className="AddrDost">
+                                        ИНТЕГРАЦИЯ CDEK
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <div className="AddrDost">
+                                        ИНТЕГРАЦИЯ ЮКАССА
+                                    </div>
+                                    <br />
+                                    <button type="submit" className="KorzVsegobutton" disabled={loading}>
+                                        {loading ? 'Оплата...' : 'Оплатить товар'}
+                                    </button>
+                                </form>
+                            </div>
+                            <div className="Bask">
+                                <div className="paddingCont">
+                                    <br />
+                                    <div className="baskZagол">КОРЗИНА</div>
+                                    <br />
+                                    <br />
+                                    <Katalog type={'korzina'} katcount={0} pagination={false} itemsPerPage={10}/>
+                                    <br />
+                                    <br />
+                                    <div className="KorzVsego">
+                                        <div className="KorzVsegoText">
+                                            всего {a}₽
+                                        </div>
+                                        <button className="KorzVsegobutton" onClick={handleDeleteAll} disabled={loading}>
+                                            {loading ? 'Удаление...' : 'Удалить все товары'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
                 }
             }
         }, 100);
 
         return () => clearInterval(interval);
-    }, []);
-    
+    }, [errors, loading, name, email, phone, isLoggedIn]);
 
     const validateForm = (name: string, email: string, phone: string) => {
-        return new Promise<void>((resolve, reject) => {
-            const newErrors = { name: "", email: "", phone: "" };
-            let isValid = true;
-    
-            if (!name.trim()) {
-                newErrors.name = "Имя и фамилия обязательны.";
-                isValid = false;
-            }
-            if (!email.trim()) {
-                newErrors.email = "Email обязателен.";
-                isValid = false;
-            } else if (!/\S+@\S+\.\S+/.test(email)) {
-                newErrors.email = "Неверный формат email.";
-                isValid = false;
-            }
-            if (!phone.trim()) {
-                newErrors.phone = "Телефон обязателен.";
-                isValid = false;
-            } else if (!/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(phone)) {
-                newErrors.phone = "Неверный формат телефона.";
-                isValid = false;
-            }
-    
-            // Установка новых ошибок
-            setErrors(newErrors);
-    
-            if (isValid) {
-                resolve();
-            } else {
-                reject();
-            }
-        });
+        const newErrors = { name: "", email: "", phone: "" };
+        let isValid = true;
+
+        if (!name.trim()) {
+            newErrors.name = "Имя и фамилия обязательны.";
+            isValid = false;
+        }
+        if (!email.trim()) {
+            newErrors.email = "Email обязателен.";
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            newErrors.email = "Неверный формат email.";
+            isValid = false;
+        }
+        if (!phone.trim()) {
+            newErrors.phone = "Телефон обязателен.";
+            isValid = false;
+        } else if (!/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(phone)) {
+            newErrors.phone = "Неверный формат телефона.";
+            isValid = false;
+        }
+        setErrors(newErrors);
+        return isValid;
     };
-    
 
     useEffect(() => {
-        console.log(errors);
         if (Object.values(errors).some(error => error !== "")) {
             const timer = setTimeout(() => {
                 setErrors({ name: "", email: "", phone: "" });
-            }, 5000);
-
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [errors]);
 
-    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            //await validateForm(name, email, phone);
-            console.log('Форма валидна, выполняем оплату');
-            await handlePayment();
-        } catch {
+    const handleFormSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        if (validateForm(name, email, phone) || refreshToken !='') {
+            handlePayment();
+        } else {
             console.log('Форма не валидна, не выполняем оплату');
         }
     };
-
-    useEffect(() => {
-        console.log(errors);
-    }, [errors]);
-    
-
-    const loadContentIFBask = (BC: string) => {
-        return (
-            <div className="basketContent">
-                <div className="OformlenieCont">
-                    <form onSubmit={handleFormSubmit}>
-                        <div className="Oformlenie">
-                            <div className="paddingCont">
-                                <br />
-                                <div className="baskZagol whiteText">ОФОРМЛЕНИЕ</div>
-                                <br />
-                                <br />
-                                <div className="baskText grayText">Покупатель</div>
-                                <br />
-                                <div className="inpGor">
-                                    <div className="TelBask">
-                                        <input 
-                                            type="text" 
-                                            placeholder="Имя и Фамилия" 
-                                            className="inpBasklog whiteText" 
-                                            defaultValue={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                        />
-                                        {errors.name && <div className="error">{errors?.name}</div>}
-                                        <input 
-                                            type="email" 
-                                            placeholder="E-mail" 
-                                            className="inpBasklog whiteText" 
-                                            defaultValue={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                        />
-                                        {errors.email && <div className="error">{errors?.email}</div>}
-                                    </div>
-                                    <div className="TelBask">
-                                        <input 
-                                            type="tel" 
-                                            placeholder="Телефон" 
-                                            id="tel" 
-                                            className="inpBasklog whiteText" 
-                                            defaultValue={phone}
-                                            onChange={(e) => setPhone(e.target.value)}
-                                        />
-                                        {errors.phone && <div className="error">{errors?.phone}</div>}
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <br />
-                        <br />
-                        <div className="AddrDost">
-                            ИНТЕГРАЦИЯ CDEK
-                        </div>
-                        <br />
-                        <br />
-                        <br />
-                        <div className="AddrDost">
-                            ИНТЕГРАЦИЯ ЮКАССА
-                        </div>
-                        <br />
-                        <button type="submit" className="KorzVsegobutton" disabled={loading}>
-                            {loading ? 'Оплата...' : 'Оплатить товар'}
-                        </button>
-                    </form>
-                </div>
-                <div className="Bask">
-                    <div className="paddingCont">
-                        <br />
-                        <div className="baskZagол">КОРЗИНА</div>
-                        <br />
-                        <br />
-                        <Katalog type={'korzina'} katcount={0} pagination={false} itemsPerPage={10}/>
-                        <br />
-                        <br />
-                        <div className="KorzVsego">
-                            <div className="KorzVsegoText">
-                                всего {BC}₽
-                            </div>
-                            <button className="KorzVsegobutton" onClick={handleDeleteAll} disabled={loading}>
-                                {loading ? 'Удаление...' : 'Удалить все товары'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    const [Content, setContent] = useState(() => {
-        if (!window.localStorage.getItem("basket")) {
-            return (
-                <div>
-                    Чтобы увидеть сохраненные в корзине товары,
-                    <Link to={"/login"} className='linkHeader'>авторизуйтесь.</Link><br /><br /><br />
-                </div>
-            );
-        } else {
-            return loadContentIFBask(window.localStorage.getItem('backCount') || "0");
-        }
-    });
-
-    const [PustoBtn] = useState(() => {
-        if (!window.localStorage.getItem("basket")) {
-            return (
-                <div>
-                    <Link to={"/buy"} className='linkHeader'>
-                        <button className="ButtonPusto">Перейти в каталог</button>
-                    </Link>
-                </div>
-            );
-        } else {
-            return <div></div>;
-        }
-    });
 
     useEffect(() => {
         if (document.getElementById('tel')) {
@@ -341,12 +298,15 @@ function Basket() {
             <br />
             <div className="contApp">
                 {PustoLogo}
-                {Content}
-                {PustoBtn}
+                {content}
+                {!window.localStorage.getItem("basket") && (
+                    <div>
+                        <Link to={"/buy"} className='linkHeader'>
+                            <button className="ButtonPusto">Перейти в каталог</button>
+                        </Link>
+                    </div>
+                )}
             </div>
-            {/*<div className="errorList">
-                {Object.values(errors).map((error, index) => error && <div key={index} className="errorItem">{error}</div>)}
-             </div>*/}
             <Footer className="footer" />
         </div>
     );
