@@ -66,7 +66,6 @@ function Reg() {
       [name]: name === 'phone' ? value.replace(/\D/g, '') : value
     });
   };
-  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -77,8 +76,8 @@ function Reg() {
     }
     try {
       const response = await axios.post(`${ServHost.host}/RegUser`, {
-        firstName: `${formData.firstName}`,
-        lastName: `${formData.lastName}`,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: formData.email,
         username: formData.username,
         password: formData.password,
@@ -90,29 +89,26 @@ function Reg() {
         setRegistrationMessage(response.data.message);
         setRegistrationError('');
         setTimeout(() => setRegistrationMessage(''), 5000);
-        window.localStorage.setItem("Login", formData.username + " " + formData.password);
+        window.localStorage.setItem("Login", `${formData.username} ${formData.password}`);
         window.location.replace("/");
-      } else {
-        // Проверяем, есть ли поле error в ответе
-        if (response.data.error) {
-          // Обработка ошибки от сервера
-          setRegistrationError(response.data.error.join(' ')); // Объединяем сообщения об ошибке в строку
-          setErrVisible(false);
-          setTimeout(() => setRegistrationError(''), 5000); // Очищаем сообщение об ошибке через 5 секунд
-        }
-      }
-    } catch (error: any) {
-        console.error('Ошибка при отправке запроса: ', error);
-        if (error.response && error.response.data && error.response.data.error) {
-          setRegistrationError((error.response.data.error as string[]).join(' '));
-        } else {
-          setRegistrationError('Ошибка при регистрации. Пожалуйста, попробуйте еще раз или обратитесь за помощью.');
-        }
+      } else if (response.data.error) {
+        // Обработка ошибки от сервера
+        const errorMsg = Array.isArray(response.data.error) ? response.data.error.join(' ') : response.data.error;
+        setRegistrationError(errorMsg);
+        setErrVisible(false);
         setTimeout(() => setRegistrationError(''), 5000);
       }
+    } catch (error: any) {
+      console.error('Ошибка при отправке запроса: ', error);
+      if (error.response && error.response.data && error.response.data.error) {
+        const errorMsg = Array.isArray(error.response.data.error) ? error.response.data.error.join(' ') : error.response.data.error;
+        setRegistrationError(errorMsg);
+      } else {
+        setRegistrationError('Ошибка при регистрации. Пожалуйста, попробуйте еще раз или обратитесь за помощью.');
+      }
+      setTimeout(() => setRegistrationError(''), 5000);
+    }
   };
-  
-  
 
   return (
     <div>
