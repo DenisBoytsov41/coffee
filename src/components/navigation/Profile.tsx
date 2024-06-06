@@ -7,7 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import ServHost from "../../serverHost.json";
 import ChangePassword from "./ChangePassword";
-import OrderHistory from "./OrderHistory"; // Импортируем новый компонент
+import OrderHistory from "./OrderHistory";
 
 interface MyForm {
     firstname: string,
@@ -53,19 +53,23 @@ function Profile() {
             });
 
             if (response.status === 200) {
-                console.log('User info updated successfully');
+                console.log('Информация о пользователе успешно обновлена');
                 setServerMessage('Информация о пользователе успешно обновлена');
                 setMessageColor('green');
                 setTimeout(() => setServerMessage(''), 5000);
             } else {
-                console.error('Failed to update user info');
+                console.error('Ошибка при обновлении информации о пользователе');
                 setServerMessage('Не удалось обновить информацию о пользователе');
                 setMessageColor('red');
                 setTimeout(() => setServerMessage(''), 5000);
             }
-        } catch (error) {
-            console.error('Error updating user info:', error);
-            setServerMessage('Произошла ошибка при обновлении информации о пользователе');
+        } catch (error: any) {
+            console.error('Ошибка при обновлении информации о пользователе:', error);
+            if (error.response && error.response.data && error.response.data.error) {
+                setServerMessage(error.response.data.error.join(' '));
+            } else {
+                setServerMessage('Произошла ошибка при обновлении информации о пользователе');
+            }
             setMessageColor('red');
             setTimeout(() => {
                 setServerMessage('');

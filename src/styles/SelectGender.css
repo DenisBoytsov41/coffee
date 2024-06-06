@@ -53,4 +53,16 @@
     color: black;
   }
 
+  .Error {
+    color: red;
+    font-size: 0.875em;
+    margin-bottom: 10px;
+    text-align: left;
+    width: 100%;
+}
+
+.serverMessage {
+  margin-bottom: 20px;
+  text-align: center;
+}
   
