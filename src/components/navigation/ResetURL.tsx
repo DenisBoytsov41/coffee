@@ -20,7 +20,7 @@ const ResetURL: React.FC = () => {
     const password = useRef({});
     password.current = watch("password", "");
 
-    const onSubmit: SubmitHandler<MyForm> = async (data) => {
+    const onSubmit: SubmitHandler<MyForm> = async ({ password, confirmPassword }) => {
         // Проверяем, что email и token не undefined перед использованием decodeURIComponent
         if (!email || !token) {
             setErrorMessage("Некорректная ссылка для сброса пароля.");
@@ -31,16 +31,17 @@ const ResetURL: React.FC = () => {
             const res = await axios.post(`${ServHost.host}/resetPassword`, {
                 email: decodeURIComponent(email),
                 token: decodeURIComponent(token),
-                password: data.password
+                password,
+                confirmPassword
             });
             console.log(res.data);
             // Обработка успешного ответа сервера (если необходимо)
             setSuccessMessage("Пароль успешно сброшен!");
             window.location.replace("/");
-        } catch (error) {
+        } catch (error: any) {
+            setErrorMessage(error?.response?.data?.error||"Ошибка при сбросе пароля. Пожалуйста, попробуйте еще раз.");
             console.error("Ошибка при сбросе пароля:", error);
-            // Обработка ошибок запроса (если необходимо)
-            setErrorMessage("Ошибка при сбросе пароля. Пожалуйста, попробуйте еще раз.");
+
         }
     };
 
@@ -83,6 +84,13 @@ const ResetURL: React.FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="noabsformVhod">
                         <label className="labelVhlog">ВОССТАНОВЛЕНИЕ ПАРОЛЯ</label>
+                        {errors.confirmPassword && <div className="Error">{errors.confirmPassword.message}</div>}
+                        {errorMessage && (
+                            <div className="Error">{errorMessage}</div>
+                        )}
+                        {successMessage && (
+                            <div className="Success">{successMessage}</div>
+                        )}
                         <input
                             type="password"
                             placeholder="* Новый пароль"
@@ -96,13 +104,7 @@ const ResetURL: React.FC = () => {
                             className="inpVhlog"
                             {...register('confirmPassword')}
                         />
-                        {errors.confirmPassword && <div className="Error">{errors.confirmPassword.message}</div>}
-                        {errorMessage && (
-                            <div className="Error">{errorMessage}</div>
-                        )}
-                        {successMessage && (
-                            <div className="Success">{successMessage}</div>
-                        )}
+
                         <button type="submit" className="ButtonRes">СОХРАНИТЬ</button>
                     </div>
                 </form>

@@ -27,3 +27,34 @@
 .InvalidResetCode {
     color: red;
 }
+
+.Error {
+    color: red;
+    font-size: 0.875em;
+    margin-bottom: 10px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.errorMessage {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.SuccessMessage {
+    color: green;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.Success {
+    color: green;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}

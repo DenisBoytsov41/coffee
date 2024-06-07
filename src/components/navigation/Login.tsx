@@ -181,7 +181,6 @@ function Login() {
                             {...register('pass', { required: 'Поле обязательно к заполнению!', minLength: { value: 8, message: 'Пароль должен содержать минимум 8 символов' } })}
                         />
                         {errors?.pass && <div className="Error">{errors.pass.message}</div>}
-                        <div className="Error" hidden={isErrVisible}>Пользователь не найден</div>
                         <div>
                             <button className="ButtonVh">ВОЙТИ</button>
                         </div>

@@ -27,6 +27,8 @@ const Reset: React.FC = () => {
     const [email, setEmail] = useState<string>("");
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const [resetURL, setresetURL] = useState<string | null>(null);
+    const [messageSent, setMessageSent] = useState<boolean>(false);
+
     
 
     const { register, formState: { errors }, handleSubmit, setValue } = useForm<MyForm>({});
@@ -67,18 +69,30 @@ const Reset: React.FC = () => {
         return () => clearTimeout(errorTimeout);
     }, [validResetCode]);
     
+    useEffect(() => {
+        if (messageSent) {
+            const timer = setTimeout(() => {
+                setMessageSent(false);
+            }, 5000);
+    
+            return () => clearTimeout(timer);
+        }
+    }, [messageSent]);
+    
+    
 
     const sendDataToServer = async (data: { email: string }) => {
         try {
             const res = await axios.post(`${ServHost.host}/SendMailReset`, data);
             if (res.data.res !== "") {
-                //console.log(res.data.res);
+                setMessageSent(true);
             }
-        } catch (error) {
-            setErrorMessage("Ошибка при отправке данных на сервер.");
+        } catch (error: any) {
+            setErrorMessage(error?.response?.data?.error || "Ошибка при отправке данных на сервер.");
             console.error(error);
         }
     };
+    
 
     const checkLoginExistence = async (data: { login: string }) => {
         try {
@@ -91,8 +105,8 @@ const Reset: React.FC = () => {
             } else {
                 setErrorMessage("Логин не найден.");
             }
-        } catch (error) {
-            setErrorMessage("Ошибка при проверке логина.");
+        } catch (error: any) {
+            setErrorMessage(error?.response?.data?.error||"Ошибка при проверке логина.");
             console.error(error);
         }
     };
@@ -108,8 +122,8 @@ const Reset: React.FC = () => {
             } else {
                 setErrorMessage("Номер телефона не совпадает.");
             }
-        } catch (error) {
-            setErrorMessage("Ошибка при проверке номера телефона.");
+        } catch (error: any) {
+            setErrorMessage(error?.response?.data?.error||"Ошибка при проверке номера телефона.");
             console.error(error);
         }
     };
@@ -120,8 +134,8 @@ const Reset: React.FC = () => {
             setResendTimeout(60);
             //console.log(res.data);
             //setSmsCode(res.data.code); // Сохраняем код SMS
-        } catch (error) {
-            setErrorMessage("Ошибка при отправке кода СМС.");
+        } catch (error: any) {
+            setErrorMessage(error?.response?.data?.error||"Ошибка при отправке кода СМС.");
             console.error(error);
         }
     };
@@ -141,8 +155,8 @@ const Reset: React.FC = () => {
     
             // Перенаправление на res.data.resetURL
             window.location.href = res.data.resetURL;
-        } catch (error) {
-            setErrorMessage("Ошибка при отправке кода СМС.");
+        } catch (error: any) {
+            setErrorMessage(error?.response?.data?.error||"Ошибка при отправке кода СМС.");
             console.error(error);
         }
     };
@@ -161,10 +175,10 @@ const Reset: React.FC = () => {
                 setValidResetCode(true);
                 await sendCode();
             }
-        } catch (error) {
+        } catch (error: any) {
             if (axios.isAxiosError(error)) { // Проверяем, является ли ошибка объектом AxiosError
                 // Обрабатываем ошибку AxiosError
-                setErrorMessage("Ошибка при проверке кода сброса: " + (error.response?.data?.error || error.message));
+                setErrorMessage("Ошибка при проверке кода сброса: " + (error?.response?.data?.error || error.message));
             } else if (error instanceof Error) {
                 setErrorMessage("Ошибка при проверке кода сброса: " + error.message);
             } else {
@@ -227,8 +241,15 @@ const Reset: React.FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="noabsformVhod">
                         <label className="labelVhlog">ВОССТАНОВЛЕНИЕ ПАРОЛЯ</label>
+                        {messageSent && (
+                            <div className="SuccessMessage">Сообщение успешно отправлено!</div>
+                        )}
+                        {errorMessage && (
+                            <div className="Error">{errorMessage}</div>
+                        )}
                         {resetMethod === "email" && (
                             <>
+                                {errors.email && <div className="Error">{errors.email.message}</div>}
                                 <input
                                     type="text"
                                     placeholder="* E-mail"
@@ -243,11 +264,11 @@ const Reset: React.FC = () => {
                                     onChange={(e) => setEmail(e.target.value)}
                                     value={email}
                                 />
-                                {errors.email && <div className="Error">{errors.email.message}</div>}
                             </>
                         )}
                         {resetMethod === "login" && (
                             <>
+                                {errors.login && <div className="Error">{errors.login.message}</div>}
                                 <input
                                     type="text"
                                     placeholder="* Логин пользователя"
@@ -258,12 +279,12 @@ const Reset: React.FC = () => {
                                     onChange={(e) => setLogin(e.target.value)}
                                     value={login}
                                 />
-                                {errors.login && <div className="Error">{errors.login.message}</div>}
                                 <button type="button" onClick={handleSubmit(onSubmit)}>Проверить логин</button>
                             </>
                         )}
                         {resetMethod === "phone" && loginExists && !showSmsInput && (
                             <>
+                                {errors.phone && <div className="Error">{errors.phone.message}</div>}
                                 <input
                                     type="text"
                                     placeholder="* Номер телефона"
@@ -278,12 +299,12 @@ const Reset: React.FC = () => {
                                     onChange={(e) => setPhone(e.target.value)}
                                     value={phone}
                                 />
-                                {errors.phone && <div className="Error">{errors.phone.message}</div>}
                                 <button type="button" onClick={handleSubmit(onSubmit)}>Проверить номер телефона</button>
                             </>
                         )}
                         {resetMethod === "sms" && showSmsInput && (
                             <>
+                                {errors.smsCode && <div className="Error">{errors.smsCode.message}</div>}
                                 <input
                                     type="text"
                                     placeholder="* Код из СМС"
@@ -292,7 +313,6 @@ const Reset: React.FC = () => {
                                         required: "Поле обязательно к заполнению!"
                                     })}
                                 />
-                                {errors.smsCode && <div className="Error">{errors.smsCode.message}</div>}
                                 <button type="button" onClick={()=> sendSmsCode()} disabled={resendTimeout > 0}>
                                     {resendTimeout > 0 ? `Отправить повторно через ${resendTimeout} секунд` : "Отправить код по СМС"}
                                 </button>
@@ -329,9 +349,6 @@ const Reset: React.FC = () => {
                         {resendTimeout > 0 && (
                             <p>Код можно отправить повторно через {resendTimeout} секунд</p>
                         )}
-                        {errorMessage && (
-                            <div className="Error">{errorMessage}</div>
-                            )}
                             <button type="submit" className="ButtonRes">ПРОДОЛЖИТЬ</button>
                             <button type="button" onClick={handleBack} className="ButtonRes">Назад</button>
                         </div>
