@@ -244,7 +244,7 @@ function Header() {
     }, []);
     
     return (
-        <div className="HeaderRezerv">
+        <header className="HeaderRezerv">
             <div className="HeaderBack"></div>
             <div className="mainHeader">
                 <div className="contHeader hideMobile">
@@ -286,7 +286,7 @@ function Header() {
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
     );
 }
 

@@ -10,7 +10,7 @@ interface FuterProps {
 
 const Futer: React.FC<FuterProps> = ({ className }) => {
     return (
-        <div className={className}>
+        <footer className={className}>
             <div className="mainFuter">
                 <div className="contFuter">
                     <div className="leftFuter">
@@ -54,7 +54,7 @@ const Futer: React.FC<FuterProps> = ({ className }) => {
                     <label>© 2024 «GodineCoffee»</label>
                 </div>
             </div>
-        </div>
+        </footer>
     );
 };
 
