@@ -98,7 +98,7 @@ function Header() {
             } else {
                 setLoginProfile(
                     <div className="rightHeader">
-                        <Vhod />
+                        <Vhod isMandatory={true} />
                         <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
                     </div>
                 );
@@ -107,7 +107,7 @@ function Header() {
             console.error(error);
             setLoginProfile(
                 <div className="rightHeader">
-                    <Vhod />
+                    <Vhod isMandatory={true} />
                     <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
                 </div>
             );
@@ -176,7 +176,7 @@ function Header() {
 
     const [loginProfile, setLoginProfile] = useState(() => (
         <div className="rightHeader">
-            <Vhod />
+            <Vhod isMandatory={true} />
             <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
         </div>
     ));

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import profile from "../images/Profile.jpg";
 import '../styles/KastomCheckBox.css';
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -19,13 +19,18 @@ declare global {
     }
 }
 
-function Vhod() {
+interface VhodProps {
+    isMandatory: boolean;
+}
+
+function Vhod({ isMandatory }: VhodProps) {
     const [isElementVisible, setElementVisible] = useState(false);
     const elementRef = useRef<HTMLDivElement>(null);
     const [isErrVisible, setErrVisible] = useState(true);
     const [loginMessage, setLoginMessage] = useState('');
     const [loginError, setLoginError] = useState('');
-    const { login, isLoggedIn } = useAuth(); 
+    const { login, isLoggedIn } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -64,12 +69,16 @@ function Vhod() {
             }, 1000);
             return () => clearTimeout(timer);
         };
-    
+
         fetchData();
     }, [isLoggedIn]);
-    
+
     const handleButtonClick = () => {
-        setElementVisible(!isElementVisible);
+        if (isMandatory) {
+            setElementVisible(!isElementVisible);
+        } else {
+            navigate('/login');
+        }
     };
 
     const {
@@ -101,7 +110,7 @@ function Vhod() {
             }
         }
     };
-    
+
     const sendDataToServerUpdateBasket = async (refreshToken: string | null, basket: string | null) => {
         try {
             if (!refreshToken) {
@@ -136,7 +145,7 @@ function Vhod() {
         }
     };
 
-    const sendDataToServerUpdateLiked= async (refreshToken: string | null, liked: string | null) => {
+    const sendDataToServerUpdateLiked = async (refreshToken: string | null, liked: string | null) => {
         try {
             if (!refreshToken) {
                 console.error('Refresh token is missing');
@@ -153,8 +162,7 @@ function Vhod() {
                 if (res.data.res !== "") {
                     console.log(res.data.res);
                     let logged = window.localStorage.getItem("isLoggedIn");
-                    if (logged)
-                    {
+                    if (logged) {
                         window.location.replace("/");
                     }
                 }
@@ -173,7 +181,6 @@ function Vhod() {
             await sendDataToServerUpdateLiked(refreshToken, liked || "");
         }
     };
-    
 
     const submit: SubmitHandler<MyForm> = (data) => {
         sendDataToServer(data);
@@ -216,7 +223,7 @@ function Vhod() {
                             </div>
                             <div className="Comp">
                                 <div>
-                                    <input type="checkbox" id="cb2" {...register('isPublicComputer')} /> 
+                                    <input type="checkbox" id="cb2" {...register('isPublicComputer')} />
                                     <label htmlFor="cb2">Чужой компьютер</label>
                                 </div>
                             </div>
