@@ -1,6 +1,7 @@
 * {
     box-sizing: border-box; 
 }
+
 .inpItem {
     height: 30px;
     border: 1px solid #ccc;
@@ -10,6 +11,11 @@
     padding: 0 10px; 
     width: calc(100% - 22px);
     font-size: 14px;
+    min-width: 100px;
+}
+
+.formItem {
+    margin-bottom: 10px;
 }
 
 .PoleItem {
@@ -19,7 +25,8 @@
     align-items: center;
     font-size: 12px;
 }
-.PoleItem .ButtonAd{
+
+.PoleItem .ButtonAd {
     height: 30px;
     padding: 0 20px;
     background-color: #007bff;
@@ -76,7 +83,6 @@
     margin-top: 13px;
 }
 
-
 .UploadImageButton {
     display: none; 
 }
@@ -115,21 +121,77 @@
 @media (max-width: 600px) {
     .inpItem {
         width: calc(100% - 22px);
+        text-align: center;
+        min-width: 100px;
     }
 
     .ButtonAdm,
     .UploadImageButtonLabel {
+        min-width: 150px;
         width: 100%;
-    }
-
-    .gapButton {
-        flex-direction: column; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     .Items {
         display: flex;
         flex-direction: column;
         align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .gapButton {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 13px;
+        padding: 0;
+        margin: 0;
+        flex-wrap: wrap;
+    }
+
+    .admin-profile-add-button {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 13px;
+        padding: 0;
+        margin: 0;
+        flex-wrap: wrap;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 1000px) {
+    .Items {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 10px;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .formItem {
+        margin-bottom: 10px;
+    }
+
+    .inpItem {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (min-width: 1001px) {
+    .Items {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 10px;
+        border: 2px solid #007bff;
+        border-radius: 10px;
+        padding: 10px;
     }
 }
 
@@ -143,12 +205,14 @@
 .admin-login-form {
     width: 300px;
 }
+
 .ButtonsContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
 }
+
 .CenteredMessages {
     display: flex;
     justify-content: center;
@@ -156,20 +220,24 @@
     margin-top: 10px;
 }
 
-
-@media (max-width: 480px) {
+@media (max-width: 590px) {
     .inpItem,
     label {
         font-size: 12px;
+        text-align: center;
     }
 
     .ButtonAdm,
     .UploadImageButtonLabel {
         font-size: 12px;
     }
+
     .Items {
         display: flex;
         flex-direction: column;
         align-items: center;
+        display: grid;
+        border: 2px solid #007bff;
+        border-radius: 10px;
     }
 }

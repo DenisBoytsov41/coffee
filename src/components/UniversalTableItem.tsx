@@ -106,7 +106,7 @@ function UniversalTableItem<T extends FieldValues>(props: UniversalTableItemProp
     const deleteBtn = useRef<HTMLButtonElement>(null);
 
     return (
-        <div>
+        <div className="formItem">
             <form onSubmit={handleSubmit(submit)}>
                 <div className="Items">
                     {props.fields.map((field, index) => (
