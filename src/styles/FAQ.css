@@ -1,67 +1,88 @@
-.ContentFAQ{
-    max-width: 1250px;
-    width: 70vi;
-    margin: 14px 50px;
+.ContentFAQ {
+    max-width: 100%;
+    width: calc(100% - 40px);
+    margin: 14px 20px;
 }
-.Zagol1FAQ{
-    font-size: 26px;
+
+.Zagol1FAQ {
+    font-size: 24px;
 }
-.ZagolFAQ{
-    font-size: 22px;
-}
-.textFAQ{
+
+.ZagolFAQ {
     font-size: 18px;
 }
-details{
-    padding-left: 20px;
-    padding-bottom: 10px;
+
+.textFAQ {
+    font-size: 16px;
 }
-details:hover{
+
+details {
+    padding-bottom: 10px; 
+}
+
+details:hover {
     cursor: pointer;
+    color: rgb(29, 56, 107);
+    font-weight: bold;
 }
+
 details > summary {
     list-style: none;
 }
-.textopenFAQ{
-    padding-left: 30px;
+
+.textopenFAQ {
+    padding-left: 20px;
+    max-width: 140vh;
+    margin-top: 10px;
+    word-wrap: break-word;
 }
-.FAQ{
+
+.FAQ {
     display: flex;
     flex-direction: row;
-    @media (max-width: 785px) {
+    gap: 10px;
+}
+
+@media (max-width: 785px) {
+    .FAQ {
         flex-direction: column;
     }
 }
-.FAQ1{
+
+.FAQ1 {
     flex-grow: 2;
     flex-basis: 0;
+    min-width: 300px;
 }
+
 .faq-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-  }
-  
-  .content-wrapper {
+}
+
+.content-wrapper {
     flex: 1;
-  }
-  
-  .ContentFAQ {
+}
+
+.ContentFAQ {
     padding: 20px;
-  }
-  
-  .Zagol1FAQ, .ZagolFAQ, .textFAQ, .textopenFAQ {
+}
+
+.Zagol1FAQ,
+.ZagolFAQ,
+.textFAQ,
+.textopenFAQ {
     margin-bottom: 15px;
-  }
-  
-  .FAQ {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .FAQ1 {
-    flex: 1;
-    min-width: 300px;
-  }
-  
+}
+.ZagolFAQ.active {
+    color: blue; /* Измените цвет или любые другие стили по вашему усмотрению */
+}
+
+.textFAQ.active {
+    font-weight: bold; /* Измените стили по вашему усмотрению */
+}
+
+.textopenFAQ.active {
+    display: block; /* Измените стили по вашему усмотрению */
+}

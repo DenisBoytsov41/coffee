@@ -25,7 +25,37 @@
     padding: 0 0;
   }
 }
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 35px;
+  right: 5vh;
+  width: 45px;
+  height: 45px;
+  background-color: gray;
+  color: black;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease;
+  visibility: hidden;
+  z-index: 9999;
+}
 
+.scroll-to-top-btn.show {
+  transition-delay: 0.3s;
+  visibility: visible;
+}
+.scroll-to-top-btn.show:hover {
+  background-color: white;
+}
+.scroll-to-top-btn img{
+  max-width: 40px;
+  max-height: 40px;
+}
 @font-face {
 font-family: "Comissioner";
 src: url("../fonts/Commissioner-VariableFont_wght.ttf") format("truetype");
@@ -44,7 +74,7 @@ src: url("../fonts/Commissioner-VariableFont_wght.ttf") format("truetype");
 }
 .chatbot-icon-container {
   position: fixed;
-  bottom: 30px;
+  bottom: 15vh;
   right: 30px;
   cursor: pointer;
   z-index: 999;
@@ -66,6 +96,13 @@ src: url("../fonts/Commissioner-VariableFont_wght.ttf") format("truetype");
   border-radius: 5px;
   margin-bottom: 5px;
   width: fit-content;
+}
+
+@media (max-width: 600px) {
+  .chatbot-icon-container img{
+    max-width: 45px;
+    max-height: 45px;
+  }
 }
 
 

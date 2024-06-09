@@ -25,6 +25,7 @@ import NotFound from './components/errors/NotFound';
 import { BotProvider } from "./components/navigation/Bot/BotContext"
 import Chat  from "./components/navigation/Bot/Chat"
 import chat from './images/chat-svgrepo-com.svg'
+import topup from './images/uparrowcircularbutton_79856.svg'
 
 const schedule = require('node-schedule');
 
@@ -49,6 +50,7 @@ function App() {
   const [currentTheme, setCurrentTheme] = useState('');
   const [error, setError] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false); 
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   useEffect(() => {
     const loggedInState = localStorage.getItem('isLoggedIn');
@@ -144,8 +146,30 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   return (
-    
     <div className="App Comissioner">
       <BotProvider>
         <ErrorBoundary errorElement={<CustomErrorComponent />}>
@@ -172,6 +196,11 @@ function App() {
             <img src={chat} alt="Chat Icon" />
           </div>
           {isChatOpen && <Chat onClose={handleCloseChat} />}
+          {showScrollToTop && (
+            <button className="scroll-to-top-btn show" onClick={scrollToTop}>
+              <img src={topup} alt="Scroll to top" />
+            </button>
+          )}
         </ErrorBoundary>
       </BotProvider>
     </div>

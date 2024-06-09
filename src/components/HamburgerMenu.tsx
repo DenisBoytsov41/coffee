@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Link} from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import profile from "../images/Profile.jpg";
 import close from "../images/CloseMenu.jpg";
 import open from "../images/OpenMenu.jpg";
 import '../styles/KastomCheckBox.css';
 import axios from "axios";
 import Vhod from "./Vhod";
-import ServHost from "../serverHost.json"
+import ServHost from "../serverHost.json";
 import { useAuth } from '../components/navigation/AuthContext';
 
 interface MyForm {
@@ -17,8 +17,7 @@ interface BasketData {
     basket: string;
 }
 
-function HamburgerMenu(){
-
+function HamburgerMenu() {
     const [isElementVisible, setElementVisible] = useState(false);
     const elementRef = useRef<HTMLDivElement>(null);
     const { logout } = useAuth(); 
@@ -50,10 +49,9 @@ function HamburgerMenu(){
             window.localStorage.setItem('basket', basket);
             window.localStorage.setItem('backCount', count);
         } catch (error) {
-            //console.error(error);
+            console.error(error);
         }
     };
-    
 
     const UpdateCount = () => {
         let count = 0;
@@ -75,6 +73,7 @@ function HamburgerMenu(){
         }
         return count;
     };
+
     const logoutUser = async () => {
         try {
             const refreshToken = window.localStorage.getItem('refreshToken');
@@ -112,7 +111,7 @@ function HamburgerMenu(){
                 setLoginProfile(
                     <div className="rightHeader">
                         <img src={profile} alt="profile" className="imgVH" />
-                        <Link to={"/profile"} className='linkHeader'>Профиль</Link>
+                        <Link to={"/profile"} className='linkHeader Comissioner btnCont'>Профиль</Link>
                         <button className='linkHeader Comissioner btnCont' onClick={handleLogout}>Выйти</button>
                     </div>
                 );
@@ -120,7 +119,7 @@ function HamburgerMenu(){
                 setLoginProfile(
                     <div className="rightHeader">
                         <Vhod isMandatory={false} />
-                        <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
+                        <Link to={"/reg"} className='linkHeader Comissioner btnCont'>Регистрация</Link>
                     </div>
                 );
             }
@@ -129,7 +128,7 @@ function HamburgerMenu(){
             setLoginProfile(
                 <div className="rightHeader">
                     <Vhod isMandatory={false} />
-                    <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
+                    <Link to={"/reg"} className='linkHeader Comissioner btnCont'>Регистрация</Link>
                 </div>
             );
         }
@@ -159,6 +158,7 @@ function HamburgerMenu(){
             console.error(error);
         }
     };
+
     const sendDataToServerGetLiked = async () => {
         try {
             const refreshToken = window.localStorage.getItem('refreshToken');
@@ -172,8 +172,7 @@ function HamburgerMenu(){
                     if (resGetBasket.data.res !== "" && resGetBasket.data.res !== null && resGetBasket.data.res !== undefined) {
                         const liked = window.localStorage.getItem('liked');
                         window.localStorage.setItem('liked', resGetBasket.data.res);
-                        if (resGetBasket.data.res!=liked)
-                        {
+                        if (resGetBasket.data.res !== liked) {
                             //window.location.reload();
                         }
                     }
@@ -198,7 +197,7 @@ function HamburgerMenu(){
     const [loginProfile, setLoginProfile] = useState(() => (
         <div className="rightHeader">
             <Vhod isMandatory={false} />
-            <Link to={"/reg"} className='linkHeader'>Регистрация</Link>
+            <Link to={"/reg"} className='linkHeader Comissioner btnCont'>Регистрация</Link>
         </div>
     ));
 

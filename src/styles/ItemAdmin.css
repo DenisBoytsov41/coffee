@@ -140,6 +140,11 @@
         align-items: center;
         flex-wrap: wrap;
     }
+    .tabs {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
     .gapButton {
         display: flex;

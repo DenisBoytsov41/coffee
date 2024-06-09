@@ -209,7 +209,7 @@ function Basket() {
                             <div className="Bask">
                                 <div className="paddingCont">
                                     <br />
-                                    <div className="baskZagол">КОРЗИНА</div>
+                                    <div className="baskZagol">КОРЗИНА</div>
                                     <br />
                                     <br />
                                     <Katalog type={'korzina'} katcount={0} pagination={false} itemsPerPage={10}/>

@@ -33,3 +33,40 @@
 .pagination .prev-next button {
     margin: 5px;
 }
+/* Для разрешений меньше 600px */
+@media (max-width: 600px) {
+    .pagination {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+    .pagination button {
+        margin: 5px;
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    .pagination .prev-next {
+        display: none;
+    }
+}
+
+/* Для разрешений шире 600px */
+@media (min-width: 601px) {
+    .pagination {
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+    .pagination button {
+        margin: 5px;
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+    .pagination .prev-next {
+        margin-right: auto;
+        display: inline-block;
+    }
+    .pagination .prev-next button {
+        margin: 5px;
+    }
+}

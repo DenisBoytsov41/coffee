@@ -6,6 +6,7 @@ import "../styles/ItemAdmin.css";
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from "js-cookie";
 
+
 interface MyForm {
     password: string;
     login: string;
@@ -86,6 +87,9 @@ function AdminLogin({ onLogin }: AdminLoginProps) {
             setTimeout(() => setError(""), 5000);
         }
     };
+    const redirectToHome = () => {
+        window.location.href = "/"
+    };
 
     return (
         <div className="admin-login-container">
@@ -115,6 +119,7 @@ function AdminLogin({ onLogin }: AdminLoginProps) {
                 <div className="ButtonsContainer">
                     <button type="submit" className="ButtonAdm" style={{ marginTop: "10px" }}>Войти</button>
                     <button onClick={handleSubmit(handleAddUserAdmin)} className="ButtonAdm" style={{ marginTop: "10px" }}>Добавить пользователя администратора</button>
+                    <button onClick={redirectToHome} className="ButtonAdm" style={{ marginTop: "10px" }}>На главную страницу</button>
                 </div>
                 
             </form>

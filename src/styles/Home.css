@@ -1,14 +1,21 @@
-.imgback{
+.bg-container {
+    position: relative;
+    min-height: 300px;
+}
+.imgback {
     position: absolute;
     left: 0;
+    top: 0;
     width: 100%;
-    height: 630px;
-    object-fit: cover;
-    object-position: center;
+    height: 100%;
+    background-image: url("../images/back.jpg");
+    background-size: cover; /* Адаптирует изображение так, чтобы оно полностью покрывало заданный размер */
+    background-position: center;
     z-index: -1;
-    /*filter: brightness(50%)*/
 }
-.deviz{
+
+
+.deviz {
     height: 630px;
     display: flex;
     justify-content: center;
@@ -17,37 +24,107 @@
     color: white;
     flex-direction: column;
 }
-.devizbol{
+
+.devizbol {
     font-size: 65px;
-    @media (max-width: 785px) {
-        font-size: 35px;
-    }
 }
-.devizmal{
+
+.devizmal {
     font-size: 22px;
-    @media (max-width: 785px) {
-        font-size: 18px;
-    }
 }
-.linkHome{
+
+.linkHome {
     color: black;
     text-decoration: none;
 }
-.imgbuy{
+
+.imgbuy {
     padding-right: 5px;
 }
-.Content {
+.imgback {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 630px; 
+    object-fit: cover;
+    object-position: center;
+    z-index: -1;
+    background-image: url("../images/back.jpg"); 
+  }
+  
+  .Content {
+    position: relative; 
     display: flex;
     flex-direction: column;
     min-height: 100vh; 
   }
   
-  .content-wrapper {
+  .contApp {
     flex: 1;
+    padding-bottom: 50px; 
+    position: relative;
   }
   
-  .footer {
-    background-color: #f1f1f1;
-    text-align: center;
-    padding: 10px;
-  }
+
+
+@media (max-width: 600px) {
+    .imgback {
+        max-height: 300px;
+        height: 300px;
+    }
+
+    .deviz {
+        height: auto;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .devizbol {
+        font-size: 35px;
+    }
+
+    .devizmal {
+        font-size: 18px;
+    }
+
+    .linkHome {
+        font-size: 14px;
+    }
+
+    .imgbuy {
+        padding-right: 3px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+    .imgback {
+        max-height: 300px;
+        height: 300px;
+    }
+
+    .deviz {
+        height: auto;
+        margin-left: 50px;
+        margin-right: 50px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .devizbol {
+        font-size: 45px;
+    }
+
+    .devizmal {
+        font-size: 20px;
+    }
+
+    .linkHome {
+        font-size: 16px;
+    }
+
+    .imgbuy {
+        padding-right: 4px;
+    }
+}

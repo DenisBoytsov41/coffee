@@ -1,25 +1,28 @@
-.korzkarttov1{
+.korzkarttov1 {
     display: flex;
     justify-content: start;
     text-align: start;
     flex-direction: row;
     gap: 15px;
 }
-.korzkarttov{
+
+.korzkarttov {
     width: 100%;
     height: 100%;
     background: #ffffff;
     padding-top: 15px;
     flex-direction: column;
 }
-.korztovprice{
+
+.korztovprice {
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 22px;
 }
-.korztovprice_one{
+
+.korztovprice_one {
     text-align: center;
     display: flex;
     align-items: center;
@@ -27,30 +30,26 @@
     font-size: 15px;
     width: 100px;
 }
-.ItemDelete:hover{
+
+.ItemDelete:hover {
     color: rgb(117, 117, 117);
 }
-.korztovcont{
+
+.korztovcont {
     padding-top: 0;
 }
-.korztovname{
+
+.korztovname {
     font-size: 15px;
     width: 120px;
     color: #969595;
 }
-.korzpaddingKorz{
+
+.korzpaddingKorz {
     width: 40px;
-    @media (max-width: 1090px) {
-        width: 35lvw;
-    }
-    @media (max-width: 900px) {
-        width: 25lvw;
-    }
-    @media (max-width: 785px) {
-        width: 100%;
-    }
 }
-.korztovcountinp{
+
+.korztovcountinp {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -59,21 +58,24 @@
     text-align: center;
     margin-right: 0;
 }
-.korzcountkorz{
+
+.korzcountkorz {
     display: flex;
     flex-direction: column;
     text-align: center;
     align-items: center;
     justify-content: center;
 }
-.korztovhead{
+
+.korztovhead {
     display: flex;
     justify-content: center;
     text-align: center;
     align-items: center;
     padding-top: 0;
 }
-.korztovfut{
+
+.korztovfut {
     margin-top: 0;
     margin-left: 0;
     display: flex;
@@ -81,27 +83,67 @@
     justify-content: center;
     gap: 0;
 }
-.korzimgtovar{
+
+.korzimgtovar {
     width: 100px;
     height: 100px;
 }
-@media screen and (max-width: 510px) {
-    .korzimgtovar{
-        width: 0;
-        height: 100px;
+
+@media (max-width: 1090px) {
+    .korzpaddingKorz {
+        width: 35vw;
     }
-    .korztovhead{
-        display: flex;
-        justify-content: center;
-        text-align: start;
+}
+
+@media (max-width: 900px) {
+    .korzpaddingKorz {
+        width: 25vw;
+    }
+}
+
+@media (max-width: 785px) {
+    .korzpaddingKorz {
+        width: 100%;
+    }
+}
+
+@media (max-width: 510px) {
+    .korzkarttov1 {
+        flex-direction: column;
         align-items: center;
-        padding-top: 0;
     }
-    .korzkarttov1{
-        display: flex;
-        justify-content: start;
-        text-align: start;
+
+    .korzimgtovar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .korztovname {
+        width: auto;
+    }
+
+    .korztovprice_one {
+        font-size: 13px;
+        width: auto;
+    }
+
+    .korztovprice {
+        font-size: 18px;
+    }
+
+    .korztovcountinp {
+        gap: 5px;
+    }
+
+    .korzcountkorz {
         flex-direction: row;
-        gap: 6px;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .korztovfut {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
     }
 }

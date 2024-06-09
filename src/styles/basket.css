@@ -5,11 +5,11 @@
     height: 40px;
     width: 140px;
     border: none;
+    transition: background 0.3s;
 }
 
 .ButtonPusto:hover {
     background: rgba(0, 0, 0, 0.82);
-    border: none;
     cursor: pointer;
 }
 
@@ -17,14 +17,14 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
-    min-height: 100%; /* изменено */
+    min-height: 100%;
     width: 100%;
 }
 
 .KorzVsego {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end; /* изменено */
+    justify-content: space-between; /* изменено на space-between для равного расстояния */
     gap: 40px;
 }
 
@@ -34,6 +34,7 @@
 
 .KorzVsegobutton {
     font-size: 15px;
+    transition: color 0.3s;
 }
 
 .KorzVsegobutton:hover {
@@ -42,20 +43,17 @@
 
 .OformlenieCont {
     width: 100%;
-    @media (max-width: 1090px) {
-        width: 100%;
-    }
 }
 
 .Oformlenie {
     background: #252525;
     height: fit-content;
     width: 100%;
-    position: sticky
+    position: sticky;
 }
 
 .paddingCont {
-    padding: 30px 30px 30px 30px;
+    padding: 30px;
 }
 
 .baskZagol {
@@ -96,7 +94,7 @@
 .TelBask {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* изменено */
+    justify-content: flex-end;
     width: 100%;
     gap: 30px;
 }
@@ -111,12 +109,6 @@
 .centerText {
     text-align: center;
 }
-.inpBasklog {
-    z-index: 10;
-    position: relative; 
-    pointer-events: auto;
-}
-
 
 @media screen and (max-width: 1090px) {
     .basketContent {
@@ -124,7 +116,7 @@
         flex-direction: column-reverse;
         gap: 10px;
         width: 100%;
-        min-height: 100%; /* изменено */
+        min-height: 100%;
     }
 
     .inpGor {
@@ -137,5 +129,57 @@
         background: #252525;
         height: fit-content;
         width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .KorzVsegoText {
+        font-size: 20px;
+    }
+
+    .KorzVsegobutton {
+        font-size: 13px;
+    }
+
+    .paddingCont {
+        padding: 20px;
+    }
+
+    .baskZagol {
+        font-size: 18px;
+    }
+
+    .baskText {
+        font-size: 16px;
+    }
+
+    .AddrDost {
+        height: 80px;
+    }
+}
+
+@media (min-width: 601px) {
+    .KorzVsegoText {
+        font-size: 25px;
+    }
+
+    .KorzVsegobutton {
+        font-size: 15px;
+    }
+
+    .paddingCont {
+        padding: 30px;
+    }
+
+    .baskZagol {
+        font-size: 22px;
+    }
+
+    .baskText {
+        font-size: 20px;
+    }
+
+    .AddrDost {
+        height: 100px;
     }
 }

@@ -95,12 +95,15 @@
 }
 @media screen and (max-width: 480px) {
     .chat-container {
-        bottom: calc(20px + 75px);
+        bottom: 20px; /* Установите желаемый нижний отступ */
         right: 20px;
-        width: 250px;
+        width: calc(100% - 40px);
+        max-width: 320px;
+        max-height: 380px;
     }
 
     .chat-icon-container {
         right: 20px; 
     }
 }
+

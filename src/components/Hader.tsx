@@ -259,7 +259,7 @@ function Header() {
                 <div className="contHeader">
                     <div className="leftHeader">
                         <Link to={"/"} className='linkHeader'>
-                            <img src={logo} alt="logo" />
+                            <img className="logo" src={logo} alt="logo" />
                         </Link>
                         <Link to={"/buy"} className='linkHeader hideMobile'>Купить</Link>
                         <Link to={"/faq"} className='linkHeader hideMobile'>Частые вопросы</Link>
@@ -268,12 +268,12 @@ function Header() {
                     <div className="rightHeader">
                         <Link to={"/liked"} className='linkHeader'>
                             <div className='baskHeader'>
-                                <img src={like} alt="like" className="imgtov" />
+                                <img src={like} alt="like" className="imgtovHeader" />
                             </div>
                         </Link>
                         <Link to={"/basket"} className='linkHeader'>
                             <div className='baskHeader'>
-                                <img src={bask} alt="bask" className="imgtov" />
+                                <img src={bask} alt="bask" className="imgtovHeader" />
                                 <div className='baskinfoHeader'>
                                     <label>{backCount} ₽</label>
                                     <label>{counttov} тов.</label>

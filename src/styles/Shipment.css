@@ -1,9 +1,11 @@
-.ContentSh{
-    max-width: 1300px;
-    width: 80vi;
+.ContentSh {
+    max-width: 100%;
+    width: calc(100% - 100px);
     padding-left: 50px;
+    padding-right: 50px;
 }
-.imgbackSh{
+
+.imgbackSh {
     position: absolute;
     left: 0;
     width: 100%;
@@ -12,41 +14,87 @@
     object-position: bottom;
     z-index: -1;
 }
-.imgText{
+
+.imgText {
     height: 400px;
+    max-height: 100%;
+    overflow: hidden;
     display: flex;
     justify-content: center;
+    align-items: flex-end;
     padding-bottom: 50px;
-    padding-left: 80px;
+    padding-left: 50px;
     color: white;
-    flex-direction: column;
     font-size: 40px;
+    text-align: center;
 }
-.ZagolSh{
-    font-size: 27px;
-    display: flex;
-    flex-direction: column;
+
+
+.ZagolSh {
+    font-size: 26px;
+    margin-bottom: 10px;
 }
-.textSh{
-    font-size: 18px;
+
+.textSh {
+    font-size: 16px;
+    text-align: justify;
 }
-.Dostavka{
+
+.Dostavka {
     display: flex;
     flex-direction: row;
-    @media (max-width: 785px) {
+    gap: 20px;
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 785px) {
+    .Dostavka {
         flex-direction: column;
     }
-    gap: 20px;
+
+    .imgText {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 }
-.Dost1{
-    flex-grow: 2;
-    flex-basis: 0;
-}
-.Dost2{
+
+.Dost1 {
     flex-grow: 1;
-    flex-basis: 0;
 }
-.imgcdek{
-    width: 270px;
-    height: 100px;
+
+.Dost2 {
+    flex-grow: 1;
+}
+
+.imgcdek {
+    width: 100%;
+    max-width: 270px;
+    height: auto;
+}
+
+@media (max-width:600px){
+    .ContentSh {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0;
+        width: 100%;
+    }
+    .Dost1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .Dost2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .imgcdek {
+        width: 50%;
+        height: 50%;
+    }
 }

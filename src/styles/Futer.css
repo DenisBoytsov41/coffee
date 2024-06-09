@@ -1,29 +1,31 @@
-.mainFuter{
+.mainFuter {
     display: flex;
     flex-direction: column;
     gap: 10px;
     max-width: 1360px;
-    width: 100vi;
+    width: 100%;
     padding-top: 50px;
     margin-top: auto;
-    width: 100%;
     padding-bottom: 15px;
     @media (max-width: 785px) {
         margin-top: 50px;
         background: #f6f6f6;
+        padding: 15px;
     }
 }
-.contFuter{
+
+.contFuter {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     padding: 0 50px;
+    gap: 20px;
     @media (max-width: 785px) {
         flex-direction: column;
-        gap: 50px;
     }
 }
-.contdopFuter{
+
+.contdopFuter {
     display: flex;
     align-items: start;
     justify-content: start;
@@ -33,48 +35,52 @@
     }
 }
 
-.leftFuter{
+.leftFuter {
     display: flex;
     flex-direction: row;
+    gap: 35px;
+    flex-grow: 1;
     @media (max-width: 785px) {
         flex-direction: column;
+        align-items: center;
     }
-    flex-grow:1;
-    gap: 35px;
 }
-.rightFuter{
+
+.rightFuter {
     display: flex;
     flex-direction: column;
-    align-items: end;
+    align-items: flex-end;
     justify-content: space-between;
+    flex-grow: 1;
+    gap: 15px;
     @media (max-width: 785px) {
         align-items: center;
         padding-bottom: 50px;
     }
-    flex-grow:1;
-    gap: 15px;
 }
 
 .rightFuter > * {
     align-self: flex-end;
 }
 
-
-.podpis{
+.podpis {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.linkFuter{
+
+.linkFuter {
     color: rgba(0, 0, 0, 0.42);
     display: block;
     margin: 5px 0;
     text-decoration: none;
 }
-.linkFuter:hover{
+
+.linkFuter:hover {
     border-bottom: 1px solid rgba(0, 0, 0, 0.59);
 }
-.contactsFuter{
+
+.contactsFuter {
     display: flex;
     flex-direction: row;
     gap: 15px;

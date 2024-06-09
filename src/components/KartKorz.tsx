@@ -12,7 +12,6 @@ interface Props {
 }
 
 function KartKorz(props: Props) {
-
     const [counttov, setCounttov] = useState(() => {
         const initialState = function () {
             let count = 1;
@@ -34,8 +33,6 @@ function KartKorz(props: Props) {
     useEffect(() => {
         setVsego(props.price * counttov);
     }, [counttov, props.price]);
-
-    
 
     const UpdateBackCount = (type: string) => {
         if (!window.localStorage.getItem("backCount")) {
@@ -120,14 +117,11 @@ function KartKorz(props: Props) {
                     window.localStorage.setItem("basket", newBasket),
                     window.localStorage.setItem("backCount", String(newBackCount)),
                     setCounttov(newCount),
-                    setVsego(props.price * newCount) // Динамическое вычисление общей стоимости
+                    setVsego(props.price * newCount)
                 ];
-                // Дождаться выполнения всех промисов
                 await Promise.all(promises);
             }
-    
         }
-        
     };
     
     const handlePlusClick = async () => {
@@ -144,14 +138,12 @@ function KartKorz(props: Props) {
                     window.localStorage.setItem("basket", newBasket),
                     window.localStorage.setItem("backCount", String(newBackCount)),
                     setCounttov(newCount),
-                    setVsego(props.price * newCount) // Динамическое вычисление общей стоимости
+                    setVsego(props.price * newCount)
                 ];
-        
                 await Promise.all(promises);
             }
         }
     };
-    
 
     return (
         <div className='korzkarttov'>
@@ -167,9 +159,9 @@ function KartKorz(props: Props) {
                 <div className="korzpaddingKorz"></div>
                 <div className="korzcountkorz">
                     <div className='korztovcountinp'>
-                        <button onClick={() => handleMinusClick()}>-</button>
+                        <button onClick={handleMinusClick}>-</button>
                         <div className="korztovcount">{counttov}</div>
-                        <button onClick={() => handlePlusClick()}>+</button>
+                        <button onClick={handlePlusClick}>+</button>
                     </div>
                     <div className='korztovprice_one'>
                         1 шт = {props.price}₽

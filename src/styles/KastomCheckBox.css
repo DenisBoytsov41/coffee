@@ -1,12 +1,13 @@
+/* Скрытие чекбокса */
 input[type="checkbox"]:checked,
-input[type="checkbox"]:not(:checked)
-{
+input[type="checkbox"]:not(:checked) {
     position: absolute;
     left: -9999px;
 }
 
+/* Стили для метки чекбокса */
 input[type="checkbox"]:checked + label,
-input[type="checkbox"]:not(:checked) + label{
+input[type="checkbox"]:not(:checked) + label {
     display: inline-block;
     position: relative;
     padding-left: 28px;
@@ -14,8 +15,9 @@ input[type="checkbox"]:not(:checked) + label{
     cursor: pointer;
 }
 
+/* Стили для внешнего вида чекбокса */
 input[type="checkbox"]:checked + label:before,
-input[type="checkbox"]:not(:checked) + label:before{
+input[type="checkbox"]:not(:checked) + label:before {
     content: "";
     position: absolute;
     left: 0px;
@@ -24,15 +26,12 @@ input[type="checkbox"]:not(:checked) + label:before{
     height: 18px;
     border: 1px solid #dddddd;
     background-color: #ffffff;
-}
-
-input[type="checkbox"]:checked + label:before,
-input[type="checkbox"]:not(:checked) + label:before {
     border-radius: 2px;
 }
 
+/* Стили для внутреннего вида чекбокса */
 input[type="checkbox"]:checked + label:after,
-input[type="checkbox"]:not(:checked) + label:after{
+input[type="checkbox"]:not(:checked) + label:after {
     content: "";
     position: absolute;
     -webkit-transition: all 0.2s ease;
@@ -57,14 +56,17 @@ input[type="checkbox"]:not(:checked) + label:after {
     transform: rotate(-45deg);
 }
 
-input[type="checkbox"]:not(:checked) + label:after{
+/* Переход для скрытого состояния */
+input[type="checkbox"]:not(:checked) + label:after {
     opacity: 0;
 }
 
-input[type="checkbox"]:checked + label:after{
+/* Переход для видимого состояния */
+input[type="checkbox"]:checked + label:after {
     opacity: 1;
 }
 
+/* Стили для ссылок в гамбургер-меню */
 .linkHeader {
     display: block;
     color: #000000;
@@ -74,9 +76,10 @@ input[type="checkbox"]:checked + label:after{
     position: relative;
 }
 
+/* Стили для контейнера гамбургер-меню */
 .absformHamburger {
     position: absolute;
-    top: 100%; 
+    top: 100%;
     left: 0;
     background-color: #ffffff;
     border: 1px solid #dddddd;
@@ -84,4 +87,48 @@ input[type="checkbox"]:checked + label:after{
     padding: 8px;
     width: 200px;
     z-index: 999;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для ссылок в гамбургер-меню */
+.linkHeader {
+    display: block;
+    color: #000000;
+    text-decoration: none;
+    padding: 4px 8px; 
+    font-size: 14px;
+    position: relative;
+}
+
+/* Стили для контейнера гамбургер-меню */
+.absformHamburger {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    padding: 8px;
+    width: 150px;
+    z-index: 999;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Медиазапросы для мобильных устройств */
+@media (max-width: 600px) {
+    .linkHeader {
+        font-size: 12px;
+        padding: 6px; 
+    }
+
+    .absformHamburger {
+        width: 100%;
+        left: 0;
+        right: 0;
+        border-radius: 0;
+        padding: 10px; 
+    }
 }
