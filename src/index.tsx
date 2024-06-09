@@ -12,7 +12,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ErrorBoundary errorElement={<CustomErrorComponent />}>
+    <ErrorBoundary errorElement={<CustomErrorComponent error={new Error('Произошла ошибка')} />}>
+
       <React.StrictMode>
         <AuthProvider>
           <App />

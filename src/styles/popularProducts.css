@@ -1,0 +1,17 @@
+.slick-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .top-product, .product-of-the-day div {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .top-product img, .product-of-the-day img {
+    max-width: 100%;
+    height: auto;
+  }
+  

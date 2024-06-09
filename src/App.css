@@ -97,6 +97,169 @@ src: url("../fonts/Commissioner-VariableFont_wght.ttf") format("truetype");
   margin-bottom: 5px;
   width: fit-content;
 }
+.top-3-products {
+  text-align: center;
+  padding: 20px;
+}
+
+.products-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.top-product {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 5px;
+  max-width: 250px;
+}
+
+.top-product img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.top-product h3 {
+  margin-bottom: 5px;
+}
+
+.top-product p {
+  margin-bottom: 10px;
+}
+
+
+.product-slider {
+  width: 80%;
+  margin: 0 auto;
+  max-width: 80vh;
+  margin-top: 20px;
+  max-height: 130vh;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+}
+
+.product-of-the-day, .top-3-products {
+  text-align: center;
+  padding: 20px;
+}
+
+.product-of-the-day img, .top-3-products img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.slick-prev:before, .slick-next:before {
+  color: black;
+  font-size: 24px;
+}
+
+.slick-dots {
+  bottom: 10px;
+}
+
+.slick-dots li button:before {
+  font-size: 10px;
+  color: #999;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #333;
+}
+.slick-prev:before,
+.slick-next:before {
+  color: black !important; 
+  font-size: 22px !important;
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+
+@media screen and (max-width: 2000px) {
+  .product-slider {
+    width: 90%;
+    max-width: 650px;
+    max-height: 170vh;
+  }
+
+  .product-of-the-day, .top-3-products {
+    padding: 10px;
+  }
+  .products-row {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+  .top-3-products{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin: 5px;
+    padding: 5px;
+    word-wrap: break-word;
+  }
+  .top-product {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin: 5px;
+    padding: 5px;
+    word-wrap: break-word;
+    flex-wrap: wrap;
+}
+
+  .slick-prev:before, .slick-next:before {
+    font-size: 18px !important;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 600px) {
+  .product-slider {
+    width: 100%;
+    max-width: 320px;
+    max-height: auto;
+  }
+
+  .product-of-the-day, .top-3-products {
+    padding: 5px;
+  }
+
+  .products-row {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .top-3-products, .top-product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin: 3px;
+    padding: 3px;
+    word-wrap: break-word;
+  }
+
+  .slick-prev:before, .slick-next:before {
+    font-size: 16px !important;
+  }
+}
+
 
 @media (max-width: 600px) {
   .chatbot-icon-container img{

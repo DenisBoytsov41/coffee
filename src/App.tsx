@@ -172,7 +172,7 @@ function App() {
   return (
     <div className="App Comissioner">
       <BotProvider>
-        <ErrorBoundary errorElement={<CustomErrorComponent />}>
+      <ErrorBoundary>
           <Router>
             <Routes>
               <Route path="/" element={<Home />} />
