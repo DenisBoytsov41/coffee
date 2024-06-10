@@ -4,6 +4,7 @@ import ServHost from '../../serverHost.json';
 import Hader from "../Hader";
 import Futer from "../Futer";
 import IMask from "imask";
+import '../../styles/Reg.css';
 
 interface FormData {
   firstName: string;

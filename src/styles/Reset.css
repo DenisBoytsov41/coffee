@@ -58,3 +58,18 @@
     align-items: center;
     justify-content: center;
 }
+.ButtonRes {
+    background: black;
+    color: white;
+    border-radius: 20px;
+    height: 40px;
+    min-width: 140px;
+    border: none;
+}
+
+@media screen and (max-width: 768px) {
+    .ButtonRes {
+        width: 100%; 
+        max-width: 200px;
+    }
+}

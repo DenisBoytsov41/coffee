@@ -186,7 +186,7 @@ src: url("../fonts/Commissioner-VariableFont_wght.ttf") format("truetype");
 }
 
 
-@media screen and (max-width: 2000px) {
+@media screen and (max-width: 7000px) {
   .product-slider {
     width: 90%;
     max-width: 650px;

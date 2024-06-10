@@ -80,7 +80,7 @@ function App() {
       setCurrentTheme(decodedToken.currentTheme);
       setError(decodedToken.error);
     }
-  }, [localStorage.getItem('accessToken')]);
+  }, []);
 
   const handleLoginBtnClick = () => {
     setShowPersonalCabinet(false);
@@ -90,11 +90,13 @@ function App() {
     setShowPersonalCabinet(false);
   };
 
-  useEffect(() => {
-    const handleStorageChange = () => {
+  const handleStorageChange = (event: StorageEvent) => {
+    if (event.key === 'isLoggedIn') {
       window.location.reload();
-    };
+    }
+  };
 
+  useEffect(() => {
     window.addEventListener('storage', handleStorageChange);
 
     return () => {
@@ -128,6 +130,7 @@ function App() {
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
   };
+
   const handleCloseChat = () => {
     setIsChatOpen(false);
   };
@@ -172,7 +175,7 @@ function App() {
   return (
     <div className="App Comissioner">
       <BotProvider>
-      <ErrorBoundary>
+        <ErrorBoundary>
           <Router>
             <Routes>
               <Route path="/" element={<Home />} />
