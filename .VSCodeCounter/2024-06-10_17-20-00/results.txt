@@ -1,0 +1,135 @@
+Date : 2024-06-10 17:20:00
+Directory : c:\Users\Home\mycoffee_front\coffee
+Total : 88 files,  29331 codes, 76 comments, 945 blanks, all 30352 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          4 |     21,436 |          0 |          3 |     21,439 |
+| TypeScript JSX     |         38 |      4,813 |         48 |        530 |      5,391 |
+| CSS                |         25 |      2,602 |         15 |        336 |      2,953 |
+| JavaScript JSX     |          6 |        267 |          5 |         40 |        312 |
+| XML                |          9 |        128 |          3 |          8 |        139 |
+| JSON with Comments |          1 |         26 |          0 |          1 |         27 |
+| Markdown           |          1 |         26 |          0 |         21 |         47 |
+| HTML               |          1 |         19 |          0 |          1 |         20 |
+| TypeScript         |          3 |         14 |          5 |          5 |         24 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                   |         88 |     29,331 |         76 |        945 |     30,352 |
+| . (Files)                                                                           |          4 |     21,470 |          0 |         24 |     21,494 |
+| .idea                                                                               |          4 |         33 |          0 |          0 |         33 |
+| .idea (Files)                                                                       |          3 |         27 |          0 |          0 |         27 |
+| .idea\inspectionProfiles                                                            |          1 |          6 |          0 |          0 |          6 |
+| public                                                                              |          2 |         34 |          0 |          2 |         36 |
+| src                                                                                 |         78 |      7,794 |         76 |        919 |      8,789 |
+| src (Files)                                                                         |         10 |        487 |          8 |         73 |        568 |
+| src\components                                                                      |         41 |      4,863 |         50 |        536 |      5,449 |
+| src\components (Files)                                                              |         15 |      2,545 |         31 |        266 |      2,842 |
+| src\components\errors                                                               |          3 |         48 |          0 |         16 |         64 |
+| src\components\navigation                                                           |         23 |      2,270 |         19 |        254 |      2,543 |
+| src\components\navigation (Files)                                                   |         21 |      2,184 |         19 |        238 |      2,441 |
+| src\components\navigation\Bot                                                       |          2 |         86 |          0 |         16 |        102 |
+| src\images                                                                          |          4 |         94 |          3 |          8 |        105 |
+| src\styles                                                                          |         23 |      2,350 |         15 |        302 |      2,667 |
++-------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                            | language           | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\Users\Home\mycoffee_front\coffee\.idea\coffee.iml                                | XML                |         13 |          0 |          0 |         13 |
+| c:\Users\Home\mycoffee_front\coffee\.idea\inspectionProfiles\Project_Default.xml    | XML                |          6 |          0 |          0 |          6 |
+| c:\Users\Home\mycoffee_front\coffee\.idea\modules.xml                               | XML                |          8 |          0 |          0 |          8 |
+| c:\Users\Home\mycoffee_front\coffee\.idea\vcs.xml                                   | XML                |          6 |          0 |          0 |          6 |
+| c:\Users\Home\mycoffee_front\coffee\README.md                                       | Markdown           |         26 |          0 |         21 |         47 |
+| c:\Users\Home\mycoffee_front\coffee\package-lock.json                               | JSON               |     21,341 |          0 |          1 |     21,342 |
+| c:\Users\Home\mycoffee_front\coffee\package.json                                    | JSON               |         77 |          0 |          1 |         78 |
+| c:\Users\Home\mycoffee_front\coffee\public\index.html                               | HTML               |         19 |          0 |          1 |         20 |
+| c:\Users\Home\mycoffee_front\coffee\public\manifest.json                            | JSON               |         15 |          0 |          1 |         16 |
+| c:\Users\Home\mycoffee_front\coffee\src\App.css                                     | CSS                |        240 |          0 |         32 |        272 |
+| c:\Users\Home\mycoffee_front\coffee\src\App.test.tsx                                | TypeScript JSX     |          8 |          0 |          2 |         10 |
+| c:\Users\Home\mycoffee_front\coffee\src\App.tsx                                     | TypeScript JSX     |        186 |          0 |         28 |        214 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\AdminLogin.tsx                   | TypeScript JSX     |        109 |          1 |         21 |        131 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\AdminProfile.tsx                 | TypeScript JSX     |        553 |          6 |         54 |        613 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\City.tsx                         | TypeScript JSX     |         14 |          0 |          2 |         16 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\Contacts.tsx                     | TypeScript JSX     |         41 |          0 |          7 |         48 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\Futer.tsx                        | TypeScript JSX     |         58 |          0 |          4 |         62 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\Hader.tsx                        | TypeScript JSX     |        266 |          8 |         20 |        294 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\HamburgerMenu.tsx                | TypeScript JSX     |        266 |          7 |         25 |        298 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\KartKorz.tsx                     | TypeScript JSX     |        168 |          1 |         16 |        185 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\KartTovOpt.tsx                   | TypeScript JSX     |         36 |          0 |          4 |         40 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\KartTovar.tsx                    | TypeScript JSX     |        266 |          3 |         19 |        288 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\Katalog.tsx                      | TypeScript JSX     |        176 |          0 |         23 |        199 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\Modal.tsx                        | TypeScript JSX     |         37 |          0 |          9 |         46 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\PopularProducts.tsx              | TypeScript JSX     |        175 |          0 |         26 |        201 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\UniversalTableItem.tsx           | TypeScript JSX     |        164 |          1 |         15 |        180 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\Vhod.tsx                         | TypeScript JSX     |        216 |          4 |         21 |        241 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\errors\CustomErrorComponent.tsx  | TypeScript JSX     |         16 |          0 |          6 |         22 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\errors\ErrorBoundary.jsx         | JavaScript JSX     |         22 |          0 |          7 |         29 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\errors\NotFound.jsx              | JavaScript JSX     |         10 |          0 |          3 |         13 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\About.tsx             | TypeScript JSX     |         64 |          0 |          3 |         67 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Admin.tsx             | TypeScript JSX     |         26 |          0 |          7 |         33 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\AuthContext.jsx       | JavaScript JSX     |         44 |          4 |          9 |         57 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Bot\BotContext.tsx    | TypeScript JSX     |         44 |          0 |         10 |         54 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Bot\Chat.tsx          | TypeScript JSX     |         42 |          0 |          6 |         48 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Buy.tsx               | TypeScript JSX     |         18 |          0 |          3 |         21 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\ChangePassword.tsx    | TypeScript JSX     |         89 |          2 |         16 |        107 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Faq.tsx               | TypeScript JSX     |         98 |          0 |         10 |        108 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\FormComponents.jsx    | JavaScript JSX     |         81 |          0 |          9 |         90 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Home.tsx              | TypeScript JSX     |         40 |          0 |          4 |         44 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Liked.tsx             | TypeScript JSX     |         78 |          0 |          9 |         87 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Login.tsx             | TypeScript JSX     |        189 |          0 |         18 |        207 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Opt.tsx               | TypeScript JSX     |         27 |          0 |          3 |         30 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\OrderHistory.tsx      | TypeScript JSX     |        117 |          0 |         19 |        136 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Pagination.tsx        | TypeScript JSX     |         37 |          0 |          6 |         43 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Profile.tsx           | TypeScript JSX     |        168 |          0 |         25 |        193 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Reg.tsx               | TypeScript JSX     |        236 |          1 |         11 |        248 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Reset.tsx             | TypeScript JSX     |        320 |          7 |         36 |        363 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\ResetURL.tsx          | TypeScript JSX     |        104 |          2 |         12 |        118 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\Shipment.tsx          | TypeScript JSX     |         47 |          0 |          3 |         50 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\basket.tsx            | TypeScript JSX     |        291 |          2 |         23 |        316 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\refreshTokenUtils.jsx | JavaScript JSX     |         53 |          1 |          5 |         59 |
+| c:\Users\Home\mycoffee_front\coffee\src\components\navigation\tokenUtils.jsx        | JavaScript JSX     |         57 |          0 |          7 |         64 |
+| c:\Users\Home\mycoffee_front\coffee\src\images\carbon-chat.svg                      | XML                |          4 |          0 |          1 |          5 |
+| c:\Users\Home\mycoffee_front\coffee\src\images\chat-svgrepo-com.svg                 | XML                |          6 |          1 |          5 |         12 |
+| c:\Users\Home\mycoffee_front\coffee\src\images\rightarrow_116394.svg                | XML                |         40 |          1 |          1 |         42 |
+| c:\Users\Home\mycoffee_front\coffee\src\images\uparrowcircularbutton_79856.svg      | XML                |         44 |          1 |          1 |         46 |
+| c:\Users\Home\mycoffee_front\coffee\src\index.css                                   | CSS                |         12 |          0 |          2 |         14 |
+| c:\Users\Home\mycoffee_front\coffee\src\index.tsx                                   | TypeScript JSX     |         23 |          3 |          4 |         30 |
+| c:\Users\Home\mycoffee_front\coffee\src\logo.svg                                    | XML                |          1 |          0 |          0 |          1 |
+| c:\Users\Home\mycoffee_front\coffee\src\react-app-env.d.ts                          | TypeScript         |          0 |          1 |          1 |          2 |
+| c:\Users\Home\mycoffee_front\coffee\src\reportWebVitals.ts                          | TypeScript         |         13 |          0 |          3 |         16 |
+| c:\Users\Home\mycoffee_front\coffee\src\serverHost.json                             | JSON               |          3 |          0 |          0 |          3 |
+| c:\Users\Home\mycoffee_front\coffee\src\setupTests.ts                               | TypeScript         |          1 |          4 |          1 |          6 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\About.css                            | CSS                |         20 |          0 |          0 |         20 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\AdminProfile.css                     | CSS                |        103 |          0 |         17 |        120 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Chat.css                             | CSS                |         94 |          0 |         16 |        110 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\FAQ.css                              | CSS                |         72 |          0 |         17 |         89 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Futer.css                            | CSS                |         78 |          0 |         10 |         88 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Header.css                           | CSS                |        375 |          0 |         12 |        387 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Home.css                             | CSS                |        108 |          0 |         23 |        131 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\ItemAdmin.css                        | CSS                |        218 |          0 |         31 |        249 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\KastomCheckBox.css                   | CSS                |        111 |         11 |         13 |        135 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Login.css                            | CSS                |        118 |          0 |         21 |        139 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\OrderHistory.css                     | CSS                |         23 |          0 |          6 |         29 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Pagination.css                       | CSS                |         64 |          2 |          7 |         73 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Reg.css                              | CSS                |        100 |          0 |         18 |        118 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Reset.css                            | CSS                |         70 |          0 |          6 |         76 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\SelectGender.css                     | CSS                |         61 |          0 |         10 |         71 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\Shipment.css                         | CSS                |         88 |          0 |         13 |        101 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\basket.css                           | CSS                |        152 |          0 |         34 |        186 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\contact.css                          | CSS                |         18 |          0 |          2 |         20 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\kartKorz.css                         | CSS                |        126 |          0 |         24 |        150 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\katalog.css                          | CSS                |        249 |          1 |          9 |        259 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\modal.css                            | CSS                |         73 |          1 |          6 |         80 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\popularProducts.css                  | CSS                |         14 |          0 |          3 |         17 |
+| c:\Users\Home\mycoffee_front\coffee\src\styles\stickyFooter.css                     | CSS                |         15 |          0 |          4 |         19 |
+| c:\Users\Home\mycoffee_front\coffee\tsconfig.json                                   | JSON with Comments |         26 |          0 |          1 |         27 |
+| Total                                                                               |                    |     29,331 |         76 |        945 |     30,352 |
++-------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
